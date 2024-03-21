@@ -1,10 +1,10 @@
 import { forwardRef } from 'react';
 
-type TextAreaProps = {
+type TextareaProps = {
   placeholder: string;
 };
 
-const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
+const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({ placeholder }, ref) => {
     return (
       <div>
@@ -14,4 +14,4 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
   },
 );
 
-export default TextArea;
+export default Textarea;

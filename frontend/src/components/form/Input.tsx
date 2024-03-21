@@ -3,13 +3,20 @@ import { forwardRef } from 'react';
 type InputProps = {
   type: string;
   placeholder: string;
+  width?: number;
 };
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ type, placeholder }, ref) => {
+  ({ type, placeholder, width }, ref) => {
     return (
-      <div>
-        <input type={type} placeholder={placeholder} ref={ref} className="" />
+      <div className={`p-1 w-${width}`}>
+        <input
+          type={type}
+          placeholder={placeholder}
+          ref={ref}
+          className="border border-gray-200 p-2 rounded-md"
+          style={{ width: `${width}px` }}
+        />
       </div>
     );
   },
