@@ -2,8 +2,13 @@ import Input from './../form/Input';
 import Filter from './../form/Filter';
 import { Link } from 'react-router-dom';
 import Books from './Books';
+import { useContext } from 'react';
+import { UserContext } from '../../UserContext';
 
 const Consult = () => {
+  const context = useContext(UserContext);
+  const { filter, setFilter, setSort } = context!;
+
   return (
     <div className="flex flex-col justify-center items-center h-screen">
       <h1 className="text-3xl font-semibold mb-4">Consulta de Livro</h1>
@@ -13,7 +18,7 @@ const Consult = () => {
           <h2 className="text-2xl text-center font-semibold mb-1">Pesquisa</h2>
           <Input type="text" placeholder="O que você busca?" width={300} />
 
-          <Filter />
+          <Filter filter={filter} setFilter={setFilter} setSort={setSort} />
           <Link
             to={'/'}
             className="mt-2 px-4 py-2 bg-red-500 hover:bg-red-700 transition duration-300 rounded-lg"
