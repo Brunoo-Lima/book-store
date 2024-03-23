@@ -14,7 +14,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           type={type}
           placeholder={placeholder}
           ref={ref}
-          className="border border-gray-200 p-2 rounded-md"
+          className="border-2 border-gray-200 p-2.5 rounded-md text-base focus-visible:border-emerald-300 outline-none"
           style={{ width: `${width}px` }}
         />
       </div>
