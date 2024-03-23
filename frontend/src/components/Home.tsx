@@ -10,17 +10,17 @@ const buttons: ButtonProps[] = [
   {
     id: 1,
     text: 'Cadastrar Livro',
-    href: '/registerBook',
+    href: '/register',
   },
   {
     id: 2,
     text: 'Consultar Livro',
-    href: '/consultBook',
+    href: '/consult',
   },
   {
     id: 3,
     text: 'Ativar/Desativar Livro',
-    href: '/statusBook',
+    href: '/status',
   },
 ];
 
