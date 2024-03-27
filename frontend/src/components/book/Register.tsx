@@ -55,7 +55,8 @@ const categories = [
 
 const Register = () => {
   const context = useContext(UserContext);
-  const { handleSubmit, handleInputChange, bookData } = context!;
+  const { handleSubmit, handleInputChange, bookData, handleCheckboxChange } =
+    context!;
 
   return (
     <div className="flex flex-col justify-center items-center h-screen">
@@ -86,7 +87,11 @@ const Register = () => {
                   <h2 className="text-xl text-center my-2">Categorias</h2>
                   <div className="flex flex-wrap justify-center">
                     {categories.map((category) => (
-                      <Checkbox key={category.id} name={category.name} />
+                      <Checkbox
+                        key={category.id}
+                        name={category.name}
+                        onChange={handleCheckboxChange}
+                      />
                     ))}
                   </div>
                 </div>

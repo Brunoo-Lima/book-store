@@ -1,14 +1,16 @@
 type CheckboxProps = {
   name: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-const Checkbox = ({ name }: CheckboxProps) => {
+const Checkbox = ({ name, onChange }: CheckboxProps) => {
   return (
     <div className="flex items-center p-2 rounded">
       <input
         id={name}
         type="checkbox"
         value={name}
+        onChange={onChange}
         className="w-4 h-4 bg-gray-100 border-gray-300 rounded outline-none"
       />
       <label

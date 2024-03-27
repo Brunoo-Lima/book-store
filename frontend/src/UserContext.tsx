@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useEffect, useState } from 'react';
+import { ReactNode, createContext, useState } from 'react';
 
 export type UserBooksTypes = {
   id: number;
@@ -32,7 +32,7 @@ type UserContextType = {
     event: React.ChangeEvent<HTMLInputElement>,
     fieldName: string,
   ) => void;
-  // handleCheckboxChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleCheckboxChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
 
   filter: string;
@@ -86,6 +86,18 @@ export const UserProvider: React.FC<UserContextProps> = ({ children }) => {
     setBookData({ ...bookData, [fieldName]: value });
   };
 
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    const isChecked = bookData.category.includes(value);
+
+    setBookData((prevBookData) => ({
+      ...prevBookData,
+      category: isChecked
+        ? prevBookData.category.filter((category) => category !== value)
+        : [...prevBookData.category, value],
+    }));
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     addBook(bookData);
@@ -120,7 +132,9 @@ export const UserProvider: React.FC<UserContextProps> = ({ children }) => {
     handleSubmit,
     filter,
     setFilter,
+    sort,
     setSort,
+    handleCheckboxChange,
   };
 
   return (
