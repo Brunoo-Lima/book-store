@@ -2,11 +2,12 @@ import Input from './../form/Input';
 import Filter from './../form/Filter';
 import { Link } from 'react-router-dom';
 import Books from './Books';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { UserContext } from '../../UserContext';
 
 const Consult = () => {
   const context = useContext(UserContext);
+  const [search, setSearch] = useState('');
   const { filter, setFilter, setSort, listBooks } = context!;
 
   return (
@@ -16,7 +17,13 @@ const Consult = () => {
       <div className="border-2 border-gray-300 w-[900px] h-[650px] rounded-md p-6 bg-[#f1efef] overflow-hidden">
         <div className="flex flex-col items-center mt-6">
           <h2 className="text-2xl text-center font-semibold mb-1">Pesquisa</h2>
-          <Input type="text" placeholder="O que você busca?" width={300} />
+          <Input
+            type="text"
+            placeholder="O que você busca?"
+            width={300}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
 
           <Filter filter={filter} setFilter={setFilter} setSort={setSort} />
           <Link
@@ -30,9 +37,13 @@ const Consult = () => {
         <div className="flex flex-col justify-center items-center mt-4 p-6 w-[800px] h-[450px] m-auto">
           <h2 className="text-2xl font-semibold">Livros</h2>
           <ul className="h-full overflow-y-auto">
-            {listBooks.map((props) => (
-              <Books key={props.id} {...props} />
-            ))}
+            {listBooks
+              .filter((book) =>
+                book.title.toLowerCase().includes(search.toLowerCase()),
+              )
+              .map((props) => (
+                <Books key={props.id} {...props} />
+              ))}
           </ul>
         </div>
       </div>

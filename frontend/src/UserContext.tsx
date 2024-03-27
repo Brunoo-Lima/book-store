@@ -34,6 +34,12 @@ type UserContextType = {
   ) => void;
   // handleCheckboxChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
+
+  filter: string;
+  setFilter: React.Dispatch<React.SetStateAction<string>>;
+
+  sort: string;
+  setSort: React.Dispatch<React.SetStateAction<string>>;
 };
 
 type UserContextProps = {
@@ -65,8 +71,8 @@ export const UserProvider: React.FC<UserContextProps> = ({ children }) => {
     barCode: '',
   });
 
-  // const [filter, setFilter] = useState('All');
-  // const [sort, setSort] = useState('Asc');
+  const [filter, setFilter] = useState('All');
+  const [sort, setSort] = useState('Asc');
 
   const addBook = (book: UserBooksTypes) => {
     setListBooks([...listBooks, book]);
@@ -79,8 +85,6 @@ export const UserProvider: React.FC<UserContextProps> = ({ children }) => {
     const { value } = event.target;
     setBookData({ ...bookData, [fieldName]: value });
   };
-
-  useEffect(() => {}, [bookData]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -114,6 +118,9 @@ export const UserProvider: React.FC<UserContextProps> = ({ children }) => {
     addBook,
     handleInputChange,
     handleSubmit,
+    filter,
+    setFilter,
+    setSort,
   };
 
   return (
