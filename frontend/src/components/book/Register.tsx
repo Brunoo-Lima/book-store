@@ -2,6 +2,54 @@ import { Link } from 'react-router-dom';
 import Input from '../form/Input';
 import Select from '../form/Select';
 import Textarea from '../form/Textarea';
+import Checkbox from './../form/Checkbox';
+
+const categories = [
+  {
+    id: 1,
+    name: 'Biografia/Autobiografia',
+  },
+  {
+    id: 2,
+    name: 'Ensaio',
+  },
+  {
+    id: 3,
+    name: 'Fantasia',
+  },
+  {
+    id: 4,
+    name: 'Ficção Científica',
+  },
+  {
+    id: 5,
+    name: 'Ficção Histórica',
+  },
+  {
+    id: 6,
+    name: 'Horror',
+  },
+  {
+    id: 7,
+    name: 'Literatura Clássica',
+  },
+  {
+    id: 8,
+    name: 'Mistério/Thriller',
+  },
+  {
+    id: 9,
+    name: 'Poesia',
+  },
+  {
+    id: 10,
+    name: 'Romance',
+  },
+  {
+    id: 11,
+    name: 'Outros',
+  },
+];
 
 const Register = () => {
   return (
@@ -16,17 +64,22 @@ const Register = () => {
               <div className="flex flex-wrap justify-center p-1">
                 <Input type="text" placeholder="Nome do Autor" width={400} />
                 <Input type="text" placeholder="Nome do Livro" width={400} />
-                <Input
-                  type="text"
-                  placeholder="Nome da Categoria"
-                  width={300}
-                />
+
+                <div>
+                  <h2 className="text-xl text-center my-2">Categorias</h2>
+                  <div className="flex flex-wrap justify-center">
+                    {categories.map((category) => (
+                      <Checkbox key={category.id} name={category.name} />
+                    ))}
+                  </div>
+                </div>
+
                 <Input type="text" placeholder="Ano" width={94} />
                 <Input type="text" placeholder="Nome da Editora" width={300} />
                 <Input type="text" placeholder="Edição" width={94} />
-                <Input type="text" placeholder="Valor" width={100} />
-                <Input type="text" placeholder="Total páginas" width={100} />
                 <Input type="text" placeholder="ISBN" width={184} />
+                <Input type="text" placeholder="Total páginas" width={100} />
+                <Input type="text" placeholder="Valor" width={100} />
               </div>
 
               <h2 className="text-xl text-center my-2">Sinopse do Liro</h2>

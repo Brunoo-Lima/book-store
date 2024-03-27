@@ -7,7 +7,7 @@ import { UserContext } from '../../UserContext';
 
 const Consult = () => {
   const context = useContext(UserContext);
-  const { filter, setFilter, setSort } = context!;
+  const { filter, setFilter, setSort, listBooks } = context!;
 
   return (
     <div className="flex flex-col justify-center items-center h-screen">
@@ -30,9 +30,9 @@ const Consult = () => {
         <div className="flex flex-col justify-center items-center mt-4 p-6 w-[700px] m-auto  h-full">
           <h2 className="text-2xl font-semibold">Livros</h2>
           <ul className="h-full overflow-y-auto">
-            {[1, 2, 3, 4].map(() => (
+            {listBooks.map((props) => (
               <li>
-                <Books />
+                <Books {...props} />
               </li>
             ))}
           </ul>
