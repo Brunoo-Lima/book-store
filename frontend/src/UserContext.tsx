@@ -1,31 +1,39 @@
-import { ReactNode, createContext, useState } from 'react';
+import { ReactNode, createContext, useEffect, useState } from 'react';
 
 export type UserBooksTypes = {
   id: number;
   author: string;
   title: string;
-  TotalPage: number;
-  year: number;
+  totalPage: string;
+  year: string;
   category: string[];
   publishing: string;
   edition: string;
-  value: number;
+  value: string;
   synopsis: string;
   ISBN: string;
-  barCode: number;
-  height: number;
-  depth: number;
-  width: number;
-  weight: number;
+  barCode: string;
+  height: string;
+  depth: string;
+  width: string;
+  weight: string;
 };
 
 type UserContextType = {
-  listBooks: UserBooksTypes[] | [];
-  setListBooks: React.Dispatch<React.SetStateAction<UserBooksTypes[] | []>>;
-  filter: string;
-  setFilter: React.Dispatch<React.SetStateAction<string>>;
-  sort: string;
-  setSort: React.Dispatch<React.SetStateAction<string>>;
+  listBooks: UserBooksTypes[];
+  setListBooks: React.Dispatch<React.SetStateAction<UserBooksTypes[]>>;
+
+  addBook: (book: UserBooksTypes) => void;
+
+  bookData: UserBooksTypes;
+  setBookData: React.Dispatch<React.SetStateAction<UserBooksTypes>>;
+
+  handleInputChange: (
+    event: React.ChangeEvent<HTMLInputElement>,
+    fieldName: string,
+  ) => void;
+  // handleCheckboxChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
 };
 
 type UserContextProps = {
@@ -37,37 +45,75 @@ export const UserContext = createContext<UserContextType | undefined>(
 );
 
 export const UserProvider: React.FC<UserContextProps> = ({ children }) => {
-  const [listBooks, setListBooks] = useState<UserBooksTypes[] | []>([
-    {
-      id: 1,
-      author: 'Martin',
-      title: 'Game of Thrones',
-      TotalPage: 300,
-      year: 2005,
-      category: ['Ação', 'Romance'],
-      publishing: 'Editora',
-      edition: '2ª',
-      value: 150,
-      synopsis:
-        'era uma vez................................................................',
-      ISBN: '954',
-      barCode: 54955887454655,
-      height: 1.5,
-      depth: 2.0,
-      width: 125,
-      weight: 100,
-    },
-  ]);
-  const [filter, setFilter] = useState('All');
-  const [sort, setSort] = useState('Asc');
+  const [listBooks, setListBooks] = useState<UserBooksTypes[]>([]);
+  const [bookData, setBookData] = useState<UserBooksTypes>({
+    id: 1,
+    author: '',
+    title: '',
+    category: [],
+    year: '',
+    publishing: '',
+    edition: '',
+    ISBN: '',
+    totalPage: '',
+    value: '',
+    synopsis: '',
+    height: '',
+    width: '',
+    depth: '',
+    weight: '',
+    barCode: '',
+  });
+
+  // const [filter, setFilter] = useState('All');
+  // const [sort, setSort] = useState('Asc');
+
+  const addBook = (book: UserBooksTypes) => {
+    setListBooks([...listBooks, book]);
+  };
+
+  const handleInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    fieldName: string,
+  ) => {
+    const { value } = event.target;
+    setBookData({ ...bookData, [fieldName]: value });
+  };
+
+  useEffect(() => {}, [bookData]);
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    addBook(bookData);
+
+    setBookData({
+      id: Math.floor(Math.random() * 1000),
+      author: '',
+      title: '',
+      category: [],
+      year: '',
+      publishing: '',
+      edition: '',
+      ISBN: '',
+      totalPage: '',
+      value: '',
+      synopsis: '',
+      height: '',
+      width: '',
+      depth: '',
+      weight: '',
+      barCode: '',
+    });
+  };
 
   const contextValue = {
     listBooks,
     setListBooks,
-    filter,
-    setFilter,
-    sort,
-    setSort,
+    bookData,
+    setBookData,
+    addBook,
+    handleInputChange,
+    handleSubmit,
   };
 
   return (

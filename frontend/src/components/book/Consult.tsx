@@ -27,13 +27,11 @@ const Consult = () => {
           </Link>
         </div>
 
-        <div className="flex flex-col justify-center items-center mt-4 p-6 w-[700px] m-auto  h-full">
+        <div className="flex flex-col justify-center items-center mt-4 p-6 w-[800px] h-[450px] m-auto">
           <h2 className="text-2xl font-semibold">Livros</h2>
           <ul className="h-full overflow-y-auto">
             {listBooks.map((props) => (
-              <li>
-                <Books {...props} />
-              </li>
+              <Books key={props.id} {...props} />
             ))}
           </ul>
         </div>

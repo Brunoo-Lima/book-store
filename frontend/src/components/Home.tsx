@@ -17,11 +17,6 @@ const buttons: ButtonProps[] = [
     text: 'Consultar Livro',
     href: '/consult',
   },
-  {
-    id: 3,
-    text: 'Ativar/Desativar Livro',
-    href: '/status',
-  },
 ];
 
 const Home = () => {

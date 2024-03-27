@@ -3,7 +3,7 @@ import { UserBooksTypes } from '../../UserContext';
 const Books = ({
   author,
   title,
-  TotalPage,
+  totalPage,
   year,
   category,
   publishing,
@@ -11,12 +11,12 @@ const Books = ({
   value,
 }: UserBooksTypes) => {
   return (
-    <div className="bg-[#fefefe] my-4 rounded-lg h-[230px] border-2 border-gray-200">
+    <li className="bg-[#fefefe] my-4 rounded-lg border-2 border-gray-200 ">
       <div className="flex justify-between w-[700px] p-5">
         <div className="space-y-1">
           <h1 className="text-xl font-semibold">{title}</h1>
           <p className="text-base">Autor: {author}</p>
-          <p>Total de Páginas: {TotalPage}</p>
+          <p>Total de Páginas: {totalPage}</p>
           <span>Ano lançamento: {year}</span>
 
           <h3 className="text-base font-semibold">Editora</h3>
@@ -39,13 +39,13 @@ const Books = ({
           <p className="font-semibold text-lg">R$ {value}</p>
 
           <div className="flex flex-1 mt-28">
-            <button className="bg-red-600 hover:bg-red-500 transition duration-300 px-2.5 rounded-lg">
+            <button className="bg-red-600 hover:bg-red-500 transition duration-300 px-2.5 py-2.5 rounded-lg">
               <p className="text-white font-semibold">Inativar</p>
             </button>
           </div>
         </div>
       </div>
-    </div>
+    </li>
   );
 };
 
