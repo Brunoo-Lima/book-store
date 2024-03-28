@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import Input from '../form/Input';
 import Select from '../form/Select';
-import Textarea from '../form/Textarea';
+import Textarea from '../form/TextArea';
 import Checkbox from './../form/Checkbox';
 import { useContext } from 'react';
 import { UserContext } from '../../UserContext';
