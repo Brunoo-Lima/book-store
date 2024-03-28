@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import Input from '../form/Input';
 import Select from '../form/Select';
-import Textarea from '../form/TextArea';
+import TextArea from '../form/TextArea';
 import Checkbox from './../form/Checkbox';
 import { useContext } from 'react';
 import { UserContext } from '../../UserContext';
@@ -140,9 +140,9 @@ const Register = () => {
                 />
               </div>
 
-              <h2 className="text-xl text-center my-2">Sinopse do Liro</h2>
+              <h2 className="text-xl text-center my-2">Sinopse do Livro</h2>
               <div className="pl-7">
-                <Textarea placeholder="Digite a sinopse do Livro" />
+                <TextArea placeholder="Digite a sinopse do Livro" />
               </div>
             </div>
             <div className="my-2">
