@@ -5,53 +5,8 @@ import TextArea from '../form/TextArea';
 import Checkbox from './../form/Checkbox';
 import { useContext } from 'react';
 import { UserContext } from '../../UserContext';
+import mockDataCategories from '../../config/mockDataCategories';
 
-const categories = [
-  {
-    id: 1,
-    name: 'Biografia/Autobiografia',
-  },
-  {
-    id: 2,
-    name: 'Ensaio',
-  },
-  {
-    id: 3,
-    name: 'Fantasia',
-  },
-  {
-    id: 4,
-    name: 'Ficção Científica',
-  },
-  {
-    id: 5,
-    name: 'Ficção Histórica',
-  },
-  {
-    id: 6,
-    name: 'Horror',
-  },
-  {
-    id: 7,
-    name: 'Literatura Clássica',
-  },
-  {
-    id: 8,
-    name: 'Mistério/Thriller',
-  },
-  {
-    id: 9,
-    name: 'Poesia',
-  },
-  {
-    id: 10,
-    name: 'Romance',
-  },
-  {
-    id: 11,
-    name: 'Outros',
-  },
-];
 
 const Register = () => {
   const context = useContext(UserContext);
@@ -86,7 +41,7 @@ const Register = () => {
                 <div>
                   <h2 className="text-xl text-center my-2">Categorias</h2>
                   <div className="flex flex-wrap justify-center">
-                    {categories.map((category) => (
+                    {mockDataCategories.map((category) => (
                       <Checkbox
                         key={category.id}
                         name={category.name}
