@@ -13,6 +13,7 @@ class UserDAO {
             select: {
                 id: true,
                 name: true,
+                created_at: true,
             },
         });
     }
