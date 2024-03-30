@@ -1,4 +1,4 @@
-import UserDAO from "../../dao/userDAO";
+import UserDAO from "../../dao/user/userDAO";
 
 interface UserData {
     name: string;

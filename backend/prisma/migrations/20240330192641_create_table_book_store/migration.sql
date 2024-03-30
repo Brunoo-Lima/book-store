@@ -21,6 +21,8 @@ CREATE TABLE "books" (
     "height" DOUBLE PRECISION NOT NULL,
     "weight" DOUBLE PRECISION NOT NULL,
     "depth" DOUBLE PRECISION NOT NULL,
+    "author" TEXT NOT NULL,
+    "publisher" TEXT NOT NULL,
 
     CONSTRAINT "books_pkey" PRIMARY KEY ("id")
 );

@@ -39,6 +39,9 @@ model Book {
 
   @@map("books")
 
+  author String
+  publisher String
+
 }
 
 model Author {
