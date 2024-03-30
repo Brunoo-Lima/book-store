@@ -12,3 +12,95 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+
+model User {
+  id String @id @default(uuid())
+  name String
+
+  created_at DateTime? @default(now())
+  updated_at DateTime? @default(now())
+
+  @@map("users")
+}
+
+model Book {
+  id String @id @default(uuid())
+  title String
+  year Int
+  edition String
+  ISBN String
+  pages Int
+  synopsis String
+  width Float
+  height Float
+  weight Float
+  depth Float
+
+  @@map("books")
+
+}
+
+model Author {
+  id String @id @default(uuid())
+  name String
+
+  created_at DateTime? @default(now())
+  updated_at DateTime? @default(now())
+
+  @@map("authors")
+}
+
+model Publisher {
+  id String @id @default(uuid())
+  name String @unique
+
+  created_at DateTime? @default(now())
+  updated_at DateTime? @default(now())
+
+  @@map("publishers")
+}
+
+model Category {
+  id String @id @default(uuid())
+  name String @unique
+
+  @@map("categories")
+}
+
+model Sales {
+  id String @id @default(uuid())
+  product String
+  quantity Int
+  price_sale Float
+
+  created_at DateTime? @default(now())
+  updated_at DateTime? @default(now())
+
+  @@map("sales")
+}
+
+model GroupPricing {
+  id String @id @default(uuid())
+  name String @unique
+
+  created_at DateTime? @default(now())
+  updated_at DateTime? @default(now())
+
+  @@map("groups")
+}
+
+model LogsChange {
+  id String @id @default(uuid())
+  product String
+  category String
+  justify String
+  status_product Boolean
+  
+  user String
+  
+  updated_at DateTime? @default(now())
+
+  @@map("logsChanged")
+
+}
