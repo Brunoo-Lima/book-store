@@ -1,9 +1,10 @@
 import express from "express";
+import "express-async-errors";
 import helmet from "helmet";
 import cors from "cors";
 
-import { CreateUserController } from "./src/controllers/user/createUserController";
-import { CreateBookController } from "./src/controllers/book/createBookController";
+import errorHandler from "./error/errorHandler";
+import router from "./routes";
 
 class App {
     readonly app;
@@ -17,14 +18,12 @@ class App {
         this.app.use(express.json());
         this.app.use(cors());
         this.app.use(helmet());
+
+        this.app.use(errorHandler);
     }
 
     private routes(): void {
-        const createUserController = new CreateUserController();
-        this.app.post("/user", createUserController.handle);
-
-        const createBookController = new CreateBookController();
-        this.app.post("/book", createBookController.handle);
+        this.app.use(router);
     }
 }
 

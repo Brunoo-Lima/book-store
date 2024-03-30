@@ -56,6 +56,10 @@ class BookDAO {
             },
         });
     }
+
+    async getListBook() {
+        return prisma.book.findMany();
+    }
 }
 
 export default BookDAO;
