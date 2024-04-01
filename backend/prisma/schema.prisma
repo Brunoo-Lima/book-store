@@ -24,7 +24,7 @@ model User {
 }
 
 model Book {
-    boo_code              String       @id @default(uuid())
+    boo_code              String          @id @default(uuid())
     boo_title             String
     boo_year              Int
     boo_status            String
@@ -33,18 +33,19 @@ model Book {
     boo_bar_code          String
     boo_price_acquisition Float
     boo_edition           String
-    boo_ISBN              String       @unique
+    boo_ISBN              String          @unique
     boo_pages             Int
     boo_synopsis          String
     boo_width             Float
     boo_height            Float
     boo_weight            Float
     boo_depth             Float
-    boo_aut_id            Author @relation(fields: [fk_boo_author_id], references: [aut_id])
-    boo_pub_id            Publisher @relation(fields: [fk_boo_pub_id], references: [pub_id])
-    boo_grp_id            GroupPricing @relation(fields: [fk_boo_grp_id], references: [grp_id])
+    boo_aut_id            Author          @relation(fields: [fk_boo_author_id], references: [aut_id])
+    boo_pub_id            Publisher       @relation(fields: [fk_boo_pub_id], references: [pub_id])
+    boo_grp_id            GroupPricing    @relation(fields: [fk_boo_grp_id], references: [grp_id])
     boo_stock             Stock[]
     boo_logs_change       LogsChange[]
+    boo_book_category     Book_Category[]
     fk_boo_author_id      String
     fk_boo_pub_id         String
     fk_boo_grp_id         String
@@ -73,8 +74,9 @@ model Publisher {
 }
 
 model Category {
-    cte_id   String @id @default(uuid())
-    cte_name String @unique
+    cte_id            String          @id @default(uuid())
+    cte_name          String          @unique
+    cte_book_category Book_Category[]
 
     @@map("categories")
 }
@@ -105,8 +107,8 @@ model GroupPricing {
 
 model LogsChange {
     log_id          String @id @default(uuid())
-    log_boo_code    Book    @relation(fields: [fk_log_boo_code], references: [boo_code])
-    log_use_id      User    @relation(fields: [fk_log_use_id], references: [use_id])
+    log_boo_code    Book   @relation(fields: [fk_log_boo_code], references: [boo_code])
+    log_use_id      User   @relation(fields: [fk_log_use_id], references: [use_id])
     fk_log_boo_code String
     fk_log_use_id   String
 
@@ -119,8 +121,16 @@ model LogsChange {
 model Stock {
     stk_id        String  @id @default(uuid())
     stk_quantity  Int
-    stk_boo_id    Book @relation(fields: [fk_stk_boo_id], references: [boo_code])
+    stk_boo_id    Book    @relation(fields: [fk_stk_boo_id], references: [boo_code])
     stk_sal       Sales[]
     fk_stk_boo_id String
     salesSal_id   String
+}
+
+model Book_Category {
+    bte_id          String   @id @default(uuid())
+    bte_cte_id      Category @relation(fields: [fk_bte_cte_id], references: [cte_id])
+    bte_boo_code    Book     @relation(fields: [fk_bte_boo_code], references: [boo_code])
+    fk_bte_cte_id   String
+    fk_bte_boo_code String
 }
