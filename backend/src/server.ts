@@ -1,5 +1,6 @@
-import app from "./src/app";
+import app from "./app";
 
 app.listen(3005, () => {
     console.log("listening...");
 });
+

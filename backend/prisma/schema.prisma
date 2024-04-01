@@ -5,105 +5,122 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
-
 model User {
-  id String @id @default(uuid())
-  name String
+    use_id          String       @id @default(uuid())
+    use_name        String
+    use_logs_change LogsChange[]
+    created_at      DateTime?    @default(now())
+    updated_at      DateTime?    @default(now())
 
-  created_at DateTime? @default(now())
-  updated_at DateTime? @default(now())
-
-  @@map("users")
+    @@map("users")
 }
 
 model Book {
-  id String @id @default(uuid())
-  title String
-  year Int
-  edition String
-  ISBN String
-  pages Int
-  synopsis String
-  width Float
-  height Float
-  weight Float
-  depth Float
+    boo_code              String       @id @default(uuid())
+    boo_title             String
+    boo_year              Int
+    boo_status            String
+    boo_justify_status    String
+    boo_category_change   String
+    boo_bar_code          String
+    boo_price_acquisition Float
+    boo_edition           String
+    boo_ISBN              String       @unique
+    boo_pages             Int
+    boo_synopsis          String
+    boo_width             Float
+    boo_height            Float
+    boo_weight            Float
+    boo_depth             Float
+    boo_aut_id            Author @relation(fields: [fk_boo_author_id], references: [aut_id])
+    boo_pub_id            Publisher @relation(fields: [fk_boo_pub_id], references: [pub_id])
+    boo_grp_id            GroupPricing @relation(fields: [fk_boo_grp_id], references: [grp_id])
+    boo_stock             Stock[]
+    boo_logs_change       LogsChange[]
+    fk_boo_author_id      String
+    fk_boo_pub_id         String
+    fk_boo_grp_id         String
 
-  @@map("books")
-
-  author String
-  publisher String
-
+    @@map("books")
 }
 
 model Author {
-  id String @id @default(uuid())
-  name String
+    aut_id     String    @id @default(uuid())
+    aut_name   String
+    aut_book   Book[]
+    created_at DateTime? @default(now())
+    updated_at DateTime? @default(now())
 
-  created_at DateTime? @default(now())
-  updated_at DateTime? @default(now())
-
-  @@map("authors")
+    @@map("authors")
 }
 
 model Publisher {
-  id String @id @default(uuid())
-  name String @unique
+    pub_id     String    @id @default(uuid())
+    pub_name   String    @unique
+    pub_book   Book[]
+    created_at DateTime? @default(now())
+    updated_at DateTime? @default(now())
 
-  created_at DateTime? @default(now())
-  updated_at DateTime? @default(now())
-
-  @@map("publishers")
+    @@map("publishers")
 }
 
 model Category {
-  id String @id @default(uuid())
-  name String @unique
+    cte_id   String @id @default(uuid())
+    cte_name String @unique
 
-  @@map("categories")
+    @@map("categories")
 }
 
 model Sales {
-  id String @id @default(uuid())
-  product String
-  quantity Int
-  price_sale Float
+    sal_id         String    @id @default(uuid())
+    sal_quantity   Int
+    sal_price_sale Float
+    sal_stk_id     Stock     @relation(fields: [fk_sal_stk_id], references: [stk_id])
+    fk_sal_stk_id  String
+    created_at     DateTime? @default(now())
+    updated_at     DateTime? @default(now())
 
-  created_at DateTime? @default(now())
-  updated_at DateTime? @default(now())
-
-  @@map("sales")
+    @@map("sales")
 }
 
 model GroupPricing {
-  id String @id @default(uuid())
-  name String @unique
+    grp_id           String    @id @default(uuid())
+    grp_type_pricing String    @unique
+    grp_max_pricing  Float
+    grp_min_pricing  Float
+    grp_book         Book[]
+    created_at       DateTime? @default(now())
+    updated_at       DateTime? @default(now())
 
-  created_at DateTime? @default(now())
-  updated_at DateTime? @default(now())
-
-  @@map("groups")
+    @@map("groups")
 }
 
 model LogsChange {
-  id String @id @default(uuid())
-  product String
-  category String
-  justify String
-  status_product Boolean
-  
-  user String
-  
-  updated_at DateTime? @default(now())
+    log_id          String @id @default(uuid())
+    log_boo_code    Book    @relation(fields: [fk_log_boo_code], references: [boo_code])
+    log_use_id      User    @relation(fields: [fk_log_use_id], references: [use_id])
+    fk_log_boo_code String
+    fk_log_use_id   String
 
-  @@map("logsChanged")
+    created_at DateTime? @default(now())
+    updated_at DateTime? @default(now())
 
+    @@map("logsChanged")
+}
+
+model Stock {
+    stk_id        String  @id @default(uuid())
+    stk_quantity  Int
+    stk_boo_id    Book @relation(fields: [fk_stk_boo_id], references: [boo_code])
+    stk_sal       Sales[]
+    fk_stk_boo_id String
+    salesSal_id   String
 }
