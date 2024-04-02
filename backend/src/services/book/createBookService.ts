@@ -1,12 +1,11 @@
 import BookDAO, { BookData } from "./../../dao/book/bookDAO";
 
 class CreateBookService {
-    async execute(bookData: BookData) {
+    async execute(bookData: BookData ) {
         const bookDAO = new BookDAO();
 
         const bookAlreadyExists = await bookDAO.findFirstBook(bookData);
-
-        if (bookAlreadyExists?.boo_title) throw new Error(`Book already exists`);
+        if (bookAlreadyExists) throw new Error(`Book already exists`);
 
         const book = await bookDAO.createBook(bookData);
 

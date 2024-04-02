@@ -3,11 +3,11 @@ import { CreatePublisherService } from "../../services/publisher/createPublisher
 
 class CreatePublisherController {
     async handle(req: Request, res: Response) {
-        const { name } = req.body;
+        const { pub_name } = req.body;
 
         const createPublisherService = new CreatePublisherService();
 
-        const createPublisher = await createPublisherService.execute({ name });
+        const createPublisher = await createPublisherService.execute({ pub_name });
 
         return res.json(createPublisher);
     }

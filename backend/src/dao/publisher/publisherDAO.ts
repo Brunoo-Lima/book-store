@@ -1,6 +1,6 @@
 import { prisma } from "../../prisma/prismaClient";
 
-interface PublisherData {
+export interface PublisherData {
     pub_name: string;
 }
 

@@ -1,18 +1,18 @@
 import AuthorDAO from "../../dao/author/authorDAO";
 
 interface AuthorData {
-    name: string;
+    aut_name: string;
 }
 
 class CreateAuthorService {
-    async execute({ name }: AuthorData) {
+    async execute({ aut_name }: AuthorData) {
         const authorDAO = new AuthorDAO();
 
-        const authorAlreadyExists = await authorDAO.findFirstAuthor({ name });
+        const authorAlreadyExists = await authorDAO.findFirstAuthor({ aut_name });
 
         if (authorAlreadyExists) throw new Error("Name already exists!");
 
-        const author = await authorDAO.createAuthor({ name });
+        const author = await authorDAO.createAuthor({ aut_name });
 
         return { author };
     }

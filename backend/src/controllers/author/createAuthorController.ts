@@ -3,11 +3,11 @@ import { CreateAuthorService } from "../../services/author/createAuthorService";
 
 class CreateAuthorController {
     async handle(req: Request, res: Response) {
-        const { name } = req.body;
+        const { aut_name } = req.body;
 
         const createAuthorService = new CreateAuthorService();
 
-        const createAuthor = await createAuthorService.execute({ name });
+        const createAuthor = await createAuthorService.execute({ aut_name });
 
         return res.json(createAuthor);
     }
