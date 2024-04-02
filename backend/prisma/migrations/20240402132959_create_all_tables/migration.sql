@@ -62,18 +62,6 @@ CREATE TABLE "categories" (
 );
 
 -- CreateTable
-CREATE TABLE "sales" (
-    "sal_id" TEXT NOT NULL,
-    "sal_quantity" INTEGER NOT NULL,
-    "sal_price_sale" DOUBLE PRECISION NOT NULL,
-    "fk_sal_stk_id" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "sales_pkey" PRIMARY KEY ("sal_id")
-);
-
--- CreateTable
 CREATE TABLE "groups" (
     "grp_id" TEXT NOT NULL,
     "grp_type_pricing" TEXT NOT NULL,
@@ -97,13 +85,22 @@ CREATE TABLE "logsChanged" (
 );
 
 -- CreateTable
-CREATE TABLE "Stock" (
+CREATE TABLE "stock" (
     "stk_id" TEXT NOT NULL,
     "stk_quantity" INTEGER NOT NULL,
-    "fk_stk_boo_id" TEXT NOT NULL,
+    "fk_stk_boo_code" TEXT NOT NULL,
     "salesSal_id" TEXT NOT NULL,
 
-    CONSTRAINT "Stock_pkey" PRIMARY KEY ("stk_id")
+    CONSTRAINT "stock_pkey" PRIMARY KEY ("stk_id")
+);
+
+-- CreateTable
+CREATE TABLE "booksPerCategory" (
+    "bte_id" TEXT NOT NULL,
+    "fk_bte_cte_id" TEXT NOT NULL,
+    "fk_bte_boo_code" TEXT NOT NULL,
+
+    CONSTRAINT "booksPerCategory_pkey" PRIMARY KEY ("bte_id")
 );
 
 -- CreateIndex
@@ -128,13 +125,16 @@ ALTER TABLE "books" ADD CONSTRAINT "books_fk_boo_pub_id_fkey" FOREIGN KEY ("fk_b
 ALTER TABLE "books" ADD CONSTRAINT "books_fk_boo_grp_id_fkey" FOREIGN KEY ("fk_boo_grp_id") REFERENCES "groups"("grp_id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "sales" ADD CONSTRAINT "sales_fk_sal_stk_id_fkey" FOREIGN KEY ("fk_sal_stk_id") REFERENCES "Stock"("stk_id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "logsChanged" ADD CONSTRAINT "logsChanged_fk_log_boo_code_fkey" FOREIGN KEY ("fk_log_boo_code") REFERENCES "books"("boo_code") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "logsChanged" ADD CONSTRAINT "logsChanged_fk_log_use_id_fkey" FOREIGN KEY ("fk_log_use_id") REFERENCES "users"("use_id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Stock" ADD CONSTRAINT "Stock_fk_stk_boo_id_fkey" FOREIGN KEY ("fk_stk_boo_id") REFERENCES "books"("boo_code") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "stock" ADD CONSTRAINT "stock_fk_stk_boo_code_fkey" FOREIGN KEY ("fk_stk_boo_code") REFERENCES "books"("boo_code") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "booksPerCategory" ADD CONSTRAINT "booksPerCategory_fk_bte_cte_id_fkey" FOREIGN KEY ("fk_bte_cte_id") REFERENCES "categories"("cte_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "booksPerCategory" ADD CONSTRAINT "booksPerCategory_fk_bte_boo_code_fkey" FOREIGN KEY ("fk_bte_boo_code") REFERENCES "books"("boo_code") ON DELETE RESTRICT ON UPDATE CASCADE;

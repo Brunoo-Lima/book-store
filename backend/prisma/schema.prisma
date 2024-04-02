@@ -81,18 +81,6 @@ model Category {
     @@map("categories")
 }
 
-model Sales {
-    sal_id         String    @id @default(uuid())
-    sal_quantity   Int
-    sal_price_sale Float
-    sal_stk_id     Stock     @relation(fields: [fk_sal_stk_id], references: [stk_id])
-    fk_sal_stk_id  String
-    created_at     DateTime? @default(now())
-    updated_at     DateTime? @default(now())
-
-    @@map("sales")
-}
-
 model GroupPricing {
     grp_id           String    @id @default(uuid())
     grp_type_pricing String    @unique
@@ -121,10 +109,11 @@ model LogsChange {
 model Stock {
     stk_id        String  @id @default(uuid())
     stk_quantity  Int
-    stk_boo_id    Book    @relation(fields: [fk_stk_boo_id], references: [boo_code])
-    stk_sal       Sales[]
-    fk_stk_boo_id String
+    stk_boo_code    Book    @relation(fields: [fk_stk_boo_code], references: [boo_code])
+    fk_stk_boo_code String
     salesSal_id   String
+
+    @@map("stock")
 }
 
 model Book_Category {
@@ -133,4 +122,6 @@ model Book_Category {
     bte_boo_code    Book     @relation(fields: [fk_bte_boo_code], references: [boo_code])
     fk_bte_cte_id   String
     fk_bte_boo_code String
+
+    @@map("booksPerCategory")
 }

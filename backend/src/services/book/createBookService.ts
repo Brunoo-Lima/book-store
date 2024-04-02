@@ -6,7 +6,7 @@ class CreateBookService {
 
         const bookAlreadyExists = await bookDAO.findFirstBook(bookData);
 
-        if (bookAlreadyExists?.title) throw new Error(`Book already exists`);
+        if (bookAlreadyExists?.boo_title) throw new Error(`Book already exists`);
 
         const book = await bookDAO.createBook(bookData);
 

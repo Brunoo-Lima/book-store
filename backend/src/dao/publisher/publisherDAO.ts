@@ -1,26 +1,26 @@
 import { prisma } from "../../prisma/prismaClient";
 
 interface PublisherData {
-    name: string;
+    pub_name: string;
 }
 
 class PublisherDAO {
-    async createPublisher({ name }: PublisherData) {
+    async createPublisher({ pub_name }: PublisherData) {
         return prisma.publisher.create({
             data: {
-                name: name,
+                pub_name: pub_name,
             },
             select: {
-                id: true,
-                name: true,
+                pub_id: true,
+                pub_name: true,
             },
         });
     }
 
-    async findFirstPublisher({ name }: PublisherData) {
+    async findFirstPublisher({ pub_name }: PublisherData) {
         return prisma.publisher.findFirst({
             where: {
-                name: name,
+                pub_name: pub_name,
             },
         });
     }

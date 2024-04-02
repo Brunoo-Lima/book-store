@@ -1,18 +1,18 @@
 import { prisma } from "../../prisma/prismaClient";
 
 interface UserData {
-    name: string;
+    use_name: string;
 }
 
 class UserDAO {
-    async createUser({ name }: UserData) {
+    async createUser({ use_name }: UserData) {
         return prisma.user.create({
             data: {
-                name: name,
+                use_name: use_name,
             },
             select: {
-                id: true,
-                name: true,
+                use_id: true,
+                use_name: true,
                 created_at: true,
             },
         });

@@ -1,26 +1,26 @@
 import { prisma } from "../../prisma/prismaClient";
 
-interface AuthorData {
-    name: string;
+export interface AuthorData {
+    aut_name: string;
 }
 
 class AuthorDAO {
-    async createAuthor({ name }: AuthorData) {
+    async createAuthor({ aut_name }: AuthorData) {
         return prisma.author.create({
             data: {
-                name: name,
+                aut_name: aut_name,
             },
             select: {
-                id: true,
-                name: true,
+                aut_id: true,
+                aut_name: true,
             },
         });
     }
 
-    async findFirstAuthor({ name }: AuthorData) {
+    async findFirstAuthor({ aut_name }: AuthorData) {
         return prisma.author.findFirst({
             where: {
-                name: name,
+                aut_name: aut_name,
             },
         });
     }
