@@ -5,8 +5,7 @@ import cors from "cors";
 import errorHandler from "./error/errorHandler";
 import bookRouter from './Routes/book';
 import userRouter from './Routes/user';
-import authorRouter from './Routes/author';
-import publisherRouter from './Routes/publisher';
+import categoryRouter from './Routes/category';
 
 class App {
     readonly app;
@@ -26,9 +25,8 @@ class App {
     private routes(): void {
         this.app.use('/book', bookRouter);
         this.app.use('/user', userRouter);
+        this.app.use('/category', categoryRouter)
         // this.app.use('/token', tokenRouter);
-        this.app.use('/author', authorRouter);
-        this.app.use('/publisher', publisherRouter);
     }
 }
 

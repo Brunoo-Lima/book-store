@@ -1,4 +1,4 @@
-import BookDAO, { BookData } from "./../../dao/book/bookDAO";
+import BookDAO, { BookData } from "../../dao/book/bookDAO";
 
 class CreateBookService {
     async execute(bookData: BookData ) {

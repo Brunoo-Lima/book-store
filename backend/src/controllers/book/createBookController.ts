@@ -5,9 +5,10 @@ class CreateBookController {
     async handle(req: Request, res: Response) {
         const { bookData } = req.body;
 
-        const createBookService = new CreateBookService();
+        const bookService = new CreateBookService();
 
-        const createBook = await createBookService.execute(bookData);
+        const createBook = await bookService.execute(bookData);
+
         return res.json(createBook);
     }
 }

@@ -12,6 +12,8 @@ CREATE TABLE "users" (
 CREATE TABLE "books" (
     "boo_code" TEXT NOT NULL,
     "boo_title" TEXT NOT NULL,
+    "boo_author" TEXT NOT NULL,
+    "boo_publisher" TEXT NOT NULL,
     "boo_year" INTEGER NOT NULL,
     "boo_status" TEXT NOT NULL,
     "boo_justify_status" TEXT NOT NULL,
@@ -26,31 +28,9 @@ CREATE TABLE "books" (
     "boo_height" DOUBLE PRECISION NOT NULL,
     "boo_weight" DOUBLE PRECISION NOT NULL,
     "boo_depth" DOUBLE PRECISION NOT NULL,
-    "fk_boo_author_id" TEXT NOT NULL,
-    "fk_boo_pub_id" TEXT NOT NULL,
     "fk_boo_grp_id" TEXT NOT NULL,
 
     CONSTRAINT "books_pkey" PRIMARY KEY ("boo_code")
-);
-
--- CreateTable
-CREATE TABLE "authors" (
-    "aut_id" TEXT NOT NULL,
-    "aut_name" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "authors_pkey" PRIMARY KEY ("aut_id")
-);
-
--- CreateTable
-CREATE TABLE "publishers" (
-    "pub_id" TEXT NOT NULL,
-    "pub_name" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "publishers_pkey" PRIMARY KEY ("pub_id")
 );
 
 -- CreateTable
@@ -107,19 +87,10 @@ CREATE TABLE "booksPerCategory" (
 CREATE UNIQUE INDEX "books_boo_ISBN_key" ON "books"("boo_ISBN");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "publishers_pub_name_key" ON "publishers"("pub_name");
-
--- CreateIndex
 CREATE UNIQUE INDEX "categories_cte_name_key" ON "categories"("cte_name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "groups_grp_type_pricing_key" ON "groups"("grp_type_pricing");
-
--- AddForeignKey
-ALTER TABLE "books" ADD CONSTRAINT "books_fk_boo_author_id_fkey" FOREIGN KEY ("fk_boo_author_id") REFERENCES "authors"("aut_id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "books" ADD CONSTRAINT "books_fk_boo_pub_id_fkey" FOREIGN KEY ("fk_boo_pub_id") REFERENCES "publishers"("pub_id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "books" ADD CONSTRAINT "books_fk_boo_grp_id_fkey" FOREIGN KEY ("fk_boo_grp_id") REFERENCES "groups"("grp_id") ON DELETE RESTRICT ON UPDATE CASCADE;

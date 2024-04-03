@@ -1,7 +1,10 @@
 import { prisma } from "../../prisma/prismaClient";
 
 export interface BookData {
+    boo_code: string;
     boo_title: string;
+    boo_author: string;
+    boo_publisher:string;
     boo_year: number;
     boo_status: string;
     boo_justify_status: string;
@@ -16,8 +19,6 @@ export interface BookData {
     boo_height: number;
     boo_weight: number;
     boo_depth: number;
-    fk_boo_author_id: string;
-    fk_boo_pub_id:string;
     fk_boo_grp_id:string;
 }
 
@@ -28,6 +29,8 @@ class BookDAO {
             data: {...bookData},
             select: {
                 boo_title: true,
+                boo_author: true,
+                boo_publisher:true,
                 boo_year: true,
                 boo_status: true,
                 boo_justify_status: true,
@@ -42,8 +45,6 @@ class BookDAO {
                 boo_height: true,
                 boo_weight: true,
                 boo_depth: true,
-                fk_boo_author_id: true,
-                fk_boo_pub_id:true,
                 fk_boo_grp_id:true,
             },
         });
@@ -51,7 +52,7 @@ class BookDAO {
 
     async findFirstBook(bookData: BookData) {
         return prisma.book.findFirst({
-            where: { ...bookData},
+            where: { boo_title: bookData.boo_title},
         });
     }
 

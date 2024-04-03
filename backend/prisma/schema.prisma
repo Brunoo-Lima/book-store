@@ -26,6 +26,8 @@ model User {
 model Book {
     boo_code              String          @id @default(uuid())
     boo_title             String
+    boo_author            String
+    boo_publisher         String
     boo_year              Int
     boo_status            String
     boo_justify_status    String
@@ -40,37 +42,13 @@ model Book {
     boo_height            Float
     boo_weight            Float
     boo_depth             Float
-    boo_aut_id            Author          @relation(fields: [fk_boo_author_id], references: [aut_id])
-    boo_pub_id            Publisher       @relation(fields: [fk_boo_pub_id], references: [pub_id])
     boo_grp_id            GroupPricing    @relation(fields: [fk_boo_grp_id], references: [grp_id])
     boo_stock             Stock[]
     boo_logs_change       LogsChange[]
     boo_book_category     Book_Category[]
-    fk_boo_author_id      String
-    fk_boo_pub_id         String
     fk_boo_grp_id         String
 
     @@map("books")
-}
-
-model Author {
-    aut_id     String    @id @default(uuid())
-    aut_name   String
-    aut_book   Book[]
-    created_at DateTime? @default(now())
-    updated_at DateTime? @default(now())
-
-    @@map("authors")
-}
-
-model Publisher {
-    pub_id     String    @id @default(uuid())
-    pub_name   String    @unique
-    pub_book   Book[]
-    created_at DateTime? @default(now())
-    updated_at DateTime? @default(now())
-
-    @@map("publishers")
 }
 
 model Category {
