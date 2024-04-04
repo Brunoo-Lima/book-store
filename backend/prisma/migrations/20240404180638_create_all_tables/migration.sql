@@ -74,15 +74,6 @@ CREATE TABLE "stock" (
     CONSTRAINT "stock_pkey" PRIMARY KEY ("stk_id")
 );
 
--- CreateTable
-CREATE TABLE "booksPerCategory" (
-    "bte_id" TEXT NOT NULL,
-    "fk_bte_cte_id" TEXT NOT NULL,
-    "fk_bte_boo_code" TEXT NOT NULL,
-
-    CONSTRAINT "booksPerCategory_pkey" PRIMARY KEY ("bte_id")
-);
-
 -- CreateIndex
 CREATE UNIQUE INDEX "books_boo_ISBN_key" ON "books"("boo_ISBN");
 
@@ -103,9 +94,3 @@ ALTER TABLE "logsChanged" ADD CONSTRAINT "logsChanged_fk_log_use_id_fkey" FOREIG
 
 -- AddForeignKey
 ALTER TABLE "stock" ADD CONSTRAINT "stock_fk_stk_boo_code_fkey" FOREIGN KEY ("fk_stk_boo_code") REFERENCES "books"("boo_code") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "booksPerCategory" ADD CONSTRAINT "booksPerCategory_fk_bte_cte_id_fkey" FOREIGN KEY ("fk_bte_cte_id") REFERENCES "categories"("cte_id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "booksPerCategory" ADD CONSTRAINT "booksPerCategory_fk_bte_boo_code_fkey" FOREIGN KEY ("fk_bte_boo_code") REFERENCES "books"("boo_code") ON DELETE RESTRICT ON UPDATE CASCADE;

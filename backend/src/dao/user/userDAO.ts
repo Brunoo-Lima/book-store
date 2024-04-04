@@ -1,11 +1,8 @@
+import { UserDomain } from "../../domain/UserDomain";
 import { prisma } from "../../prisma/prismaClient";
 
-interface UserData {
-    use_name: string;
-}
-
 class UserDAO {
-    async createUser({ use_name }: UserData) {
+    async createUser({ use_name }: UserDomain) {
         return prisma.user.create({
             data: {
                 use_name: use_name,

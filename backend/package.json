@@ -1,6 +1,6 @@
 {
     "scripts": {
-        "dev": "nodemon ./src/server.ts",
+        "dev": "ts-node-dev ./src/server.ts",
         "build": "tsc"
     },
     "devDependencies": {
@@ -16,6 +16,7 @@
         "eslint-plugin-n": "^15.0.0 || ^16.0.0 ",
         "eslint-plugin-promise": "^6.0.0",
         "nodemon": "^3.1.0",
+        "ts-node-dev": "^2.0.0",
         "typescript": "^5.4.3"
     },
     "dependencies": {

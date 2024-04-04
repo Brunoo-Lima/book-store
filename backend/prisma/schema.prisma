@@ -45,7 +45,6 @@ model Book {
     boo_grp_id            GroupPricing    @relation(fields: [fk_boo_grp_id], references: [grp_id])
     boo_stock             Stock[]
     boo_logs_change       LogsChange[]
-    boo_book_category     Book_Category[]
     fk_boo_grp_id         String
 
     @@map("books")
@@ -54,10 +53,10 @@ model Book {
 model Category {
     cte_id            String          @id @default(uuid())
     cte_name          String          @unique
-    cte_book_category Book_Category[]
 
     @@map("categories")
 }
+
 
 model GroupPricing {
     grp_id           String    @id @default(uuid())
@@ -92,14 +91,4 @@ model Stock {
     salesSal_id   String
 
     @@map("stock")
-}
-
-model Book_Category {
-    bte_id          String   @id @default(uuid())
-    bte_cte_id      Category @relation(fields: [fk_bte_cte_id], references: [cte_id])
-    bte_boo_code    Book     @relation(fields: [fk_bte_boo_code], references: [boo_code])
-    fk_bte_cte_id   String
-    fk_bte_boo_code String
-
-    @@map("booksPerCategory")
 }
