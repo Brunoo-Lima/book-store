@@ -19,8 +19,8 @@ describe('Domain Book', () => {
         const book = new Book({
             code: '123',
             codeBar: '4567',
-            priceAcquisition: 120.00,
-            costProduct: 70.00,    //Include expense
+            priceAcquisition: 500,
+            costProduct: 250,    //Include expense
             quantity: -10,
             created_at: Date.now(),
             updated_at: Date.now(),
@@ -35,7 +35,8 @@ describe('Domain Book', () => {
             synopsis: 'You do not',
             dimensions: dimensions,
         });
-        expect(book.getGroupPricing()).equal(TypePricing.BRONZE);
+        console.log(book);
+        expect(book.getGroupPricing()).equal(TypePricing.SILVER);
         expect(book.allBookProps.status).equal(false);
     })
 })

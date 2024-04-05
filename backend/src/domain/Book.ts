@@ -37,7 +37,7 @@ export default class Book extends Product {
         return true;
     }
     public get allBookProps()  {
-        return { ...this.bookProps }
+        return {...this.bookProps, ...this.allProductProps}
     }
 
 }

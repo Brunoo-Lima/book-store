@@ -30,18 +30,22 @@ export default abstract class Product {
         this.groupPricing = this.addGroupPricing();
     }
 
-    // Necessary of review because it's with bug
     private validationMarginProfit (): number{
-        const marginProfit = (this.productProps.priceAcquisition - this.productProps.costProduct);
-        const profitPercent = marginProfit * 100;
-        return Number(profitPercent.toFixed(2));
+        const { priceAcquisition, costProduct } = this.productProps;
+        const marginProfit = ((priceAcquisition - costProduct) / priceAcquisition) * 100
+        return marginProfit;
     }
     private addGroupPricing (): GroupPricing{
         return new GroupPricing(this.marginProfit);
     }
 
-    public getGroupPricing (): GroupPricing {
-        return this.groupPricing;
+    public get allProductProps() {
+        return this.productProps;
+    }
+
+
+    public getGroupPricing (): string {
+        return this.groupPricing.typeGroupPricing;
     }
     //Inactivate/Activate automatically
     private changeModeAuto( ) {
