@@ -4,10 +4,9 @@ import Dimensions from "./Dimensions";
 import Product, { ProductProps } from "./Product";
 import Publisher from "./Publisher";
 
-
-export interface BookProps {
+export interface BookProps extends ProductProps{
     author: Author;
-    year: string;
+    year: number;
     categories: Array<Category>;
     title: string;
     publisher: Publisher;
@@ -15,7 +14,7 @@ export interface BookProps {
     ISBN: string;
     pages: number;
     synopsis: string;
-    dimensions: Dimensions;
+    dimensions: Dimensions
 }
 
 export default class Book extends Product {

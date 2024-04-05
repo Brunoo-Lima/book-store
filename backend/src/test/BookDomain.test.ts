@@ -2,9 +2,9 @@ import {it, describe, expect} from 'vitest';
 import Book from '../domain/Book';
 import Author from '../domain/Author';
 import Publisher from '../domain/Publisher';
-import Dimensions from '../domain/Dimensions';
 import { Category } from '../domain/Category';
 import {TypePricing} from '../utils/groupOfPricing';
+import Dimensions from '../domain/Dimensions';
 
 describe('Domain Book', () => {
     it('Should create object Book', () => {
@@ -25,7 +25,7 @@ describe('Domain Book', () => {
             created_at: Date.now(),
             updated_at: Date.now(),
             author: author,
-            year: '2024',
+            year: 2024,
             categories: [Category.ROMANCE],
             title: 'I do not',
             publisher: publisher,
@@ -33,10 +33,10 @@ describe('Domain Book', () => {
             ISBN: '12312421412',
             pages: 90,
             synopsis: 'You do not',
-            dimensions: dimensions,
+            dimensions: dimensions
         });
-        console.log(book);
-        expect(book.getGroupPricing()).equal(TypePricing.SILVER);
+        console.log(book.allBookProps);
+        expect(book.allBookProps.groupPricing).equal(TypePricing.SILVER);
         expect(book.allBookProps.status).equal(false);
     })
 })
