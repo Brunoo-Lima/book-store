@@ -13,7 +13,7 @@ export default class GroupPricing{
         return TypePricing.DIAMOND;
     }
 
-    public get typeGroupPricing() {
+    public get typeGroupPricing(): string {
         return this.typePricing;
     }
 }

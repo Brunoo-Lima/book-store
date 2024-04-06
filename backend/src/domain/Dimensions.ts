@@ -20,6 +20,4 @@ export default class Dimensions{
     public get depth() : number {
         return this.dimensionsProps.depth;
     }
-
-
 }

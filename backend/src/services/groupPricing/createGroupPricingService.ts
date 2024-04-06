@@ -1,15 +1,15 @@
 import { GroupPricingDAO } from "../../dao/groupPricing/groupPricingDAO";
-import { GroupPricingDomain } from "../../domain/GroupPricingDomain";
+import GroupPricingDomain from "../../domain/GroupPricing";
 
 class CreateGroupPricingService {
-    async execute(groupData: GroupPricingDomain) {
+    async execute(marginProfit: number) {
         const groupDAO = new GroupPricingDAO();
-
+        const groupProfit = new GroupPricingDomain(marginProfit);
         const groupsAlreadyExists = await groupDAO.findFirstGroups();
 
         if (!groupsAlreadyExists) throw new Error("Name already exists!");
 
-        const groups = await groupDAO.createGroups(groupData);
+        const groups = await groupDAO.createGroups(groupProfit);
 
         return { groups };
     }

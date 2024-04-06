@@ -1,10 +1,14 @@
-import { CategoryDomain } from "../../domain/CategoryDomain";
+import Category from "../../domain/Category";
 import { prisma } from "../../prisma/prismaClient";
 
 export default class CategoryDAO {
-    async createCategory(categoryData: CategoryDomain) {
+    async createCategory(categoryData: Category) {
         return prisma.category.createMany({
-            data: categoryData.categories,
+            data: categoryData.category.map(function(category){
+                return {
+                    cte_name: category
+                }
+            })
         });
     }
 

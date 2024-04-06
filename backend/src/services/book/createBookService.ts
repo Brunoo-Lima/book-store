@@ -1,16 +1,19 @@
 import BookDAO from "../../dao/book/bookDAO";
-import { BookDomain } from "../../domain/BookDomain";
+import BookDomain from "../../domain/Book";
+import { BookDTO } from "../../DTO/BookDTO";
 
 class CreateBookService {
-    async execute(bookData: BookDomain) {
+    async execute(bookData: BookDTO) {
+        const {author} = bookData;
         const bookDAO = new BookDAO();
+        const bookDomain = new BookDomain();
 
-        const bookAlreadyExists = await bookDAO.findFirstBook(bookData);
+        const bookAlreadyExists = await bookDAO.findFirstBook(bookDomain);
         if (bookAlreadyExists) throw new Error(`Book already exists`);
 
-        const createBook = await bookDAO.createBook(bookData);
+        const createBook = await bookDAO.createBook(bookDomain);
 
-        return { createBook };
+        return bookDomain;
     }
 }
 
