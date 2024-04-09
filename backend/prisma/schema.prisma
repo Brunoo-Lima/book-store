@@ -24,8 +24,8 @@ model User {
 }
 
 model Book {
-    boo_id                String            @id @default(uuid())
-    boo_code              String            @unique
+    boo_id                String       @id @default(uuid())
+    boo_code              String       @unique
     boo_title             String
     boo_year              Int
     boo_status            String
@@ -35,31 +35,28 @@ model Book {
     boo_price_acquisition Float
     boo_cost_product      Float
     boo_edition           String
-    boo_ISBN              String            @unique
+    boo_ISBN              String       @unique
     boo_pages             Int
     boo_synopsis          String
     boo_width             Float
     boo_height            Float
     boo_weight            Float
     boo_depth             Float
-    boo_grp_id            GroupPricing      @relation(fields: [fk_boo_grp_id], references: [grp_id])
-    boo_aut_id            Author            @relation(fields: [fk_boo_aut_id], references: [aut_id])
-    boo_pub_id            Publisher         @relation(fields: [fk_boo_pub_id], references: [pub_id])
-    boo_bookPercategory   BookPerCategory[]
+    boo_grp_id            GroupPricing @relation(fields: [fk_boo_grp_id], references: [grp_id])
+    boo_pub_id            Publisher    @relation(fields: [fk_boo_pub_id], references: [pub_id])
     boo_logChange         LogsChange[]
-    boo_bookPerAuthor     BookPerAuthor[]
     fk_boo_grp_id         String
-    fk_boo_aut_id         String
     fk_boo_pub_id         String
+    fk_boo_aut_id         Author[]
+    fk_boo_cte_id         Category[]
 
     @@map("books")
 }
 
 model Author {
-    aut_id            String          @id @default(uuid())
-    aut_name          String
-    aut_book          Book[]
-    aut_bookPerAuthor BookPerAuthor[]
+    aut_id   String @id @default(uuid())
+    aut_name String
+    aut_book Book[]
 }
 
 model Publisher {
@@ -68,26 +65,10 @@ model Publisher {
     pub_book Book[]
 }
 
-model BookPerCategory {
-    bpe_id        String   @id @default(uuid())
-    bpe_boo_id    Book     @relation(fields: [fk_bpe_boo_id], references: [boo_id])
-    bpe_cte_id    Category @relation(fields: [fk_bpe_cte_id], references: [cte_id])
-    fk_bpe_boo_id String
-    fk_bpe_cte_id String
-}
-
-model BookPerAuthor {
-    bpa_id        String @id @default(uuid())
-    bpa_boo_id    Book   @relation(fields: [fk_bpa_boo_id], references: [boo_id])
-    bpa_aut_id    Author @relation(fields: [fk_bpa_aut_id], references: [aut_id])
-    fk_bpa_boo_id String
-    fk_bpa_aut_id String
-}
-
 model Category {
-    cte_id              String            @id @default(uuid())
-    cte_name            String            @unique
-    cte_bookPerCategory BookPerCategory[]
+    cte_id   String @id @default(uuid())
+    cte_name String @unique
+    cte_book Book[]
 
     @@map("categories")
 }

@@ -29,7 +29,6 @@ CREATE TABLE "books" (
     "boo_weight" DOUBLE PRECISION NOT NULL,
     "boo_depth" DOUBLE PRECISION NOT NULL,
     "fk_boo_grp_id" TEXT NOT NULL,
-    "fk_boo_aut_id" TEXT NOT NULL,
     "fk_boo_pub_id" TEXT NOT NULL,
 
     CONSTRAINT "books_pkey" PRIMARY KEY ("boo_id")
@@ -49,24 +48,6 @@ CREATE TABLE "Publisher" (
     "pub_name" TEXT NOT NULL,
 
     CONSTRAINT "Publisher_pkey" PRIMARY KEY ("pub_id")
-);
-
--- CreateTable
-CREATE TABLE "BookPerCategory" (
-    "bpe_id" TEXT NOT NULL,
-    "fk_bpe_boo_id" TEXT NOT NULL,
-    "fk_bpe_cte_id" TEXT NOT NULL,
-
-    CONSTRAINT "BookPerCategory_pkey" PRIMARY KEY ("bpe_id")
-);
-
--- CreateTable
-CREATE TABLE "BookPerAuthor" (
-    "bpa_id" TEXT NOT NULL,
-    "fk_bpa_boo_id" TEXT NOT NULL,
-    "fk_bpa_aut_id" TEXT NOT NULL,
-
-    CONSTRAINT "BookPerAuthor_pkey" PRIMARY KEY ("bpa_id")
 );
 
 -- CreateTable
@@ -96,6 +77,18 @@ CREATE TABLE "logsChanged" (
     CONSTRAINT "logsChanged_pkey" PRIMARY KEY ("log_id")
 );
 
+-- CreateTable
+CREATE TABLE "_BookToCategory" (
+    "A" TEXT NOT NULL,
+    "B" TEXT NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "_AuthorToBook" (
+    "A" TEXT NOT NULL,
+    "B" TEXT NOT NULL
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "books_boo_code_key" ON "books"("boo_code");
 
@@ -108,29 +101,38 @@ CREATE UNIQUE INDEX "categories_cte_name_key" ON "categories"("cte_name");
 -- CreateIndex
 CREATE UNIQUE INDEX "groups_grp_type_pricing_key" ON "groups"("grp_type_pricing");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "_BookToCategory_AB_unique" ON "_BookToCategory"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_BookToCategory_B_index" ON "_BookToCategory"("B");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_AuthorToBook_AB_unique" ON "_AuthorToBook"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_AuthorToBook_B_index" ON "_AuthorToBook"("B");
+
 -- AddForeignKey
 ALTER TABLE "books" ADD CONSTRAINT "books_fk_boo_grp_id_fkey" FOREIGN KEY ("fk_boo_grp_id") REFERENCES "groups"("grp_id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "books" ADD CONSTRAINT "books_fk_boo_aut_id_fkey" FOREIGN KEY ("fk_boo_aut_id") REFERENCES "Author"("aut_id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "books" ADD CONSTRAINT "books_fk_boo_pub_id_fkey" FOREIGN KEY ("fk_boo_pub_id") REFERENCES "Publisher"("pub_id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "BookPerCategory" ADD CONSTRAINT "BookPerCategory_fk_bpe_boo_id_fkey" FOREIGN KEY ("fk_bpe_boo_id") REFERENCES "books"("boo_id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "BookPerCategory" ADD CONSTRAINT "BookPerCategory_fk_bpe_cte_id_fkey" FOREIGN KEY ("fk_bpe_cte_id") REFERENCES "categories"("cte_id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "BookPerAuthor" ADD CONSTRAINT "BookPerAuthor_fk_bpa_boo_id_fkey" FOREIGN KEY ("fk_bpa_boo_id") REFERENCES "books"("boo_id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "BookPerAuthor" ADD CONSTRAINT "BookPerAuthor_fk_bpa_aut_id_fkey" FOREIGN KEY ("fk_bpa_aut_id") REFERENCES "Author"("aut_id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "logsChanged" ADD CONSTRAINT "logsChanged_fk_log_boo_code_fkey" FOREIGN KEY ("fk_log_boo_code") REFERENCES "books"("boo_id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "logsChanged" ADD CONSTRAINT "logsChanged_fk_log_use_id_fkey" FOREIGN KEY ("fk_log_use_id") REFERENCES "users"("use_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_BookToCategory" ADD CONSTRAINT "_BookToCategory_A_fkey" FOREIGN KEY ("A") REFERENCES "books"("boo_id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_BookToCategory" ADD CONSTRAINT "_BookToCategory_B_fkey" FOREIGN KEY ("B") REFERENCES "categories"("cte_id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_AuthorToBook" ADD CONSTRAINT "_AuthorToBook_A_fkey" FOREIGN KEY ("A") REFERENCES "Author"("aut_id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_AuthorToBook" ADD CONSTRAINT "_AuthorToBook_B_fkey" FOREIGN KEY ("B") REFERENCES "books"("boo_id") ON DELETE CASCADE ON UPDATE CASCADE;

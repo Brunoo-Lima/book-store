@@ -1,8 +1,8 @@
-export default class Category {
-    constructor(private categoryProps: string[]){}
-
-    public get category() {
-        return this.categoryProps;
+export class CategoryDomain {
+    constructor(private category: string) {
+        this.category = category;
     }
-
+    get name() {
+        return this.category;
+    }
 }

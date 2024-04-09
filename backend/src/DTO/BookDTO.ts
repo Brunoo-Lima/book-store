@@ -5,20 +5,22 @@ export interface BookDTO {
     categoryOfChange: string;
     codeBar: string;
     priceAcquisition: number;
-    costProduct: number;
+    costProduct: number;    //Include expense
     quantity: number;
-    author: string;
+    marginProfit?: number;
+    authors: Array<string>;
     year: number;
-    categories: string[];
+    categories: Array<string>;
     title: string;
     publisher: string;
     edition: string;
     ISBN: string;
     pages: number;
     synopsis: string;
-    dimensions: {
-
-    }
+    width: number,
+    height: number,
+    weight: number,
+    depth: number,
     created_at?: number;
     updated_at?: number;
 }

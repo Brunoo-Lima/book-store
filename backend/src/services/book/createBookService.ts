@@ -1,19 +1,32 @@
-import BookDAO from "../../dao/book/bookDAO";
+import {BookDAO} from "../../dao/book/bookDAO";
+import { AuthorDomain } from "../../domain/Author";
 import BookDomain from "../../domain/Book";
-import { BookDTO } from "../../DTO/BookDTO";
+import { CategoryDomain } from "../../domain/Category";
+import { BookDTO } from "../../DTO/bookDTO";
 
 class CreateBookService {
-    async execute(bookData: BookDTO) {
-        const {author} = bookData;
+    //Returns "BookDTO" because I don't know what it returned in "req.body", but I can force
+    //that it returns the properties needed to create the book
+    async execute(bookDataBody: BookDTO) {
         const bookDAO = new BookDAO();
-        const bookDomain = new BookDomain();
 
-        const bookAlreadyExists = await bookDAO.findFirstBook(bookDomain);
-        if (bookAlreadyExists) throw new Error(`Book already exists`);
+        //Creates an array of "Category" and "AuthorDomains"
+        //ESTÁ RETORNANDO UNDEFINED
+        const authorsDomain = bookDataBody.authors.map((aut) => new AuthorDomain({name: aut}));
+        const categoriesDomain = bookDataBody.categories.map((cte) => new CategoryDomain(cte));
+        const bookDomain = BookDomain.createBook({
+            ...bookDataBody,
+            authors: authorsDomain,
+            categories: categoriesDomain,
+        });
 
-        const createBook = await bookDAO.createBook(bookDomain);
+        const thisBookExist = await bookDAO.findFirstBook(bookDomain);
+        if(thisBookExist) throw new Error ('Book already exist !');
 
-        return bookDomain;
+        const book = await bookDAO.createBook(bookDomain);
+
+        return book;
+
     }
 }
 

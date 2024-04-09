@@ -1,8 +1,15 @@
-export default class Author {
-    constructor(private authoRName: string){}
+interface AuthorDomainProps {
+    name: string;
+}
 
-    public get name() : string {
-        return this.authoRName;
+export class AuthorDomain {
+    private props: AuthorDomainProps;
+
+    constructor(props: AuthorDomainProps) {
+        this.props = props;
     }
 
+    get name() {
+        return this.props.name;
+    }
 }

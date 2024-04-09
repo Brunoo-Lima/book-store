@@ -1,11 +1,10 @@
-import Author from "./Author";
-import Category from "./Category"; "./Category";
-import Dimensions from "./Dimensions";
+import { AuthorDomain } from "./Author";
+import { CategoryDomain } from "./Category";
 import GroupPricing from "./GroupPricing";
 import categoriesChange from "../utils/categoriesChange";
-import Publisher from "./Publisher";
 
 export interface BookProps {
+    id?: string,
     code: string;
     status: "ACTIVATE" | "INACTIVATE";
     justifyStatus?: string;
@@ -16,16 +15,19 @@ export interface BookProps {
     quantity: number;
     groupPricing?: GroupPricing;
     marginProfit?: number
-    author: Author;
+    authors: AuthorDomain[];
     year: number;
-    categories: Category;
+    categories: CategoryDomain[];
     title: string;
-    publisher: Publisher;
+    publisher: string;
     edition: string;
     ISBN: string;
     pages: number;
     synopsis: string;
-    dimensions: Dimensions
+    width: number,
+    height: number,
+    weight: number,
+    depth: number,
     created_at?: number;
     updated_at?: number;
 }
@@ -38,11 +40,98 @@ export default class Book {
         this.bookProps.groupPricing = this.addGroupPricing();
         this.changeModeAuto();
     }
+
+    public get id(): string | unknown {
+        return this.bookProps.id;
+    }
+    get code() {
+        return this.bookProps.code;
+    }
+
+    get title() {
+        return this.bookProps.title;
+    }
+
+    get authors() {
+        return this.bookProps.authors || [];
+    }
+
+    get categories() {
+        return this.bookProps.categories || [];
+    }
+
+    get year() {
+        return this.bookProps.year;
+    }
+
+    public get pages(): number {
+        return this.bookProps.pages;
+    }
+
+    get ISBN() {
+        return this.bookProps.ISBN;
+    }
+
+    get edition() {
+        return this.bookProps.edition;
+    }
+
+    get totalPages() {
+        return this.bookProps.pages;
+    }
+
+    get synopsis() {
+        return this.bookProps.synopsis;
+    }
+
+    get priceAcquisition() {
+        return this.bookProps.priceAcquisition;
+    }
+    get width() {
+        return this.bookProps.width;
+    }
+    get height() {
+        return this.bookProps.height;
+    }
+    get depth() {
+        return this.bookProps.depth;
+    }
+
+    get weight() {
+        return this.bookProps.weight;
+    }
+
+    get barCode() {
+        return this.bookProps.codeBar;
+    }
+
+    get publisher() {
+        return this.bookProps.publisher;
+    }
+
+    public get groupPricing(): GroupPricing {
+        return this.groupPricing;
+    }
+
+    public get costProduction() : number{
+        return this.costProduction;
+    }
+
+
+    public get categoryChange() : string {
+        return this.categoryChange;
+    }
+
+    public get justifyStatus() : string {
+        return this.justifyStatus;
+    }
+
+    public get status() : string {
+        return this.status;
+    }
+
     public static validISBN(): boolean {
         return true;
-    }
-    public get allBookProps() {
-        return { ...this.bookProps }
     }
     public alterPriceAcquisition(newValue: number, costProduct?: number) {
         this.bookProps.priceAcquisition = newValue;
@@ -75,7 +164,31 @@ export default class Book {
         this.bookProps.justifyStatus = categoriesChange.withoutStock.justify;
         this.bookProps.categoryOfChange = categoriesChange.withoutStock.categoryChange;
     }
-    public bookToJson(): string {
-        return JSON.stringify(this.bookProps);
+    public static createBook(bookData: Partial<BookProps>): Book {
+        const defaultBookData: BookProps = {
+            code: "UNDEFINED",
+            status: "INACTIVATE",
+            codeBar: "UNDEFINED",
+            priceAcquisition: 0,
+            costProduct: 0,
+            quantity: 0,
+            authors: {} as AuthorDomain[],
+            year: 0,
+            categories: {} as CategoryDomain[],
+            title: "UNDEFINED",
+            publisher: "UNDEFINED",
+            edition: "UNDEFINED",
+            ISBN: "UNDEFINED",
+            pages: 0,
+            synopsis: "UNDEFINED",
+            width: 0,
+            height: 0,
+            weight: 0,
+            depth: 0,
+        };
+
+        const mergedBookData = { ...defaultBookData, ...bookData };
+        return new Book(mergedBookData);
     }
+
 }

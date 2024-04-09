@@ -1,3 +1,4 @@
+// Categories of change that are standards
 export enum Inactivate {
     WITHOUT_STOCK = 'WITHOUT_STOCK'
 }
