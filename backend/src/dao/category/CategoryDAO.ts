@@ -33,17 +33,32 @@ export default class CategoryDAO {
     public async findManyCategory() {
         return prisma.category.findMany();
     }
-    public static async findManyCategoriesId(categories: CategoryDomain[]){
-        const categoriesIds: string[] = []
-        categories.map(async (category) => {
-            const categoryId = await prisma.category.findFirst({
+    public static async getOrCreateCategoriesId(categories: CategoryDomain[]){
+        const categoriesId: string[] = []
+        //Check if the authors' names exist in the database
+        for (const category of categories) {
+            const categoriesExist = await prisma.category.findFirst({
                 where: {
                     cte_name: category.name,
                 }
             })
-            if(categoryId) categoriesIds.push(categoryId.cte_id);
-        })
-        return categoriesIds;
+            //If exist, return the data created
+            if (categoriesExist) {
+                categoriesId.push(categoriesExist.cte_id);
+                continue; //This goes to the next iteration
+            }
+            const newCategory = await prisma.category.create({
+                data: {
+                    cte_name: category.name
+                },
+                select: {
+                    cte_id: true,
+                    cte_name: true
+                }
+            });
+            categoriesId.push(newCategory.cte_id);
+        }
+        return categoriesId;
     }
 
 }

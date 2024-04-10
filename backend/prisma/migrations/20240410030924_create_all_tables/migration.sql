@@ -21,6 +21,7 @@ CREATE TABLE "books" (
     "boo_price_acquisition" DOUBLE PRECISION NOT NULL,
     "boo_cost_product" DOUBLE PRECISION NOT NULL,
     "boo_edition" TEXT NOT NULL,
+    "boo_publisher" TEXT NOT NULL,
     "boo_ISBN" TEXT NOT NULL,
     "boo_pages" INTEGER NOT NULL,
     "boo_synopsis" TEXT NOT NULL,
@@ -40,14 +41,6 @@ CREATE TABLE "Author" (
     "aut_name" TEXT NOT NULL,
 
     CONSTRAINT "Author_pkey" PRIMARY KEY ("aut_id")
-);
-
--- CreateTable
-CREATE TABLE "Publisher" (
-    "pub_id" TEXT NOT NULL,
-    "pub_name" TEXT NOT NULL,
-
-    CONSTRAINT "Publisher_pkey" PRIMARY KEY ("pub_id")
 );
 
 -- CreateTable
@@ -115,9 +108,6 @@ CREATE INDEX "_AuthorToBook_B_index" ON "_AuthorToBook"("B");
 
 -- AddForeignKey
 ALTER TABLE "books" ADD CONSTRAINT "books_fk_boo_grp_id_fkey" FOREIGN KEY ("fk_boo_grp_id") REFERENCES "groups"("grp_id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "books" ADD CONSTRAINT "books_fk_boo_pub_id_fkey" FOREIGN KEY ("fk_boo_pub_id") REFERENCES "Publisher"("pub_id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "logsChanged" ADD CONSTRAINT "logsChanged_fk_log_boo_code_fkey" FOREIGN KEY ("fk_log_boo_code") REFERENCES "books"("boo_id") ON DELETE RESTRICT ON UPDATE CASCADE;

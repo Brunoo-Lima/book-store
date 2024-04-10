@@ -1,10 +1,10 @@
-import Product from "./Product";
+import Book from "./Book";
 import User from "./User";
 
 export interface LogsChangeProps{
     logs: [
         change:{
-            productAltered: Product;
+            productAltered: Book;
             user:User;
         }
     ]

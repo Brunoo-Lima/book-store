@@ -2,7 +2,7 @@ import { AuthorDomain } from "../../domain/Author";
 import { prisma } from "../../prisma/prismaClient";
 
 export default class AuthorDAO {
-    public async createAuthor(authorData: AuthorDomain[]) {
+    public async createAuthorOrFind(authorData: AuthorDomain[]) {
         const authors: Object[] = []; //Only initialize the type
         for (const author of authorData) {
 
@@ -32,16 +32,30 @@ export default class AuthorDAO {
             }
         })
     }
-    public static async findManyAuthorsIDs (author: AuthorDomain[]) {
-        const getAuthorsIds: string[] = []
-        author.map(async (aut) => {
-            const authorId = await prisma.author.findFirst({
+    public static async getOrCreateAuthorID (authors: AuthorDomain[]) {
+        const authorsIds: string[] = []
+        for (const author of authors) {
+            const authorExist = await prisma.author.findFirst({
                 where: {
-                    aut_name: aut.name,
+                    aut_name: author.name
                 }
             })
-            if(authorId) getAuthorsIds.push(authorId.aut_id);
-        })
-        return getAuthorsIds;
+            if (authorExist){
+                authorsIds.push(authorExist.aut_id);
+                continue;
+            }
+
+            const newAuthor = await prisma.author.create({
+                data: {
+                    aut_name: author.name
+                },
+                select: {
+                    aut_id: true,
+                    aut_name: true,
+                }
+            })
+            authorsIds.push(newAuthor.aut_id);
+        }
+        return authorsIds;
     }
 }

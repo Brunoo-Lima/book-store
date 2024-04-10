@@ -32,8 +32,8 @@ class BookDAO {
             } = bookData;
             //This Promise go return will IDs through methods statics in classes DAO
             const [authorIDs, categoriesIds, groupPricingId] = await Promise.all([
-                AuthorDAO.findManyAuthorsIDs(authors),
-                CategoryDAO.findManyCategoriesId(categories),
+                AuthorDAO.getOrCreateAuthorID(authors),
+                CategoryDAO.getOrCreateCategoriesId(categories),
                 GroupPricingDAO.findGroupPricingId(groupPricing)
             ]);
             const createdBook = await prisma.book.create({
