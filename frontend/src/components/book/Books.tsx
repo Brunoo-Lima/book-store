@@ -47,11 +47,15 @@ const Books = ({
         </div>
 
         <div className="">
-          <p className="font-semibold text-lg">{formattedValue}</p>
+          <p className="font-semibold text-lg text-end">{formattedValue}</p>
 
-          <div className="flex flex-1 mt-28">
+          <div className="flex flex-1 mt-28 gap-2">
             <button className="bg-red-600 hover:bg-red-500 transition duration-300 px-2.5 py-2.5 rounded-lg">
               <p className="text-white font-semibold">Inativar</p>
+            </button>
+
+            <button className="bg-gray-400 hover:bg-gray-500 transition duration-300 px-2.5 py-2.5 rounded-lg">
+              <p className="text-white font-semibold">Editar</p>
             </button>
           </div>
         </div>
