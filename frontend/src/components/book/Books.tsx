@@ -23,7 +23,16 @@ const Books = ({
       <div className="flex justify-between w-[700px] p-5">
         <div className="space-y-1">
           <h1 className="text-xl font-semibold">{title}</h1>
-          <p className="text-base">Autor: {author}</p>
+
+          <p className="text-base">Autor: </p>
+          <ul className="flex flex-wrap w-48">
+            {author.map((author: string, index: number) => (
+              <li key={index} className="flex flex-wrap mr-2 my-0.5">
+                {author}
+              </li>
+            ))}
+          </ul>
+
           <p>Total de Páginas: {totalPage}</p>
           <span>Ano lançamento: {year}</span>
 

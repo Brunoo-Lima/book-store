@@ -4,6 +4,7 @@ import Default from './components/layout/Default';
 import Home from './Home/Home';
 import Register from './components/book/Register';
 import Consult from './components/book/Consult';
+import CreateUser from './components/user/CreateUser';
 
 export const router = createBrowserRouter([
   {

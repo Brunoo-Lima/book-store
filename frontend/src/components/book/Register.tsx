@@ -7,11 +7,16 @@ import { useContext } from 'react';
 import { UserContext } from '../../UserContext';
 import mockDataCategories from '../../config/mockDataCategories';
 
-
 const Register = () => {
   const context = useContext(UserContext);
-  const { handleSubmit, handleInputChange, bookData, handleCheckboxChange } =
-    context!;
+  const {
+    handleSubmit,
+    handleInputChange,
+    bookData,
+    handleCheckboxChange,
+    handleAddAuthor,
+    handleAuthorInputChange,
+  } = context!;
 
   return (
     <div className="flex flex-col justify-center items-center h-screen">
@@ -23,13 +28,23 @@ const Register = () => {
             <div className="my-2">
               <h2 className="text-xl text-center my-2">Dados do Livro</h2>
               <div className="flex flex-wrap justify-center p-1">
-                <Input
-                  type="text"
-                  placeholder="Nome do Autor"
-                  width={400}
-                  value={bookData.author}
-                  onChange={(e) => handleInputChange(e, 'author')}
-                />
+                {bookData.author.map((author, index) => (
+                  <div key={index} className="flex">
+                    <Input
+                      type="text"
+                      name={`author-${index}`}
+                      placeholder="Nome do Autor"
+                      width={400}
+                      value={author}
+                      onChange={(e) => handleAuthorInputChange(e, index)}
+                    />
+                  </div>
+                ))}
+
+                <button type="button" onClick={handleAddAuthor} className="">
+                  <p className="text-2xl font-bold">+</p>
+                </button>
+
                 <Input
                   type="text"
                   placeholder="Nome do Livro"

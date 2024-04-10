@@ -2,7 +2,7 @@ import { ReactNode, createContext, useState } from 'react';
 
 export type UserBooksTypes = {
   id: number;
-  author: string;
+  author: string[];
   title: string;
   totalPage: string;
   year: string;
@@ -35,6 +35,12 @@ type UserContextType = {
   handleCheckboxChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
 
+  handleAddAuthor: () => void;
+  handleAuthorInputChange: (
+    event: React.ChangeEvent<HTMLInputElement>,
+    index: number,
+  ) => void;
+
   filter: string;
   setFilter: React.Dispatch<React.SetStateAction<string>>;
 
@@ -54,7 +60,7 @@ export const UserProvider: React.FC<UserContextProps> = ({ children }) => {
   const [listBooks, setListBooks] = useState<UserBooksTypes[]>([]);
   const [bookData, setBookData] = useState<UserBooksTypes>({
     id: 1,
-    author: '',
+    author: [''],
     title: '',
     category: [],
     year: '',
@@ -74,9 +80,7 @@ export const UserProvider: React.FC<UserContextProps> = ({ children }) => {
   const [filter, setFilter] = useState('All');
   const [sort, setSort] = useState('Asc');
 
-  const addBook = (book: UserBooksTypes) => {
-    setListBooks([...listBooks, book]);
-  };
+  console.log('Dados fornecidos pelo UserProvider:', listBooks);
 
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -84,6 +88,25 @@ export const UserProvider: React.FC<UserContextProps> = ({ children }) => {
   ) => {
     const { value } = event.target;
     setBookData({ ...bookData, [fieldName]: value });
+  };
+
+  const handleAddAuthor = () => {
+    setBookData({
+      ...bookData,
+      author: [...bookData.author, ''],
+    });
+  };
+
+  const handleAuthorInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    index: number,
+  ) => {
+    const { value } = event.target;
+    setBookData((prevBookData) => {
+      const updatedAuthors = [...prevBookData.author];
+      updatedAuthors[index] = value;
+      return { ...prevBookData, author: updatedAuthors };
+    });
   };
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -98,28 +121,45 @@ export const UserProvider: React.FC<UserContextProps> = ({ children }) => {
     }));
   };
 
+  const addBook = (book: UserBooksTypes) => {
+    console.log('novo livro added', book);
+    setListBooks([...listBooks, book]);
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    addBook(bookData);
 
-    setBookData({
-      id: Math.floor(Math.random() * 1000),
-      author: '',
-      title: '',
-      category: [],
-      year: '',
-      publishing: '',
-      edition: '',
-      ISBN: '',
-      totalPage: '',
-      value: '',
-      synopsis: '',
-      height: '',
-      width: '',
-      depth: '',
-      weight: '',
-      barCode: '',
-    });
+    // Remover autores vazios antes de adicionar ao livro
+    const newBookData = {
+      ...bookData,
+      author: bookData.author.filter((author) => author.trim() !== ''),
+    };
+
+    // Adicionar o livro à lista de livros
+    addBook(newBookData);
+
+    setTimeout(() => {
+      // Limpar o estado para um novo livro
+      setBookData({
+        id: Math.floor(Math.random() * 1000),
+        author: [''], // Começa com um autor vazio
+        title: '',
+        category: [],
+        year: '',
+        publishing: '',
+        edition: '',
+        ISBN: '',
+        totalPage: '',
+        value: '',
+        synopsis: '',
+        height: '',
+        width: '',
+        depth: '',
+        weight: '',
+        barCode: '',
+      });
+    }, 1000),
+      console.log(newBookData);
   };
 
   const contextValue = {
@@ -135,6 +175,8 @@ export const UserProvider: React.FC<UserContextProps> = ({ children }) => {
     sort,
     setSort,
     handleCheckboxChange,
+    handleAddAuthor,
+    handleAuthorInputChange,
   };
 
   return (

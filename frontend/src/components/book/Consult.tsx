@@ -54,22 +54,22 @@ const Consult = () => {
               <ul className="h-full overflow-y-auto">
                 {listBooks
                   .filter((book) =>
-                    book.title.toLowerCase().includes(search.toLowerCase())
+                    book.title.toLowerCase().includes(search.toLowerCase()),
                   )
-                  .filter((book) =>
-                    book.author
-                      .toLowerCase()
-                      .includes(searchAuthor.toLowerCase())
-                  )
+                  // .filter((book) =>
+                  //   book.author
+                  //     .map((author) => author.toLowerCase())
+                  //     .includes(searchAuthor.toLowerCase()),
+                  // )
                   .filter((book) =>
                     book.publishing
                       .toLowerCase()
-                      .includes(searchPublisher.toLowerCase())
+                      .includes(searchPublisher.toLowerCase()),
                   )
                   .sort((a, b) =>
                     sort === 'Asc'
                       ? a.title.localeCompare(b.title)
-                      : b.title.localeCompare(a.title)
+                      : b.title.localeCompare(a.title),
                   )
 
                   .map((props) => (

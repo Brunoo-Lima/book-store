@@ -1,21 +1,22 @@
 import { ChangeEvent, forwardRef } from 'react';
-import { UserBooksTypes } from '../../UserContext';
 
 type InputProps = {
   type: string;
   placeholder: string;
+  name?: string;
   width?: number;
   value: string;
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
 };
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ type, placeholder, width, onChange, value, ...rest }, ref) => {
+  ({ type, placeholder, width, onChange, value, name, ...rest }, ref) => {
     return (
       <div className={`p-0.5 w-${width}`}>
         <input
           type={type}
           placeholder={placeholder}
+          name={name}
           {...rest}
           ref={ref}
           value={value}
