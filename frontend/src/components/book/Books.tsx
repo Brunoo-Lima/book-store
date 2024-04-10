@@ -1,4 +1,4 @@
-import { UserBooksTypes } from '../../UserContext';
+import { BookType } from '../../UserContext';
 
 const Books = ({
   author,
@@ -9,7 +9,7 @@ const Books = ({
   publishing,
   edition,
   value,
-}: UserBooksTypes) => {
+}: BookType) => {
   const formattedValue =
     value.trim() !== ''
       ? parseFloat(value).toLocaleString('pt-BR', {

@@ -1,6 +1,6 @@
 import { ReactNode, createContext, useState } from 'react';
 
-export type UserBooksTypes = {
+export type BookType = {
   id: number;
   author: string[];
   title: string;
@@ -19,21 +19,37 @@ export type UserBooksTypes = {
   weight: string;
 };
 
+export type UserType = {
+  id: number;
+  name: string;
+};
+
 type UserContextType = {
-  listBooks: UserBooksTypes[];
-  setListBooks: React.Dispatch<React.SetStateAction<UserBooksTypes[]>>;
+  listBooks: BookType[];
+  setListBooks: React.Dispatch<React.SetStateAction<BookType[]>>;
 
-  addBook: (book: UserBooksTypes) => void;
+  listUsers: UserType[];
+  setListUsers: React.Dispatch<React.SetStateAction<UserType[]>>;
 
-  bookData: UserBooksTypes;
-  setBookData: React.Dispatch<React.SetStateAction<UserBooksTypes>>;
+  addBook: (book: BookType) => void;
+
+  bookData: BookType;
+  setBookData: React.Dispatch<React.SetStateAction<BookType>>;
+
+  userData: UserType;
+  setUserData: React.Dispatch<React.SetStateAction<UserType>>;
 
   handleInputChange: (
     event: React.ChangeEvent<HTMLInputElement>,
     fieldName: string,
   ) => void;
+  handleInputChangeUser: (
+    event: React.ChangeEvent<HTMLInputElement>,
+    fieldName: string,
+  ) => void;
   handleCheckboxChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
+  handleSubmitUser: (event: React.FormEvent<HTMLFormElement>) => void;
 
   handleAddAuthor: () => void;
   handleAuthorInputChange: (
@@ -57,8 +73,15 @@ export const UserContext = createContext<UserContextType | undefined>(
 );
 
 export const UserProvider: React.FC<UserContextProps> = ({ children }) => {
-  const [listBooks, setListBooks] = useState<UserBooksTypes[]>([]);
-  const [bookData, setBookData] = useState<UserBooksTypes>({
+  const [listBooks, setListBooks] = useState<BookType[]>([]);
+  const [listUsers, setListUsers] = useState<UserType[]>([]);
+
+  const [userData, setUserData] = useState<UserType>({
+    id: 1,
+    name: '',
+  });
+
+  const [bookData, setBookData] = useState<BookType>({
     id: 1,
     author: [''],
     title: '',
@@ -80,14 +103,20 @@ export const UserProvider: React.FC<UserContextProps> = ({ children }) => {
   const [filter, setFilter] = useState('All');
   const [sort, setSort] = useState('Asc');
 
-  console.log('Dados fornecidos pelo UserProvider:', listBooks);
-
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement>,
     fieldName: string,
   ) => {
     const { value } = event.target;
     setBookData({ ...bookData, [fieldName]: value });
+  };
+
+  const handleInputChangeUser = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    fieldName: string,
+  ) => {
+    const { value } = event.target;
+    setUserData({ ...userData, [fieldName]: value });
   };
 
   const handleAddAuthor = () => {
@@ -121,9 +150,26 @@ export const UserProvider: React.FC<UserContextProps> = ({ children }) => {
     }));
   };
 
-  const addBook = (book: UserBooksTypes) => {
-    console.log('novo livro added', book);
+  const addUser = (user: UserType) => {
+    if (!user.name || user.name === '') alert('Preencha o nome para continuar');
+    setListUsers([...listUsers, user]);
+  };
+
+  const addBook = (book: BookType) => {
     setListBooks([...listBooks, book]);
+  };
+
+  const handleSubmitUser = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const newUserData = { ...userData };
+
+    addUser(newUserData);
+    setTimeout(() => {
+      setUserData({
+        id: Math.floor(Math.random() * 10000),
+        name: '',
+      });
+    }, 3000);
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -165,18 +211,24 @@ export const UserProvider: React.FC<UserContextProps> = ({ children }) => {
   const contextValue = {
     listBooks,
     setListBooks,
+    listUsers,
+    setListUsers,
+    addBook,
     bookData,
     setBookData,
-    addBook,
+    userData,
+    setUserData,
     handleInputChange,
+    handleCheckboxChange,
     handleSubmit,
+    handleSubmitUser,
+    handleAddAuthor,
+    handleAuthorInputChange,
     filter,
     setFilter,
     sort,
     setSort,
-    handleCheckboxChange,
-    handleAddAuthor,
-    handleAuthorInputChange,
+    handleInputChangeUser,
   };
 
   return (

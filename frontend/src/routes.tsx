@@ -23,6 +23,10 @@ export const router = createBrowserRouter([
         path: '/consult',
         element: <Consult />,
       },
+      {
+        path: '/user',
+        element: <CreateUser />,
+      },
     ],
   },
 ]);

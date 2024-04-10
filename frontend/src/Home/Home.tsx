@@ -10,7 +10,7 @@ const buttons: ButtonProps[] = [
   {
     id: 1,
     text: 'Cadastrar Livro',
-    href: '/register',
+    href: '/user',
   },
   {
     id: 2,
