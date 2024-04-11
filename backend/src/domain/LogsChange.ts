@@ -16,5 +16,4 @@ export default class LogsChange {
     public get logsChange() : Array<Object> {
         return { ...this.logChangeProps.logs }
     }
-
 }

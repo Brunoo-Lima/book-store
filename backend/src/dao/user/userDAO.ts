@@ -10,7 +10,6 @@ class UserDAO {
             select: {
                 use_id: true,
                 use_name: true,
-                created_at: true,
             },
         });
     }

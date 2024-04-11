@@ -3,7 +3,7 @@ import { CreateBookService } from "../../services/book/createBookService";
 
 class CreateBookController {
     async handle(req: Request, res: Response) {
-        const bookData = req.body;
+        const {bookData} = req.body;
         const bookService = new CreateBookService();
         const createBook = await bookService.execute(bookData);
 

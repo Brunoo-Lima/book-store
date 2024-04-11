@@ -21,6 +21,4 @@ export interface BookDTO {
     height: number,
     weight: number,
     depth: number,
-    created_at?: number;
-    updated_at?: number;
 }

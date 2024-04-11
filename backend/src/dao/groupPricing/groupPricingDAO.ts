@@ -7,7 +7,7 @@ class GroupPricingDAO {
         if(groupExist) return groupExist;
         return prisma.groupPricing.create({
             data: {
-                grp_type_pricing: groupData.typeGroupPricing
+                grp_type_pricing: groupData.typePricingIs
             },
             select: {
                 grp_id: true,
@@ -19,18 +19,23 @@ class GroupPricingDAO {
     public async findFirstGroup(groupData: GroupPricingDomain) {
         return await prisma.groupPricing.findFirst({
             where: {
-                grp_type_pricing: groupData.typeGroupPricing,
+                grp_type_pricing: groupData.typePricingIs,
             }
         });
     }
-    public static async findGroupPricingId(groupData: GroupPricingDomain) {
-        const groupPricing = await prisma.groupPricing.findFirst({
+    public static async createOrFindGroupPricingId(groupData: GroupPricingDomain) {
+        const groupPricingExist = await prisma.groupPricing.findFirst({
             where: {
-                grp_type_pricing: groupData.typeGroupPricing,
+                grp_type_pricing: groupData.typePricingIs,
             }
         })
-        if(!groupPricing) throw new Error('Group Pricing do not exist !')
-        return groupPricing.grp_id
+        if(groupPricingExist)return groupPricingExist.grp_id
+        const newGroupPricing = await prisma.groupPricing.create({
+            data: {
+                grp_type_pricing: groupData.typePricingIs
+            }
+        })
+        return newGroupPricing.grp_id;
     }
 }
 

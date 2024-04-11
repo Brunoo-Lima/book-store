@@ -1,4 +1,4 @@
-import {BookDAO} from "../../dao/book/bookDAO";
+import { BookDAO } from "../../DAO/book/bookDAO";
 import { AuthorDomain } from "../../domain/Author";
 import BookDomain from "../../domain/Book";
 import { CategoryDomain } from "../../domain/Category";
@@ -11,9 +11,11 @@ class CreateBookService {
         const bookDAO = new BookDAO();
 
         //Creates an array of "Category" and "AuthorDomains"
-        //ESTÁ RETORNANDO UNDEFINED
-        const authorsDomain = bookDataBody.authors.map((aut) => new AuthorDomain({name: aut}));
-        const categoriesDomain = bookDataBody.categories.map((cte) => new CategoryDomain(cte));
+        const authorsDomain = Array.isArray(bookDataBody.authors) ?
+            bookDataBody.authors.map((aut) => new AuthorDomain({ name: aut.toUpperCase() })) : [];
+        const categoriesDomain = Array.isArray(bookDataBody.categories) ?
+            bookDataBody.categories.map((cte) => new CategoryDomain(cte.toUpperCase())) : [];
+
         const bookDomain = BookDomain.createBook({
             ...bookDataBody,
             authors: authorsDomain,
@@ -21,7 +23,7 @@ class CreateBookService {
         });
 
         const thisBookExist = await bookDAO.findFirstBook(bookDomain);
-        if(thisBookExist) throw new Error ('Book already exist !');
+        if (thisBookExist) throw new Error('Book already exist !');
 
         const book = await bookDAO.createBook(bookDomain);
 

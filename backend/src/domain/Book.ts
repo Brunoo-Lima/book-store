@@ -1,20 +1,9 @@
 import { AuthorDomain } from "./Author";
 import { CategoryDomain } from "./Category";
-import GroupPricing from "./GroupPricing";
-import categoriesChange from "../utils/categoriesChange";
+import Product, { ProductProps } from "./Product";
 
-export interface BookProps {
-    id?: string,
+export interface BookProps extends ProductProps {
     code: string;
-    status: "ACTIVATE" | "INACTIVATE";
-    justifyStatus?: string;
-    categoryOfChange?: string;
-    codeBar: string;
-    priceAcquisition: number;
-    costProduct: number;    //Include expense
-    quantity: number;
-    groupPricing?: GroupPricing;
-    marginProfit?: number
     authors: AuthorDomain[];
     year: number;
     categories: CategoryDomain[];
@@ -28,22 +17,21 @@ export interface BookProps {
     height: number,
     weight: number,
     depth: number,
-    created_at?: number;
-    updated_at?: number;
 }
 
-export default class Book {
+export default class Book extends Product {
     constructor(private bookProps: BookProps) {
-        this.bookProps.created_at = Date.now();
-        this.bookProps.updated_at = Date.now();
-        this.bookProps.marginProfit = this.calculateMarginProfit();
-        this.bookProps.groupPricing = this.addGroupPricing();
-        this.changeModeAuto();
+        super({
+            status: bookProps.status,
+            justifyStatus: bookProps.justifyStatus,
+            categoryOfChange: bookProps.categoryOfChange,
+            codeBar: bookProps.codeBar,
+            priceAcquisition: bookProps.priceAcquisition,
+            costProduct: bookProps.costProduct,
+            quantity: bookProps.quantity,
+        });
     }
 
-    public get id(): string | unknown {
-        return this.bookProps.id;
-    }
     get code() {
         return this.bookProps.code;
     }
@@ -64,7 +52,7 @@ export default class Book {
         return this.bookProps.year;
     }
 
-    public get pages(): number {
+    get pages(): number {
         return this.bookProps.pages;
     }
 
@@ -84,9 +72,6 @@ export default class Book {
         return this.bookProps.synopsis;
     }
 
-    get priceAcquisition() {
-        return this.bookProps.priceAcquisition;
-    }
     get width() {
         return this.bookProps.width;
     }
@@ -109,65 +94,13 @@ export default class Book {
         return this.bookProps.publisher;
     }
 
-    public get groupPricing(): GroupPricing {
-        return this.groupPricing;
-    }
-
-    public get costProduction() : number{
-        return this.costProduction;
-    }
-
-
-    public get categoryChange() : string {
-        return this.categoryChange;
-    }
-
-    public get justifyStatus() : string {
-        return this.justifyStatus;
-    }
-
-    public get status() : string {
-        return this.status;
-    }
-
-    public static validISBN(): boolean {
-        return true;
-    }
-    public alterPriceAcquisition(newValue: number, costProduct?: number) {
-        this.bookProps.priceAcquisition = newValue;
-        if (costProduct !== undefined) {
-            this.bookProps.costProduct = costProduct;
-        }
-        this.bookProps.marginProfit = this.calculateMarginProfit();
-        this.bookProps.groupPricing = new GroupPricing(this.bookProps.marginProfit);
-        this.changeModeAuto();
-    }
-
-    private calculateMarginProfit(): number {
-        const { priceAcquisition, costProduct } = this.bookProps;
-        return ((priceAcquisition - costProduct) / priceAcquisition) * 100;
-    }
-
-    private addGroupPricing(): GroupPricing {
-        return new GroupPricing(this.bookProps.marginProfit as number);
-    }
-
-    //Inactivate/Activate automatically
-    private changeModeAuto() {
-        if (this.bookProps.quantity <= 0) {
-            this.inactivateProduct();
-            this.bookProps.quantity = 0;
-        }
-    }
-    private inactivateProduct() {
-        this.bookProps.status = "INACTIVATE"
-        this.bookProps.justifyStatus = categoriesChange.withoutStock.justify;
-        this.bookProps.categoryOfChange = categoriesChange.withoutStock.categoryChange;
-    }
+    //Method factory to create a new default book
     public static createBook(bookData: Partial<BookProps>): Book {
         const defaultBookData: BookProps = {
+            justifyStatus: 'CREATED NEW BOOK',
+            categoryOfChange: "ACTIVATE DEFAULT",
             code: "UNDEFINED",
-            status: "INACTIVATE",
+            status: "ACTIVATE",
             codeBar: "UNDEFINED",
             priceAcquisition: 0,
             costProduct: 0,
@@ -175,12 +108,12 @@ export default class Book {
             authors: {} as AuthorDomain[],
             year: 0,
             categories: {} as CategoryDomain[],
-            title: "UNDEFINED",
-            publisher: "UNDEFINED",
-            edition: "UNDEFINED",
+            title: "WITHOUT TITLE",
+            publisher: "WITHOUT PUBLISHER",
+            edition: "WITHOUT EDITION",
             ISBN: "UNDEFINED",
             pages: 0,
-            synopsis: "UNDEFINED",
+            synopsis: "WITHOUT ",
             width: 0,
             height: 0,
             weight: 0,

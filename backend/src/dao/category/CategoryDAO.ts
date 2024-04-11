@@ -33,7 +33,8 @@ export default class CategoryDAO {
     public async findManyCategory() {
         return prisma.category.findMany();
     }
-    public static async getOrCreateCategoriesId(categories: CategoryDomain[]){
+
+    public static async createOrFindCategoriesId(categories: CategoryDomain[]){
         const categoriesId: string[] = []
         //Check if the authors' names exist in the database
         for (const category of categories) {
