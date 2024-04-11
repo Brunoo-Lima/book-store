@@ -7,14 +7,10 @@ type InputProps = {
   width?: number;
   value: string;
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
-  required?: boolean;
 };
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  (
-    { type, placeholder, width, onChange, value, name, required, ...rest },
-    ref,
-  ) => {
+  ({ type, placeholder, width, onChange, value, name, ...rest }, ref) => {
     return (
       <div className={`p-0.5 w-${width}`}>
         <input
@@ -25,7 +21,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           ref={ref}
           value={value}
           onChange={onChange}
-          required={required}
+          required
           className="border-2 border-gray-200 p-2.5 rounded-md text-base focus-visible:border-emerald-300 outline-none"
           style={{ width: `${width}px` }}
         />

@@ -1,27 +1,56 @@
-import { Link } from 'react-router-dom';
-import Input from '../form/Input';
-import TextArea from '../form/TextArea';
-import Checkbox from './../form/Checkbox';
-import { useContext } from 'react';
-import { UserContext } from '../../UserContext';
-import mockDataCategories from '../../config/mockDataCategories';
+import { useContext, useEffect } from 'react';
+import { UserContext } from '../../../UserContext';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import Input from '../../form/Input';
+import Checkbox from '../../form/Checkbox';
+import TextArea from '../../form/TextArea';
+import Select from '../../form/Select';
 
-const Register = () => {
+const EditBook = () => {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const context = useContext(UserContext);
   const {
-    handleSubmit,
+    listBooks,
     handleInputChange,
     bookData,
+    setBookData,
     handleCheckboxChange,
     handleAddAuthor,
     handleAuthorInputChange,
     handleTextareaChange,
     handleSelectChange,
+    updateBook,
   } = context!;
+
+  useEffect(() => {
+    if (id !== undefined) {
+      const parsedId = parseInt(id);
+      if (!isNaN(parsedId)) {
+        const book = listBooks.find((book) => book.id === parsedId);
+        if (book) {
+          // Preencher os campos do formulário com os dados do livro
+          setBookData(book);
+        } else {
+          console.error('Livro não encontrado:', id);
+        }
+      } else {
+        console.error('ID inválido:', id);
+      }
+    } else {
+      console.error('ID não definido');
+    }
+  }, [id, listBooks, setBookData]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    updateBook(bookData.id, bookData);
+    navigate('/consult');
+  };
 
   return (
     <div className="flex flex-col justify-center items-center h-screen">
-      <h1 className="text-3xl font-semibold mb-4">Cadastro de Livros</h1>
+      <h1 className="text-3xl font-semibold mb-4">Editar Livro</h1>
 
       <div className="w-[950px] border border-gray-300 rounded-md p-6 bg-[#f1efef]">
         <form onSubmit={handleSubmit}>
@@ -54,18 +83,11 @@ const Register = () => {
                   onChange={(e) => handleInputChange(e, 'title')}
                 />
 
-                <div>
-                  <h2 className="text-xl text-center my-2">Categorias</h2>
-                  <div className="flex flex-wrap justify-center">
-                    {mockDataCategories.map((category) => (
-                      <Checkbox
-                        key={category.id}
-                        name={category.name}
-                        onChange={handleCheckboxChange}
-                      />
-                    ))}
+                {bookData.category.map((category, index) => (
+                  <div key={index}>
+                    <Checkbox name={category} onChange={handleCheckboxChange} />
                   </div>
-                </div>
+                ))}
 
                 <Input
                   type="text"
@@ -155,19 +177,17 @@ const Register = () => {
 
               <div className="pl-7">
                 <p className="my-2">Grupo de Precificação</p>
-                <select
-                  name="select"
-                  id=""
-                  className="p-2 rounded-md border-2 border-gray-200 focus:border-emerald-200 outline-none"
+                <Select
+                  options={[
+                    { value: 'DEFAULT', label: 'PADRÃO' },
+                    { value: 'BRONZE', label: 'BRONZE' },
+                    { value: 'SILVER', label: 'SILVER' },
+                    { value: 'GOLD', label: 'GOLD' },
+                    { value: 'DIAMOND', label: 'DIAMOND' },
+                  ]}
                   value={bookData.groupPricing}
                   onChange={(e) => handleSelectChange(e, 'groupPricing')}
-                >
-                  <option value="DEFAULT">PADRÃO</option>
-                  <option value="BRONZE">BRONZE</option>
-                  <option value="SILVER">SILVER</option>
-                  <option value="GOLD">GOLD</option>
-                  <option value="DIAMOND">DIAMOND</option>
-                </select>
+                />
               </div>
 
               <div className="pl-7">
@@ -189,7 +209,6 @@ const Register = () => {
                     Salvar
                   </p>
                 </button>
-
                 <Link
                   to={'/'}
                   className="px-4 py-3 bg-red-500 hover:bg-red-700 transition duration-300 rounded-lg w-32"
@@ -207,4 +226,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default EditBook;

@@ -32,7 +32,6 @@ const CreateUser = () => {
                 width={300}
                 value={userData.name}
                 onChange={(e) => handleInputChangeUser(e, 'name')}
-                required
               />
 
               <button

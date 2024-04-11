@@ -1,9 +1,8 @@
-import React, { useContext, useState } from 'react';
-import Filter from '../form/Filter';
-import { UserContext } from '../../UserContext';
+import React, { useState } from 'react';
 import Input from '../form/Input';
 import InputRange from '../form/InputRange';
 import { FormatCurrency } from '../utils/formatCurrency';
+import Select, { Option } from '../form/Select';
 
 type NavbarProps = {
   searchAuthor: string;
@@ -17,6 +16,21 @@ type NavbarProps = {
 
   setSort: React.Dispatch<React.SetStateAction<string>>;
 };
+
+const categories: Option[] = [
+  { value: 'All', label: 'Todas' },
+  { value: 'Biografia/Autobiografia', label: 'Biografia/Autobiografia' },
+  { value: 'Ensaio', label: 'Ensaio' },
+  { value: 'Fantasia', label: 'Fantasia' },
+  { value: 'Ficção Científica', label: 'Ficção Científica' },
+  { value: 'Ficção Histórica', label: 'Ficção Histórica' },
+  { value: 'Horror', label: 'Horror' },
+  { value: 'Literatura Clássica', label: 'Literatura Clássica' },
+  { value: 'Mistério/Thriller', label: 'Mistério/Thriller' },
+  { value: 'Poesia', label: 'Poesia' },
+  { value: 'Romance', label: 'Romance' },
+  { value: 'Outros', label: 'Outros' },
+];
 
 const Navbar = ({
   searchAuthor,
@@ -45,7 +59,9 @@ const Navbar = ({
             placeholder="Digite o nome do Autor"
             width={250}
             value={searchAuthor}
-            onChange={(e) => setSearchAuthor(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setSearchAuthor(e.target.value)
+            }
           />
         </div>
 
@@ -57,59 +73,44 @@ const Navbar = ({
             placeholder="Digite o nome da Editora"
             width={250}
             value={searchPublisher}
-            onChange={(e) => setSearchPublisher(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setSearchPublisher(e.target.value)
+            }
           />
         </div>
 
         <div className="flex items-center gap-2">
           <h2>Grupo de precificação:</h2>
 
-          <select
+          <Select
             value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-            className="px-2 border-2 border-gray-200 rounded-md outline-none focus:border-emerald-300"
-          >
-            <option value="All">Todas</option>
-            <option value="bronze">Bronze</option>
-            <option value="silver">Prata</option>
-            <option value="gold">Ouro</option>
-          </select>
+            options={[
+              { value: 'DEFAULT', label: 'TODAS' },
+              { value: 'BRONZE', label: 'BRONZE' },
+              { value: 'SILVER', label: 'SILVER' },
+              { value: 'GOLD', label: 'GOLD' },
+              { value: 'DIAMOND', label: 'DIAMOND' },
+            ]}
+            onChange={setFilter}
+          />
         </div>
 
         <div className="flex items-center gap-1">
           <p>Ordenar:</p>
-          <select
-            onChange={(e) => setSort(e.target.value)}
-            className="px-2 border-2 border-gray-200 rounded-md outline-none focus:border-emerald-300"
-          >
-            <option value="Asc">Asc</option>
-            <option value="Desc">Desc</option>
-          </select>
+          <Select
+            value={filter}
+            options={[
+              { value: 'Asc', label: 'Asc' },
+              { value: 'Desc', label: 'Desc' },
+            ]}
+            onChange={setSort}
+          />
         </div>
 
         <div className="flex items-center gap-1">
           <p>Categorias:</p>
-          <select
-            onChange={(e) => setSort(e.target.value)}
-            className="px-2 border-2 border-gray-200 rounded-md outline-none focus:border-emerald-300"
-          >
-            <option value="All">Todas</option>
-            <option value="Biografia/Autobiografia">
-              Biografia/Autobiografia
-            </option>
-            <option value="Ensaio">Ensaio</option>
-            <option value="Fantasia">Fantasia</option>
-            <option value="Fantasia">Fantasia</option>
-            <option value="Ficção Científica">Ficção Científica</option>
-            <option value="Ficção Histórica">Ficção Histórica</option>
-            <option value="Horror">Horror</option>
-            <option value="Literatura Clássica">Literatura Clássica</option>
-            <option value="Mistério/Thriller">Mistério/Thriller</option>
-            <option value="Literatura Clássica">Literatura Clássica</option>
-            <option value="Poesia">Poesia</option>
-            <option value="Romance">Romance</option>
-            <option value="Outros">Outros</option>
-          </select>
+
+          <Select value={filter} options={categories} onChange={setSort} />
         </div>
 
         <div className="flex flex-col gap-1">

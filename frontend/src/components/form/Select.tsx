@@ -1,13 +1,26 @@
-const Select = () => {
+export type Option = {
+  value: string;
+  label: string;
+};
+
+type FilterProps = {
+  value: string;
+  options: Option[];
+  onChange: (value: string) => void;
+};
+
+const Select = ({ value, options, onChange }: FilterProps) => {
   return (
     <select
-      name="select"
-      id=""
-      className="p-2 rounded-md border-2 border-gray-200 focus:border-emerald-200 outline-none"
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      className="px-2 border-2 border-gray-200 rounded-md outline-none focus:border-emerald-300"
     >
-      <option value="bronze">Bronze</option>
-      <option value="silver">Prata</option>
-      <option value="gold">Ouro</option>
+      {options.map((option) => (
+        <option key={option.value} value={option.value}>
+          {option.label}
+        </option>
+      ))}
     </select>
   );
 };

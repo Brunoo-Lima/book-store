@@ -1,15 +1,18 @@
+import { useNavigate } from 'react-router-dom';
 import { BookType } from '../../UserContext';
-
 const Books = ({
+  id,
   author,
   title,
-  totalPage,
+  pages,
   year,
   category,
-  publishing,
+  publisher,
   edition,
   value,
-}: BookType) => {
+  groupPricing,
+}: BookType & { id: number }) => {
+  const navigate = useNavigate();
   const formattedValue =
     value.trim() !== ''
       ? parseFloat(value).toLocaleString('pt-BR', {
@@ -17,6 +20,10 @@ const Books = ({
           currency: 'BRL',
         })
       : 'R$ 0,00';
+
+  const handleEdit = () => {
+    navigate(`/edit/${id}`);
+  };
 
   return (
     <li className="bg-[#fefefe] my-4 rounded-lg border-2 border-gray-200 ">
@@ -33,12 +40,13 @@ const Books = ({
             ))}
           </ul>
 
-          <p>Total de Páginas: {totalPage}</p>
+          <p>Total de Páginas: {pages}</p>
           <span>Ano lançamento: {year}</span>
 
           <h3 className="text-base font-semibold">Editora</h3>
-          <h3 className="text-base">Editora: {publishing}</h3>
+          <h3 className="text-base">Editora: {publisher}</h3>
           <p>Edição: {edition}</p>
+          <p>Grupo de Precificação: {groupPricing}</p>
         </div>
 
         <div className="mt-8 space-y-1">
@@ -63,7 +71,10 @@ const Books = ({
               <p className="text-white font-semibold">Inativar</p>
             </button>
 
-            <button className="bg-gray-400 hover:bg-gray-500 transition duration-300 px-2.5 py-2.5 rounded-lg">
+            <button
+              onClick={handleEdit}
+              className="bg-gray-400 hover:bg-gray-500 transition duration-300 px-2.5 py-2.5 rounded-lg"
+            >
               <p className="text-white font-semibold">Editar</p>
             </button>
           </div>
