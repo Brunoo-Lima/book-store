@@ -1,13 +1,13 @@
-import Input from './../form/Input';
-import { Link } from 'react-router-dom';
-import Books from './Books';
-import { useContext, useState } from 'react';
-import { UserContext } from '../../UserContext';
+import Input from '../form/Input';
 import Navbar from './Navbar';
+import Books from './Books';
+import Loading from '../utils/Loading';
+import { Link } from 'react-router-dom';
+import { useUserContext } from '../../hooks/useUserContext';
+import { useState } from 'react';
 
-const Consult = () => {
-  const context = useContext(UserContext);
-  const { filter, setFilter, sort, setSort, listBooks } = context!;
+const ConsultBook = () => {
+  const { filter, setFilter, sort, setSort, listBooks } = useUserContext();
 
   const [search, setSearch] = useState('');
   const [searchAuthor, setSearchAuthor] = useState('');
@@ -52,27 +52,35 @@ const Consult = () => {
             <div className="flex flex-col justify-center items-center p-6 w-[800px] h-[590px] m-auto">
               <h2 className="text-2xl font-semibold mb-2">Livros</h2>
               <ul className="h-full overflow-y-auto">
-                {listBooks.length <= 0 ? (
-                  <div className="mt-20">
-                    <p className="font-semibold">Não há livros</p>
-                  </div>
+                {loading ? (
+                  <Loading />
                 ) : (
-                  listBooks
-                    .filter((book) =>
-                      book.title.toLowerCase().includes(search.toLowerCase()),
-                    )
-                    .filter((book) =>
-                      book.publisher
-                        .toLowerCase()
-                        .includes(searchPublisher.toLowerCase()),
-                    )
-                    .sort((a, b) =>
-                      sort === 'Asc'
-                        ? a.title.localeCompare(b.title)
-                        : b.title.localeCompare(a.title),
-                    )
+                  <div>
+                    {listBooks.length <= 0 ? (
+                      <div className="mt-20">
+                        <p className="font-semibold">Não há livros</p>
+                      </div>
+                    ) : (
+                      listBooks
+                        .filter((book) =>
+                          book.title
+                            .toLowerCase()
+                            .includes(search.toLowerCase()),
+                        )
+                        .filter((book) =>
+                          book.publisher
+                            .toLowerCase()
+                            .includes(searchPublisher.toLowerCase()),
+                        )
+                        .sort((a, b) =>
+                          sort === 'Asc'
+                            ? a.title.localeCompare(b.title)
+                            : b.title.localeCompare(a.title),
+                        )
 
-                    .map((props) => <Books key={props.id} {...props} />)
+                        .map((props) => <Books key={props.id} {...props} />)
+                    )}
+                  </div>
                 )}
               </ul>
             </div>
@@ -83,4 +91,4 @@ const Consult = () => {
   );
 };
 
-export default Consult;
+export default ConsultBook;

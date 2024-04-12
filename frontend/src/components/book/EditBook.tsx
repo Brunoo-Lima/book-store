@@ -1,27 +1,27 @@
-import { useContext, useEffect } from 'react';
-import { UserContext } from '../../../UserContext';
+import { useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import Input from '../../form/Input';
-import Checkbox from '../../form/Checkbox';
-import TextArea from '../../form/TextArea';
-import Select from '../../form/Select';
+import Input from '../form/Input';
+import Checkbox from '../form/Checkbox';
+import TextArea from '../form/TextArea';
+import Select from '../form/Select';
+import { useUserContext } from '../../hooks/useUserContext';
 
 const EditBook = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const context = useContext(UserContext);
   const {
     listBooks,
-    handleInputChange,
     bookData,
     setBookData,
-    handleCheckboxChange,
     handleAddAuthor,
+    handleCheckboxChange,
     handleAuthorInputChange,
-    handleTextareaChange,
-    handleSelectChange,
+    handleChangeEvents,
     updateBook,
-  } = context!;
+    initialBookData,
+    loading,
+    setLoading,
+  } = useUserContext();
 
   useEffect(() => {
     if (id !== undefined) {
@@ -80,7 +80,7 @@ const EditBook = () => {
                   placeholder="Nome do Livro"
                   width={400}
                   value={bookData.title}
-                  onChange={(e) => handleInputChange(e, 'title')}
+                  onChange={(e) => handleChangeEvents(e, 'title')}
                 />
 
                 {bookData.category.map((category, index) => (
@@ -94,42 +94,42 @@ const EditBook = () => {
                   placeholder="Ano"
                   width={94}
                   value={bookData.year}
-                  onChange={(e) => handleInputChange(e, 'year')}
+                  onChange={(e) => handleChangeEvents(e, 'year')}
                 />
                 <Input
                   type="text"
                   placeholder="Nome da Editora"
                   width={300}
                   value={bookData.publisher}
-                  onChange={(e) => handleInputChange(e, 'publisher')}
+                  onChange={(e) => handleChangeEvents(e, 'publisher')}
                 />
                 <Input
                   type="text"
                   placeholder="Edição"
                   width={94}
                   value={bookData.edition}
-                  onChange={(e) => handleInputChange(e, 'edition')}
+                  onChange={(e) => handleChangeEvents(e, 'edition')}
                 />
                 <Input
                   type="text"
                   placeholder="ISBN"
                   width={195}
                   value={bookData.ISBN}
-                  onChange={(e) => handleInputChange(e, 'ISBN')}
+                  onChange={(e) => handleChangeEvents(e, 'ISBN')}
                 />
                 <Input
                   type="text"
                   placeholder="Total páginas"
                   width={100}
                   value={bookData.pages}
-                  onChange={(e) => handleInputChange(e, 'pages')}
+                  onChange={(e) => handleChangeEvents(e, 'pages')}
                 />
                 <Input
                   type="text"
                   placeholder="Valor"
                   width={100}
                   value={bookData.value}
-                  onChange={(e) => handleInputChange(e, 'value')}
+                  onChange={(e) => handleChangeEvents(e, 'value')}
                 />
               </div>
 
@@ -138,7 +138,7 @@ const EditBook = () => {
                 <TextArea
                   placeholder="Digite a sinopse do Livro"
                   value={bookData.synopsis}
-                  onChange={(e) => handleTextareaChange(e, 'synopsis')}
+                  onChange={(e) => handleChangeEvents(e, 'synopsis')}
                 />
               </div>
             </div>
@@ -150,28 +150,28 @@ const EditBook = () => {
                   placeholder="Altura"
                   width={80}
                   value={bookData.height}
-                  onChange={(e) => handleInputChange(e, 'height')}
+                  onChange={(e) => handleChangeEvents(e, 'height')}
                 />
                 <Input
                   type="text"
                   placeholder="Largura"
                   width={80}
                   value={bookData.width}
-                  onChange={(e) => handleInputChange(e, 'width')}
+                  onChange={(e) => handleChangeEvents(e, 'width')}
                 />
                 <Input
                   type="text"
                   placeholder="Peso"
                   width={80}
                   value={bookData.weight}
-                  onChange={(e) => handleInputChange(e, 'weight')}
+                  onChange={(e) => handleChangeEvents(e, 'weight')}
                 />
                 <Input
                   type="text"
                   placeholder="Profundidade"
                   width={130}
                   value={bookData.depth}
-                  onChange={(e) => handleInputChange(e, 'depth')}
+                  onChange={(e) => handleChangeEvents(e, 'depth')}
                 />
               </div>
 
@@ -186,7 +186,7 @@ const EditBook = () => {
                     { value: 'DIAMOND', label: 'DIAMOND' },
                   ]}
                   value={bookData.groupPricing}
-                  onChange={(e) => handleSelectChange(e, 'groupPricing')}
+                  onChange={(e) => handleChangeEvents(e, 'groupPricing')}
                 />
               </div>
 
@@ -196,7 +196,7 @@ const EditBook = () => {
                   type="text"
                   placeholder="Digite o Código de barras"
                   value={bookData.barCode}
-                  onChange={(e) => handleInputChange(e, 'barCode')}
+                  onChange={(e) => handleChangeEvents(e, 'barCode')}
                 />
               </div>
 

@@ -59,9 +59,7 @@ const Navbar = ({
             placeholder="Digite o nome do Autor"
             width={250}
             value={searchAuthor}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setSearchAuthor(e.target.value)
-            }
+            onChange={(e) => setSearchAuthor(e.target.value)}
           />
         </div>
 
@@ -73,9 +71,7 @@ const Navbar = ({
             placeholder="Digite o nome da Editora"
             width={250}
             value={searchPublisher}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setSearchPublisher(e.target.value)
-            }
+            onChange={(e) => setSearchPublisher(e.target.value)}
           />
         </div>
 

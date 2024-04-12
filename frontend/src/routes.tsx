@@ -3,9 +3,9 @@ import { createBrowserRouter } from 'react-router-dom';
 import Default from './components/layout/Default';
 import Home from './Home/Home';
 import Register from './components/book/Register';
-import Consult from './components/book/Consult';
+import ConsultBook from './components/book/ConsultBook';
 import CreateUser from './components/user/CreateUser';
-import EditBook from './components/book/modal/EditBook';
+import EditBook from './components/book/EditBook';
 
 export const router = createBrowserRouter([
   {
@@ -22,7 +22,7 @@ export const router = createBrowserRouter([
       },
       {
         path: '/consult',
-        element: <Consult />,
+        element: <ConsultBook />,
       },
       {
         path: '/user',

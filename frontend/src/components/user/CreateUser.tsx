@@ -1,11 +1,10 @@
-import { useContext } from 'react';
 import Input from '../form/Input';
-import { UserContext } from './../../UserContext';
 import { useNavigate } from 'react-router-dom';
+import { useUserContext } from '../../hooks/useUserContext';
 
 const CreateUser = () => {
-  const context = useContext(UserContext);
-  const { userData, handleInputChangeUser, handleSubmitUser } = context!;
+  const { userData, handleInputChangeUser, handleSubmitUser } =
+    useUserContext();
 
   const navigate = useNavigate();
 
