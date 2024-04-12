@@ -232,7 +232,7 @@ const EditBook = () => {
                       </p>
                     </button>
                     <Link
-                      to={'/'}
+                      to={'/consult'}
                       className="px-4 py-3 bg-red-500 hover:bg-red-700 transition duration-300 rounded-lg w-32"
                     >
                       <p className="text-white font-semibold text-md uppercase text-center">
