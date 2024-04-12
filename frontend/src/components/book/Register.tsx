@@ -153,7 +153,6 @@ const Register = () => {
                 <p className="my-2">Grupo de Precificação</p>
                 <select
                   name="select"
-                  id=""
                   className="p-2 rounded-md border-2 border-gray-200 focus:border-emerald-200 outline-none"
                   value={bookData.groupPricing}
                   onChange={(e) => handleChangeEvents(e, 'groupPricing')}

@@ -1,10 +1,8 @@
-import Input from '../form/Input';
 import Navbar from './Navbar';
-import Books from './Books';
-import Loading from '../utils/Loading';
-import { Link } from 'react-router-dom';
-import { useUserContext } from '../../hooks/useUserContext';
 import { useState } from 'react';
+import Search from './bookSearch/Search';
+import ListBooks from './bookSearch/ListBooks';
+import { useUserContext } from '../../hooks/useUserContext';
 
 const ConsultBook = () => {
   const { filter, setFilter, sort, setSort, listBooks } = useUserContext();
@@ -29,61 +27,14 @@ const ConsultBook = () => {
             setSearchPublisher={setSearchPublisher}
           />
           <div className="p-6">
-            <div className="flex items-center justify-center gap-2">
-              <h2 className="text-2xl text-center font-semibold mb-1">
-                Pesquisa
-              </h2>
-              <Input
-                type="text"
-                placeholder="Digite o nome do livro"
-                width={300}
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
+            <Search search={search} setSearch={setSearch} />
 
-              <Link
-                to={'/'}
-                className="mt-2 px-4 py-2 bg-red-500 hover:bg-red-700 transition duration-300 rounded-lg"
-              >
-                <p className="text-md font-semibold text-white">Voltar</p>
-              </Link>
-            </div>
-
-            <div className="flex flex-col justify-center items-center p-6 w-[800px] h-[590px] m-auto">
-              <h2 className="text-2xl font-semibold mb-2">Livros</h2>
-              <ul className="h-full overflow-y-auto">
-                {loading ? (
-                  <Loading />
-                ) : (
-                  <div>
-                    {listBooks.length <= 0 ? (
-                      <div className="mt-20">
-                        <p className="font-semibold">Não há livros</p>
-                      </div>
-                    ) : (
-                      listBooks
-                        .filter((book) =>
-                          book.title
-                            .toLowerCase()
-                            .includes(search.toLowerCase()),
-                        )
-                        .filter((book) =>
-                          book.publisher
-                            .toLowerCase()
-                            .includes(searchPublisher.toLowerCase()),
-                        )
-                        .sort((a, b) =>
-                          sort === 'Asc'
-                            ? a.title.localeCompare(b.title)
-                            : b.title.localeCompare(a.title),
-                        )
-
-                        .map((props) => <Books key={props.id} {...props} />)
-                    )}
-                  </div>
-                )}
-              </ul>
-            </div>
+            <ListBooks
+              listBooks={listBooks}
+              search={search}
+              searchPublisher={searchPublisher}
+              sort={sort}
+            />
           </div>
         </div>
       </div>

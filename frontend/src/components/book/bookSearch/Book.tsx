@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
-import { BookType } from '../../context/UserContext';
-const Books = ({
+import { BookType } from '../../../context/types/types';
+
+const Book = ({
   id,
   author,
   title,
@@ -84,4 +85,4 @@ const Books = ({
   );
 };
 
-export default Books;
+export default Book;
