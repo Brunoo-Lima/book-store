@@ -1,6 +1,7 @@
 import { AuthorDomain } from "./Author";
 import { CategoryDomain } from "./Category";
 import Product, { ProductProps } from "./Product";
+import ISBN from "./Validations/ISBN";
 
 export interface BookProps extends ProductProps {
     code: string;
@@ -30,6 +31,8 @@ export default class Book extends Product {
             costProduct: bookProps.costProduct,
             quantity: bookProps.quantity,
         });
+        const isbn = new ISBN(bookProps.ISBN);
+        isbn.validISBN();
     }
 
     get code() {

@@ -1,4 +1,4 @@
-import UserDAO from "../../DAO/user/userDAO";
+import UserDAO from "../../dao/user/userDAO";
 import UserDomain from "../../domain/User";
 
 class CreateUserService {

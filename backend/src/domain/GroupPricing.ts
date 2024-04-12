@@ -1,9 +1,9 @@
-import Validator, { TypePricing } from "./Validations/Validators";
+import TypePricing, { TypePricingProps } from "./Validations/TypePricing";
 
 export default class GroupPricing {
-    private typePricing: TypePricing;
+    private typePricing: TypePricingProps;
     constructor(marginProfit: number) {
-        this.typePricing = Validator.validateTypePricing(marginProfit);
+        this.typePricing = TypePricing.validateTypePricing(marginProfit);
     }
 
     public get typePricingIs() : string {

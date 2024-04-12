@@ -1,5 +1,5 @@
 import GroupPricing from "./GroupPricing";
-import Validator from "./Validations/Validators";
+import Validator from "./Validations/TypePricing";
 
 
 export interface ProductProps {

@@ -1,4 +1,4 @@
-import {BookDAO} from "../../DAO/book/bookDAO";
+import {BookDAO} from "../../dao/book/bookDAO";
 
 class ListBooksService {
     async execute() {

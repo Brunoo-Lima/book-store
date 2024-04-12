@@ -1,4 +1,4 @@
-import { BookDAO } from "../../DAO/book/bookDAO";
+import { BookDAO } from "../../dao/book/bookDAO";
 import { AuthorDomain } from "../../domain/Author";
 import BookDomain from "../../domain/Book";
 import { CategoryDomain } from "../../domain/Category";
