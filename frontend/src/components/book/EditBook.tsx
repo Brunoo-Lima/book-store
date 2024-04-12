@@ -55,8 +55,11 @@ const EditBook = () => {
   const handleEditSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     updateBook(bookData.id, bookData);
-    setBookData(initialBookData);
     navigate('/consult');
+
+    setTimeout(() => {
+      setBookData(initialBookData);
+    }, 1000);
   };
 
   return (
