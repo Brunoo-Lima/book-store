@@ -1,7 +1,7 @@
 import { it, describe, expect } from 'vitest';
 import BookDomain from '../domain/Book';
 import { AuthorDomain } from '../domain/Author';
-import { TypePricing } from '../domain/GroupPricing';
+import { TypePricingProps } from '../domain/Validations/TypePricing';
 import { CategoryDomain } from '../domain/Category';
 
 describe('Domain Book', () => {
@@ -48,6 +48,6 @@ describe('Domain Book', () => {
             weight: 10,
             depth: 25
         })
-        expect(book.groupPricingIs.typePricingIs).equal(TypePricing.GOLD);
+        expect(book.groupPricingIs.typePricingIs).equal(TypePricingProps.GOLD);
     })
 })
