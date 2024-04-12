@@ -14,13 +14,17 @@ yarn
 
 ## 🛠️ Construído com
 
-* [REACT](http://www.dropwizard.io/1.0.2/docs/)
-* [TypeScript]([https://www.typescriptlang.org])
-* [JavaScript]([https://developer.mozilla.org/en-US/docs/Web/JavaScript])
-* [Prisma ORM]([https://www.prisma.io])
+- [React](http://www.dropwizard.io/1.0.2/docs/)
+- [TypeScript]([https://www.typescriptlang.org])
+- [TailwindCSS]([https://tailwindcss.com/])
+
+- [Prisma ORM]([https://www.prisma.io])
+- [Node]([https://nodejs.org/en])
 
 ## ✒️ Autores
+
 ###
+
 ```
 Danilo de Araújo Leite Gomes,
 Bruno Jean de Souza Lima
