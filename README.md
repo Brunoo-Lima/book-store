@@ -14,12 +14,19 @@ yarn
 
 ## 🛠️ Construído com
 
-- [React](http://www.dropwizard.io/1.0.2/docs/)
-- [TypeScript]([https://www.typescriptlang.org])
-- [TailwindCSS]([https://tailwindcss.com/])
+### Front End
 
-- [Prisma ORM]([https://www.prisma.io])
-- [Node]([https://nodejs.org/en])
+- React
+- TypeScript
+- TailwindCSS
+- React-router-dom
+
+### Back End
+
+- Node
+- Express
+- TypeScript
+- Prisma ORM
 
 ## ✒️ Autores
 
