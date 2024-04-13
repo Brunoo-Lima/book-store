@@ -1,5 +1,4 @@
 import GroupPricing from "./GroupPricing";
-import LogsChange from "./LogsChange";
 import Validator from "./Validations/TypePricing";
 
 
@@ -76,7 +75,7 @@ export default abstract class Product {
 
     //Inactivate/Activate automatically
     protected changeStatus(status:string, justify:string) {
-        
+
     }
 
     //This validation can be in the front-end

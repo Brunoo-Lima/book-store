@@ -75,6 +75,7 @@ class BookDAO {
                 },
             },
             select: {
+                boo_id: true,
                 boo_code: true,
                 boo_cost_product: true,
                 boo_category_change: true,

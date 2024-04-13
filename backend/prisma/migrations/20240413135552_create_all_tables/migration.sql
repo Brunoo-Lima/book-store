@@ -2,8 +2,6 @@
 CREATE TABLE "users" (
     "use_id" TEXT NOT NULL,
     "use_name" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("use_id")
 );
@@ -30,7 +28,6 @@ CREATE TABLE "books" (
     "boo_weight" DOUBLE PRECISION NOT NULL,
     "boo_depth" DOUBLE PRECISION NOT NULL,
     "fk_boo_grp_id" TEXT NOT NULL,
-    "fk_boo_pub_id" TEXT NOT NULL,
 
     CONSTRAINT "books_pkey" PRIMARY KEY ("boo_id")
 );
@@ -62,10 +59,11 @@ CREATE TABLE "groups" (
 -- CreateTable
 CREATE TABLE "logsChanged" (
     "log_id" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "log_description" TEXT NOT NULL,
     "fk_log_boo_code" TEXT NOT NULL,
     "fk_log_use_id" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "logsChanged_pkey" PRIMARY KEY ("log_id")
 );

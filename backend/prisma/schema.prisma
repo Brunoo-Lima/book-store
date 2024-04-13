@@ -74,6 +74,7 @@ model GroupPricing {
 
 model LogsChange {
     log_id          String    @id @default(uuid())
+    log_description String
     log_boo_code    Book      @relation(fields: [fk_log_boo_code], references: [boo_id])
     log_use_id      User      @relation(fields: [fk_log_use_id], references: [use_id])
     fk_log_boo_code String

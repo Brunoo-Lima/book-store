@@ -32,7 +32,6 @@ export default async (req: Request, res: Response, next: NextFunction) => {
             });
         }
         req.body.userId = use_id; // I created
-        req.body.useName = use_name;
         return next();
     } catch (e) {
         return res.status(401).json({
