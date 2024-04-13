@@ -76,10 +76,10 @@ model LogsChange {
     log_id          String    @id @default(uuid())
     log_boo_code    Book      @relation(fields: [fk_log_boo_code], references: [boo_id])
     log_use_id      User      @relation(fields: [fk_log_use_id], references: [use_id])
-    created_at      DateTime? @default(now())
-    updated_at      DateTime? @default(now())
     fk_log_boo_code String
     fk_log_use_id   String
+    created_at      DateTime? @default(now())
+    updated_at      DateTime? @default(now())
 
     @@map("logsChanged")
 }

@@ -1,19 +1,26 @@
 import Book from "./Book";
 import User from "./User";
 
-export interface LogsChangeProps{
-    logs: [
-        change:{
-            productAltered: Book;
-            user:User;
-        }
-    ]
+export interface LogsChangeProps {
+    change:
+    {
+        productAltered: Book;
+        user: User;
+    }
+
 }
 export default class LogsChange {
+    private logChangeProps: Array<LogsChangeProps> = []
 
-    constructor(private logChangeProps: LogsChangeProps){}
+    constructor(log: LogsChangeProps) {
+        this.logChangeProps.push(log);
+    }
 
-    public get logsChange() : Array<Object> {
-        return { ...this.logChangeProps.logs }
+    public get allLogs(){
+        return this.logChangeProps;
+    }
+
+    public addLogChange(logChange: LogsChangeProps): void {
+        this.logChangeProps.push(logChange)
     }
 }

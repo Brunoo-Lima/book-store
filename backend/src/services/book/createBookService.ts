@@ -4,7 +4,7 @@ import BookDomain from "../../domain/Book";
 import { CategoryDomain } from "../../domain/Category";
 import { BookDTO } from "../../DTO/bookDTO";
 
-class CreateBookService {
+export default class CreateBookService {
     //Returns "BookDTO" because I don't know what it returned in "req.body", but I can force
     //that it returns the properties needed to create the book
     async execute(bookDataBody: BookDTO) {
@@ -32,4 +32,4 @@ class CreateBookService {
     }
 }
 
-export { CreateBookService };
+

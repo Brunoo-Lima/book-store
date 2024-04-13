@@ -1,13 +1,12 @@
-import { Request, Response } from "express";
-import { CreateBookService } from "../../services/book/createBookService";
+import { Request, Response, NextFunction } from "express";
+import CreateBookService from "../../services/book/CreateBookService";
 
-class CreateBookController {
-    async handle(req: Request, res: Response) {
+export default class CreateBookController {
+    async handle(req: Request, res: Response, next: NextFunction) {
         const {bookData} = req.body;
         const bookService = new CreateBookService();
-        const createBook = await bookService.execute(bookData);
+        const { book } = await bookService.execute(bookData);
 
-        return res.json(createBook);
+        return res.json(book);
     }
 }
-export { CreateBookController };

@@ -1,4 +1,5 @@
 import GroupPricing from "./GroupPricing";
+import LogsChange from "./LogsChange";
 import Validator from "./Validations/TypePricing";
 
 
@@ -20,6 +21,7 @@ export default abstract class Product {
         this.marginProfit = this.calculateMarginProfit(this.productProps.priceAcquisition);
         this.groupPricing = this.addGroupPricing();
         this.checkQuantity(productProps.quantity);
+        this.changeStatus(productProps.status, productProps.justifyStatus);
     }
 
     get priceAcquisition() {
@@ -73,8 +75,8 @@ export default abstract class Product {
     }
 
     //Inactivate/Activate automatically
-    private changeStatus(status:string, justify:string) {
-        //This function should verify if the book
+    protected changeStatus(status:string, justify:string) {
+        
     }
 
     //This validation can be in the front-end

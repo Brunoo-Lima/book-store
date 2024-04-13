@@ -5,6 +5,7 @@ import cors from "cors";
 import errorHandler from "./error/errorHandler";
 import bookRouter from "./Routes/book";
 import userRouter from "./Routes/user";
+import tokenRouter from './Routes/token';
 
 class App {
     readonly app;
@@ -24,7 +25,7 @@ class App {
     private routes(): void {
         this.app.use("/book", bookRouter);
         this.app.use("/user", userRouter);
-        // this.app.use('/token', tokenRouter);
+        this.app.use('/token', tokenRouter);
     }
 }
 

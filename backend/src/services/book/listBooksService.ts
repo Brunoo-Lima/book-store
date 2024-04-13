@@ -1,9 +1,8 @@
 import {BookDAO} from "../../dao/book/bookDAO";
 
-class ListBooksService {
+export default class ListBooksService {
     async execute() {
         const bookDao = new BookDAO();
     }
 }
 
-export { ListBooksService };

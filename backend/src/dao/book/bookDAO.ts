@@ -36,7 +36,7 @@ class BookDAO {
             GroupPricingDAO.createOrFindGroupPricingId(groupPricingIs)
         ]);
 
-        const createdBook = await prisma.book.create({
+        const book = await prisma.book.create({
             data: {
                 boo_code: code,
                 boo_cost_product: costProduct,
@@ -67,9 +67,9 @@ class BookDAO {
                 },
                 //Connect the Foreign Key at the categories IDs IN TABLE "BOOK_CATEGORIES"
                 fk_boo_cte_id: {
-                    connect:categoriesIds.map((id) => {
+                    connect: categoriesIds.map((id) => {
                         return {
-                             cte_id: id
+                            cte_id: id
                         }
                     })
                 },
@@ -97,7 +97,7 @@ class BookDAO {
                 fk_boo_cte_id: true,
             },
         });
-        return { createdBook }
+        return { book }
     }
     async findFirstBook(book: BookDomain) {
         return await prisma.book.findFirst({
