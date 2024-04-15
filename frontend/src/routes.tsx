@@ -6,6 +6,7 @@ import Register from './components/book/Register';
 import ConsultBook from './components/book/ConsultBook';
 import CreateUser from './components/user/CreateUser';
 import EditBook from './components/book/EditBook';
+import StatusBook from './components/book/StatusBook';
 
 export const router = createBrowserRouter([
   {
@@ -31,6 +32,10 @@ export const router = createBrowserRouter([
       {
         path: '/edit/:id',
         element: <EditBook />,
+      },
+      {
+        path: '/status/:id',
+        element: <StatusBook />,
       },
     ],
   },

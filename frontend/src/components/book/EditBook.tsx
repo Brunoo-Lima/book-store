@@ -19,7 +19,7 @@ const EditBook = () => {
     handleCheckboxChange,
     handleAuthorInputChange,
     handleChangeEvents,
-    updateBook,
+    updateBookById,
     initialBookData,
     loading,
     setLoading,
@@ -54,7 +54,7 @@ const EditBook = () => {
 
   const handleEditSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    updateBook(bookData.id, bookData);
+    updateBookById(bookData.id, bookData);
     navigate('/consult');
 
     setTimeout(() => {

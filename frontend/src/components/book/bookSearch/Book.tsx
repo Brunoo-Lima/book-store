@@ -26,6 +26,10 @@ const Book = ({
     navigate(`/edit/${id}`);
   };
 
+  const handleStatus = () => {
+    navigate(`/status/${id}`);
+  };
+
   return (
     <li className="bg-[#fefefe] my-4 rounded-lg border-2 border-gray-200 ">
       <div className="flex justify-between w-[700px] p-5">
@@ -68,8 +72,11 @@ const Book = ({
           <p className="font-semibold text-lg text-end">{formattedValue}</p>
 
           <div className="flex flex-1 mt-28 gap-2">
-            <button className="bg-red-600 hover:bg-red-500 transition duration-300 px-2.5 py-2.5 rounded-lg">
-              <p className="text-white font-semibold">Inativar</p>
+            <button
+              onClick={handleStatus}
+              className="bg-red-600 hover:bg-red-500 transition duration-300 px-2.5 py-2.5 rounded-lg"
+            >
+              <p className="text-white font-semibold">Mudar Status</p>
             </button>
 
             <button

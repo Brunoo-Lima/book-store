@@ -61,17 +61,21 @@ export type BookContextTypes = {
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
     >,
-    fieldName: string,
+    fieldName: string
   ) => void;
 
   handleCheckboxChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleBookSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
-  updateBook: (id: number, newData: Partial<BookType>) => void;
+  updateBookById: (id: number, newData: Partial<BookType>) => void;
+  updateBookData: (
+    bookToUpdate: BookType,
+    newData: Pick<BookType, 'justifyStatus' | 'categoryOfChange' | 'status'>
+  ) => void;
 
   handleAddAuthor: () => void;
   handleAuthorInputChange: (
     event: React.ChangeEvent<HTMLInputElement>,
-    index: number,
+    index: number
   ) => void;
 
   filter: string;
@@ -92,7 +96,7 @@ export type UserContextTypes = {
 
   handleInputChangeUser: (
     event: React.ChangeEvent<HTMLInputElement>,
-    fieldName: string,
+    fieldName: string
   ) => void;
   handleSubmitUser: (event: React.FormEvent<HTMLFormElement>) => void;
 };

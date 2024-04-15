@@ -69,12 +69,33 @@ export const useBookFunctions = (): BookContextTypes => {
     setLoading(false);
   };
 
-  const updateBook = (id: number, newData: Partial<BookType>) => {
+  const updateBookById = (id: number, newData: Partial<BookType>) => {
     setListBooks((prevBooks) =>
-      prevBooks.map((book) =>
-        book.id === id ? { ...book, ...newData } : book,
-      ),
+      prevBooks.map((book) => (book.id === id ? { ...book, ...newData } : book))
     );
+  };
+
+  const updateBookData = (
+    bookToUpdate: BookType,
+    newData: Pick<BookType, 'justifyStatus' | 'categoryOfChange' | 'status'>
+  ) => {
+    // Atualiza somente os campos justifyStatus, status e categoryOfChange, mantendo os outros campos inalterados
+    const updatedBook: BookType = {
+      ...bookToUpdate,
+      justifyStatus: newData.justifyStatus ?? bookToUpdate.justifyStatus,
+      categoryOfChange:
+        newData.categoryOfChange ?? bookToUpdate.categoryOfChange,
+      status: newData.status ?? bookToUpdate.status,
+    };
+
+    //Atualiza o estado com o livro atualizado
+    const updateBooksData = listBooks.map((book) =>
+      book.id === bookToUpdate.id ? updatedBook : book
+    );
+
+    //Atualiza a lista de livros com os novos dados do livro
+
+    setListBooks(updateBooksData);
   };
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -103,7 +124,7 @@ export const useBookFunctions = (): BookContextTypes => {
 
   const handleAuthorInputChange = (
     event: React.ChangeEvent<HTMLInputElement>,
-    index: number,
+    index: number
   ) => {
     const { value } = event.target;
     setBookData((prevBookData) => {
@@ -117,7 +138,7 @@ export const useBookFunctions = (): BookContextTypes => {
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
     >,
-    fieldName: string,
+    fieldName: string
   ) => {
     const { value } = e.target;
     setBookData({ ...bookData, [fieldName]: value });
@@ -129,7 +150,8 @@ export const useBookFunctions = (): BookContextTypes => {
     bookData,
     setBookData,
     handleBookSubmit,
-    updateBook,
+    updateBookById,
+    updateBookData,
     handleAddAuthor,
     handleAuthorInputChange,
     handleCheckboxChange,
