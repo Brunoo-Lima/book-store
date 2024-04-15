@@ -4,7 +4,7 @@ import Search from './bookSearch/Search';
 import ListBooks from './bookSearch/ListBooks';
 
 const ConsultBook = () => {
-  const [search, setSearch] = useState('');
+  const [searchBook, setSearchBook] = useState('');
   const [searchAuthor, setSearchAuthor] = useState('');
   const [searchPublisher, setSearchPublisher] = useState('');
 
@@ -21,10 +21,10 @@ const ConsultBook = () => {
             setSearchPublisher={setSearchPublisher}
           />
           <div className="p-6">
-            <Search search={search} setSearch={setSearch} />
+            <Search search={searchBook} setSearch={setSearchBook} />
 
             <ListBooks
-              search={search}
+              searchBook={searchBook}
               searchAuthor={searchAuthor}
               searchPublisher={searchPublisher}
             />

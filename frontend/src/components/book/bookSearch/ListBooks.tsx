@@ -3,17 +3,39 @@ import Loading from './../../utils/Loading';
 import { useUserContext } from '../../../hooks/useUserContext';
 
 type ListBooksProps = {
-  search: string;
+  searchBook: string;
   searchAuthor: string;
   searchPublisher: string;
 };
 
 const ListBooks = ({
-  search,
+  searchBook,
   searchAuthor,
   searchPublisher,
 }: ListBooksProps) => {
   const { loading, listBooks, sort, filterCategories } = useUserContext();
+
+  const filteredBooks = listBooks.filter((book) => {
+    const searchBooks = book.title
+      .toLowerCase()
+      .includes(searchBook.toLowerCase());
+
+    const searchPublishers = book.publisher
+      .toLowerCase()
+      .includes(searchPublisher.toLowerCase());
+
+    const searchFilterCategories =
+      filterCategories.includes('All') ||
+      filterCategories.some((category) => book.category.includes(category));
+
+    return searchBooks && searchPublishers && searchFilterCategories;
+  });
+
+  const sortedBooks = filteredBooks.sort((a, b) =>
+    sort === 'Asc'
+      ? a.title.localeCompare(b.title)
+      : b.title.localeCompare(a.title)
+  );
 
   return (
     <div className="flex flex-col justify-center items-center p-6 w-[800px] h-[590px] m-auto">
@@ -23,32 +45,12 @@ const ListBooks = ({
           <Loading />
         ) : (
           <div>
-            {listBooks.length <= 0 ? (
+            {sortedBooks.length <= 0 ? (
               <div className="mt-20">
                 <p className="font-semibold">Não há livros</p>
               </div>
             ) : (
-              listBooks
-                .filter((book) =>
-                  book.title.toLowerCase().includes(search.toLowerCase())
-                )
-                .filter((book) =>
-                  book.publisher
-                    .toLowerCase()
-                    .includes(searchPublisher.toLowerCase())
-                )
-                .filter(
-                  (book) =>
-                    filterCategories.includes('All') ||
-                    filterCategories.some((cat) => book.category.includes(cat))
-                )
-                .sort((a, b) =>
-                  sort === 'Asc'
-                    ? a.title.localeCompare(b.title)
-                    : b.title.localeCompare(a.title)
-                )
-
-                .map((props) => <Book key={props.id} {...props} />)
+              sortedBooks.map((props) => <Book key={props.id} {...props} />)
             )}
           </div>
         )}
