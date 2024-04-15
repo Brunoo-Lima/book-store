@@ -1,23 +1,19 @@
 import Book from './Book';
-import { BookType } from '../../../context/types/types';
 import Loading from './../../utils/Loading';
 import { useUserContext } from '../../../hooks/useUserContext';
 
 type ListBooksProps = {
-  listBooks: BookType[];
-
   search: string;
+  searchAuthor: string;
   searchPublisher: string;
-  sort: string;
 };
 
 const ListBooks = ({
-  listBooks,
   search,
+  searchAuthor,
   searchPublisher,
-  sort,
 }: ListBooksProps) => {
-  const { loading } = useUserContext();
+  const { loading, listBooks, sort, filterCategories } = useUserContext();
 
   return (
     <div className="flex flex-col justify-center items-center p-6 w-[800px] h-[590px] m-auto">
@@ -34,17 +30,22 @@ const ListBooks = ({
             ) : (
               listBooks
                 .filter((book) =>
-                  book.title.toLowerCase().includes(search.toLowerCase()),
+                  book.title.toLowerCase().includes(search.toLowerCase())
                 )
                 .filter((book) =>
                   book.publisher
                     .toLowerCase()
-                    .includes(searchPublisher.toLowerCase()),
+                    .includes(searchPublisher.toLowerCase())
+                )
+                .filter(
+                  (book) =>
+                    filterCategories.includes('All') ||
+                    filterCategories.some((cat) => book.category.includes(cat))
                 )
                 .sort((a, b) =>
                   sort === 'Asc'
                     ? a.title.localeCompare(b.title)
-                    : b.title.localeCompare(a.title),
+                    : b.title.localeCompare(a.title)
                 )
 
                 .map((props) => <Book key={props.id} {...props} />)

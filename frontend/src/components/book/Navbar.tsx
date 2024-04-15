@@ -3,18 +3,13 @@ import Input from '../form/Input';
 import InputRange from '../form/InputRange';
 import { FormatCurrency } from '../utils/formatCurrency';
 import Select, { Option } from '../form/Select';
+import { useUserContext } from '../../hooks/useUserContext';
 
 type NavbarProps = {
   searchAuthor: string;
   setSearchAuthor: React.Dispatch<React.SetStateAction<string>>;
-
   searchPublisher: string;
   setSearchPublisher: React.Dispatch<React.SetStateAction<string>>;
-
-  filter: string;
-  setFilter: React.Dispatch<React.SetStateAction<string>>;
-
-  setSort: React.Dispatch<React.SetStateAction<string>>;
 };
 
 const categories: Option[] = [
@@ -37,11 +32,9 @@ const Navbar = ({
   setSearchAuthor,
   searchPublisher,
   setSearchPublisher,
-  setSort,
-  filter,
-  setFilter,
 }: NavbarProps) => {
   const [price, setPrice] = useState(10);
+  const { filterCategories, setFilterCategories, setSort } = useUserContext();
 
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPrice(parseInt(e.target.value));
@@ -78,35 +71,34 @@ const Navbar = ({
         <div className="flex items-center gap-2">
           <h2>Grupo de precificação:</h2>
 
-          <Select
-            value={filter}
-            options={[
-              { value: 'DEFAULT', label: 'TODAS' },
-              { value: 'BRONZE', label: 'BRONZE' },
-              { value: 'SILVER', label: 'SILVER' },
-              { value: 'GOLD', label: 'GOLD' },
-              { value: 'DIAMOND', label: 'DIAMOND' },
-            ]}
-            onChange={setFilter}
-          />
+          <select
+          // value={filterGroup}
+          // onChange={(e) => setFilterGroup(e.target.value)}
+          >
+            <option value="DEFAULT">TODOS</option>
+            <option value="BRONZE">BRONZE</option>
+            <option value="SILVER">SILVER</option>
+            <option value="GOLD">GOLD</option>
+            <option value="DIAMOND">DIAMOND</option>
+          </select>
         </div>
 
         <div className="flex items-center gap-1">
           <p>Ordenar:</p>
-          <Select
-            value={filter}
-            options={[
-              { value: 'Asc', label: 'Asc' },
-              { value: 'Desc', label: 'Desc' },
-            ]}
-            onChange={setSort}
-          />
+          <select onChange={(e) => setSort(e.target.value)}>
+            <option value="Asc">Asc</option>
+            <option value="Desc">Desc</option>
+          </select>
         </div>
 
         <div className="flex items-center gap-1">
           <p>Categorias:</p>
 
-          <Select value={filter} options={categories} onChange={setSort} />
+          <Select
+            value={filterCategories}
+            options={categories}
+            onChange={setFilterCategories}
+          />
         </div>
 
         <div className="flex flex-col gap-1">

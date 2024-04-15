@@ -2,11 +2,8 @@ import Navbar from './Navbar';
 import { useState } from 'react';
 import Search from './bookSearch/Search';
 import ListBooks from './bookSearch/ListBooks';
-import { useUserContext } from '../../hooks/useUserContext';
 
 const ConsultBook = () => {
-  const { filter, setFilter, sort, setSort, listBooks } = useUserContext();
-
   const [search, setSearch] = useState('');
   const [searchAuthor, setSearchAuthor] = useState('');
   const [searchPublisher, setSearchPublisher] = useState('');
@@ -20,9 +17,6 @@ const ConsultBook = () => {
           <Navbar
             searchAuthor={searchAuthor}
             setSearchAuthor={setSearchAuthor}
-            setSort={setSort}
-            filter={filter}
-            setFilter={setFilter}
             searchPublisher={searchPublisher}
             setSearchPublisher={setSearchPublisher}
           />
@@ -30,10 +24,9 @@ const ConsultBook = () => {
             <Search search={search} setSearch={setSearch} />
 
             <ListBooks
-              listBooks={listBooks}
               search={search}
+              searchAuthor={searchAuthor}
               searchPublisher={searchPublisher}
-              sort={sort}
             />
           </div>
         </div>

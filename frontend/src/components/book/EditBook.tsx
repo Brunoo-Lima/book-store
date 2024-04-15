@@ -3,7 +3,6 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import Input from '../form/Input';
 import Checkbox from '../form/Checkbox';
 import TextArea from '../form/TextArea';
-import Select from '../form/Select';
 import { useUserContext } from '../../hooks/useUserContext';
 import Loading from '../utils/Loading';
 
@@ -49,7 +48,7 @@ const EditBook = () => {
       setLoading(false);
       // Preencher os campos do formulário com os dados do livro
       setBookData(book);
-    }, 2000);
+    }, 1000);
   }, [id, listBooks, setBookData, setLoading]);
 
   const handleEditSubmit = (e: React.FormEvent) => {
@@ -202,17 +201,18 @@ const EditBook = () => {
 
                   <div className="pl-7">
                     <p className="my-2">Grupo de Precificação</p>
-                    <Select
+                    <select
+                      name="select"
+                      className="p-2 rounded-md border-2 border-gray-200 focus:border-emerald-200 outline-none"
                       value={bookData.groupPricing}
                       onChange={(e) => handleChangeEvents(e, 'groupPricing')}
-                      options={[
-                        { value: 'DEFAULT', label: 'PADRÃO' },
-                        { value: 'BRONZE', label: 'BRONZE' },
-                        { value: 'SILVER', label: 'SILVER' },
-                        { value: 'GOLD', label: 'GOLD' },
-                        { value: 'DIAMOND', label: 'DIAMOND' },
-                      ]}
-                    />
+                    >
+                      <option value="DEFAULT">PADRÃO</option>
+                      <option value="BRONZE">BRONZE</option>
+                      <option value="SILVER">SILVER</option>
+                      <option value="GOLD">GOLD</option>
+                      <option value="DIAMOND">DIAMOND</option>
+                    </select>
                   </div>
 
                   <div className="pl-7">

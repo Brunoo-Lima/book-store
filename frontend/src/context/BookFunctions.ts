@@ -36,6 +36,7 @@ export const useBookFunctions = (): BookContextTypes => {
   const [bookData, setBookData] = useState<BookType>(initialBookData);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('All');
+  const [filterCategories, setFilterCategories] = useState(['']);
   const [sort, setSort] = useState('Asc');
 
   const addBook = (book: BookType) => {
@@ -161,6 +162,8 @@ export const useBookFunctions = (): BookContextTypes => {
     setLoading,
     filter,
     setFilter,
+    filterCategories,
+    setFilterCategories,
     sort,
     setSort,
   };

@@ -81,6 +81,9 @@ export type BookContextTypes = {
   filter: string;
   setFilter: React.Dispatch<React.SetStateAction<string>>;
 
+  filterCategories: string[];
+  setFilterCategories: React.Dispatch<React.SetStateAction<string[]>>;
+
   sort: string;
   setSort: React.Dispatch<React.SetStateAction<string>>;
 
