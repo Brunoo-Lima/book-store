@@ -24,11 +24,17 @@ const ListBooks = ({
       .toLowerCase()
       .includes(searchPublisher.toLowerCase());
 
+    const searchAuthors = book.author.some((author) =>
+      author.toLowerCase().includes(searchAuthor.toLowerCase())
+    );
+
     const searchFilterCategories =
       filterCategories.includes('All') ||
       filterCategories.some((category) => book.category.includes(category));
 
-    return searchBooks && searchPublishers && searchFilterCategories;
+    return (
+      searchBooks && searchPublishers && searchAuthors && searchFilterCategories
+    );
   });
 
   const sortedBooks = filteredBooks.sort((a, b) =>
