@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useUserContext } from '../../hooks/useUserContext';
 import Loading from '../utils/Loading';
 
+import { toast } from 'react-toastify';
+
 const CreateUser = () => {
   const {
     userData,
@@ -16,13 +18,14 @@ const CreateUser = () => {
 
   const handleContinue = () => {
     if (userData.name.trim() === '') {
+      toast.warn('Nome do usuário não pode ser vazio!');
       return;
     }
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
       navigate('/register');
-    }, 1000);
+    }, 100);
   };
 
   return (

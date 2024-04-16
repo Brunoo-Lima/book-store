@@ -5,6 +5,9 @@ import Checkbox from '../form/Checkbox';
 import TextArea from '../form/TextArea';
 import { useUserContext } from '../../hooks/useUserContext';
 import Loading from '../utils/Loading';
+import { toast } from 'react-toastify';
+
+import { useDebounce } from 'use-debounce';
 
 const EditBook = () => {
   const { id } = useParams<{ id: string }>();
@@ -24,24 +27,27 @@ const EditBook = () => {
     setLoading,
   } = useUserContext();
 
+  useDebounce(handleChangeEvents, 300);
+
   useEffect(() => {
     setLoading(true);
     if (id === undefined) {
-      return alert(`ID não definido: ${id}`);
+      toast.warn(`ID não definido: ${id}`);
+      return;
     }
 
     const parsedId = parseInt(id);
 
     if (isNaN(parsedId)) {
       // ID inválido
-      alert(`O ID fornecido não é um número válido: ${id}`);
+      toast.error(`O ID fornecido não é um número válido: ${id}`);
       return;
     }
 
     const book = listBooks.find((book) => book.id === parsedId);
     if (!book) {
       // Livro não encontrado
-      alert(`Não foi possível encontrar um livro com o ID: ${id}`);
+      toast.warn(`Não foi possível encontrar um livro com o ID: ${id}`);
       return;
     }
     setTimeout(() => {
@@ -54,6 +60,7 @@ const EditBook = () => {
   const handleEditSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     updateBookById(bookData.id, bookData);
+    toast.success('Livro atualizado com sucesso!');
     navigate('/consult');
 
     setTimeout(() => {

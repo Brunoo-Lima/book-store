@@ -19,10 +19,12 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           value={value}
           onChange={onChange}
           {...rest}
+          minLength={10}
+          required
         />
       </div>
     );
-  },
+  }
 );
 
 export default TextArea;

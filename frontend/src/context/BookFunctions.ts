@@ -7,6 +7,8 @@ import {
   TypeGroupPricing,
 } from './types/types';
 
+import { toast } from 'react-toastify';
+
 export const useBookFunctions = (): BookContextTypes => {
   const initialBookData: BookType = {
     id: Math.floor(Math.random() * 10000),
@@ -47,7 +49,7 @@ export const useBookFunctions = (): BookContextTypes => {
   useEffect(() => {
     const timeout = setTimeout(() => {
       setLoading(false);
-    }, 1000);
+    }, 100);
 
     return () => clearTimeout(timeout);
   }, [setLoading]);
@@ -61,13 +63,37 @@ export const useBookFunctions = (): BookContextTypes => {
       author: bookData.author.filter((author) => author.trim() !== ''),
     };
 
+    const requiredFields = [
+      bookData.author,
+      bookData.title,
+      bookData.year,
+      bookData.publisher,
+      bookData.edition,
+      bookData.ISBN,
+      bookData.pages,
+      bookData.synopsis,
+      bookData.height,
+      bookData.width,
+      bookData.weight,
+      bookData.depth,
+      bookData.barCode,
+    ];
+
+    const isValid = requiredFields.every((fields) => !!fields);
+
+    if (!isValid) {
+      toast.warning('Campos nao podem ser vazios!');
+      return;
+    }
+
     // Adicionar o livro à lista de livros
     addBook(newBookData);
+    toast.success('Livro adicionado!');
 
     setTimeout(() => {
       // Limpar o estado para um novo livro
       setBookData(initialBookData);
-    }, 1000);
+    }, 100);
     setLoading(false);
   };
 
@@ -90,6 +116,11 @@ export const useBookFunctions = (): BookContextTypes => {
       status: newData.status ?? bookToUpdate.status,
     };
 
+    if (bookData.justifyStatus === '' || !bookData.categoryOfChange) {
+      toast('Campos Vazios!');
+      return;
+    }
+
     //Atualiza o estado com o livro atualizado
     const updateBooksData = listBooks.map((book) =>
       book.id === bookToUpdate.id ? updatedBook : book
@@ -109,7 +140,7 @@ export const useBookFunctions = (): BookContextTypes => {
         : prevBookData.category.filter((category) => category !== value); // Remove a categoria desmarcada
 
       if (updatedCategories.length === 0) {
-        alert('Selecione pelo menos uma categoria!');
+        toast.warn('Selecione pelo menos uma categoria!');
       }
 
       return {

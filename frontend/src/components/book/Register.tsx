@@ -5,6 +5,8 @@ import Checkbox from './../form/Checkbox';
 import mockDataCategories from '../../config/mockDataCategories';
 import { useUserContext } from '../../hooks/useUserContext';
 
+import {useDebounce} from 'use-debounce';
+
 const Register = () => {
   const {
     handleBookSubmit,
@@ -14,6 +16,8 @@ const Register = () => {
     handleAuthorInputChange,
     handleChangeEvents,
   } = useUserContext();
+
+  useDebounce(handleChangeEvents, 300);
 
   return (
     <div className="flex flex-col justify-center items-center h-screen">

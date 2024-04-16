@@ -3,6 +3,9 @@ import { useUserContext } from '../../hooks/useUserContext';
 import { useEffect } from 'react';
 import TextArea from '../form/TextArea';
 
+import { useDebounce } from 'use-debounce';
+import { toast } from 'react-toastify';
+
 const StatusBook = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -17,22 +20,27 @@ const StatusBook = () => {
     updateBookData,
   } = useUserContext();
 
+  useDebounce(handleChangeEvents, 300);
+
   useEffect(() => {
     setLoading(true);
 
-    if (id === undefined) return alert(`ID não definido: ${id}`);
+    if (id === undefined) {
+      toast.warn(`ID não definido: ${id}`);
+      return;
+    }
 
     const parseId = parseInt(id);
 
     if (isNaN(parseId)) {
-      alert(`O Id fornecido não é um número válido: ${id}`);
+      toast.error(`O Id fornecido não é um número válido: ${id}`);
       return;
     }
 
     const book = listBooks.find((book) => book.id === parseId);
 
     if (!book) {
-      alert(`Não foi possível encontrar um livro com o ID: ${id}`);
+      toast.warn(`Não foi possível encontrar um livro com o ID: ${id}`);
       return;
     }
 
@@ -46,6 +54,7 @@ const StatusBook = () => {
   const handleModifiedSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     updateBookData(bookData, bookData);
+    toast.success('Status atualizado com sucesso!');
 
     navigate('/consult');
 
