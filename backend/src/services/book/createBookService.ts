@@ -2,7 +2,7 @@ import { BookDAO } from "../../dao/book/bookDAO";
 import { AuthorDomain } from "../../domain/Author";
 import BookDomain from "../../domain/Book";
 import { CategoryDomain } from "../../domain/Category";
-import { BookDTO } from "../../DTO/bookDTO";
+import { BookDTO } from "../../types/types";
 
 export default class CreateBookService {
     //Returns "BookDTO" because I don't know what it returned in "req.body", but I can force

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import CreateBookService from "../../services/book/CreateBookService";
+import CreateBookService from "../../services/book/createBookService";
 
 export default class CreateBookController {
     async handle(req: Request, res: Response, next: NextFunction) {
