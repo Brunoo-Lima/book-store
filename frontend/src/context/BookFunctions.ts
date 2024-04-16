@@ -39,7 +39,7 @@ export const useBookFunctions = (): BookContextTypes => {
   const [loading, setLoading] = useState(true);
   const [filterGroup, setFilterGroup] = useState('DEFAULT');
   const [filterPrice, setFilterPrice] = useState(0);
-  const [filterCategories, setFilterCategories] = useState(['']);
+  const [filterCategories, setFilterCategories] = useState(['All']);
   const [sort, setSort] = useState('Asc');
 
   const addBook = (book: BookType) => {
@@ -127,7 +127,6 @@ export const useBookFunctions = (): BookContextTypes => {
     );
 
     //Atualiza a lista de livros com os novos dados do livro
-
     setListBooks(updateBooksData);
   };
 

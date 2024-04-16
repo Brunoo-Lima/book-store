@@ -41,7 +41,7 @@ const ListBooks = ({
     const searchFilterPrice = filterPrice === 0 || +book.value <= filterPrice;
 
     const searchFilterCategories =
-      filterCategories.includes('Todas') ||
+      filterCategories.includes('All') ||
       filterCategories.some((category) => book.category.includes(category));
 
     return (

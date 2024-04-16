@@ -13,7 +13,7 @@ type NavbarProps = {
 };
 
 const categories: Option[] = [
-  { value: 'Todas', label: 'Todas' },
+  { value: 'All', label: 'Todas' },
   { value: 'Biografia/Autobiografia', label: 'Biografia/Autobiografia' },
   { value: 'Ensaio', label: 'Ensaio' },
   { value: 'Fantasia', label: 'Fantasia' },
