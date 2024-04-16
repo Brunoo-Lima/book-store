@@ -1,9 +1,9 @@
 type InputRangeProps = {
-  price: number;
+  filterPrice: number;
   handlePriceChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-const InputRange = ({ price, handlePriceChange }: InputRangeProps) => {
+const InputRange = ({ filterPrice, handlePriceChange }: InputRangeProps) => {
   return (
     <div className="flex items-center gap-1">
       <label htmlFor="price">Preço:</label>
@@ -13,7 +13,7 @@ const InputRange = ({ price, handlePriceChange }: InputRangeProps) => {
         name="price"
         min={10}
         max={500}
-        value={price}
+        value={filterPrice}
         onChange={handlePriceChange}
       />
       R$ 500,00

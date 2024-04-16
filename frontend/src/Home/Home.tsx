@@ -31,7 +31,7 @@ const Home = () => {
     setTimeout(() => {
       setLoading(false);
       navigate(href);
-    }, 2000);
+    }, 1000);
   };
 
   return (

@@ -78,8 +78,11 @@ export type BookContextTypes = {
     index: number
   ) => void;
 
-  filter: string;
-  setFilter: React.Dispatch<React.SetStateAction<string>>;
+  filterGroup: string;
+  setFilterGroup: React.Dispatch<React.SetStateAction<string>>;
+
+  filterPrice: number;
+  setFilterPrice: React.Dispatch<React.SetStateAction<number>>;
 
   filterCategories: string[];
   setFilterCategories: React.Dispatch<React.SetStateAction<string[]>>;

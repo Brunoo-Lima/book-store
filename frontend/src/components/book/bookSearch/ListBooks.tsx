@@ -13,7 +13,14 @@ const ListBooks = ({
   searchAuthor,
   searchPublisher,
 }: ListBooksProps) => {
-  const { loading, listBooks, sort, filterCategories } = useUserContext();
+  const {
+    loading,
+    listBooks,
+    sort,
+    filterCategories,
+    filterGroup,
+    filterPrice,
+  } = useUserContext();
 
   const filteredBooks = listBooks.filter((book) => {
     const searchBooks = book.title
@@ -28,12 +35,22 @@ const ListBooks = ({
       author.toLowerCase().includes(searchAuthor.toLowerCase())
     );
 
+    const searchFilterGroup =
+      filterGroup === 'DEFAULT' || book.groupPricing === filterGroup;
+
+    const searchFilterPrice = filterPrice === 0 || +book.value <= filterPrice;
+
     const searchFilterCategories =
-      filterCategories.includes('All') ||
+      filterCategories.includes('Todas') ||
       filterCategories.some((category) => book.category.includes(category));
 
     return (
-      searchBooks && searchPublishers && searchAuthors && searchFilterCategories
+      searchBooks &&
+      searchPublishers &&
+      searchAuthors &&
+      searchFilterGroup &&
+      searchFilterPrice &&
+      searchFilterCategories
     );
   });
 

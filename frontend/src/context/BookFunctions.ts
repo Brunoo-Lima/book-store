@@ -35,7 +35,8 @@ export const useBookFunctions = (): BookContextTypes => {
   const [listBooks, setListBooks] = useState<BookType[]>([]);
   const [bookData, setBookData] = useState<BookType>(initialBookData);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('All');
+  const [filterGroup, setFilterGroup] = useState('DEFAULT');
+  const [filterPrice, setFilterPrice] = useState(0);
   const [filterCategories, setFilterCategories] = useState(['']);
   const [sort, setSort] = useState('Asc');
 
@@ -46,7 +47,7 @@ export const useBookFunctions = (): BookContextTypes => {
   useEffect(() => {
     const timeout = setTimeout(() => {
       setLoading(false);
-    }, 2000);
+    }, 1000);
 
     return () => clearTimeout(timeout);
   }, [setLoading]);
@@ -160,8 +161,10 @@ export const useBookFunctions = (): BookContextTypes => {
     initialBookData,
     loading,
     setLoading,
-    filter,
-    setFilter,
+    filterGroup,
+    setFilterGroup,
+    filterPrice,
+    setFilterPrice,
     filterCategories,
     setFilterCategories,
     sort,

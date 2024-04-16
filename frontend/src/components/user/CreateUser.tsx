@@ -22,7 +22,7 @@ const CreateUser = () => {
     setTimeout(() => {
       setLoading(false);
       navigate('/register');
-    }, 2000);
+    }, 1000);
   };
 
   return (

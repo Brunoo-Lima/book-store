@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Input from '../form/Input';
 import InputRange from '../form/InputRange';
 import { FormatCurrency } from '../utils/formatCurrency';
@@ -13,7 +13,7 @@ type NavbarProps = {
 };
 
 const categories: Option[] = [
-  { value: 'All', label: 'Todas' },
+  { value: 'Todas', label: 'Todas' },
   { value: 'Biografia/Autobiografia', label: 'Biografia/Autobiografia' },
   { value: 'Ensaio', label: 'Ensaio' },
   { value: 'Fantasia', label: 'Fantasia' },
@@ -33,11 +33,18 @@ const Navbar = ({
   searchPublisher,
   setSearchPublisher,
 }: NavbarProps) => {
-  const [price, setPrice] = useState(10);
-  const { filterCategories, setFilterCategories, setSort } = useUserContext();
+  const {
+    filterGroup,
+    setFilterGroup,
+    filterPrice,
+    setFilterPrice,
+    filterCategories,
+    setFilterCategories,
+    setSort,
+  } = useUserContext();
 
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPrice(parseInt(e.target.value));
+    setFilterPrice(parseInt(e.target.value));
   };
 
   return (
@@ -72,8 +79,8 @@ const Navbar = ({
           <h2>Grupo de precificação:</h2>
 
           <select
-          // value={filterGroup}
-          // onChange={(e) => setFilterGroup(e.target.value)}
+            value={filterGroup}
+            onChange={(e) => setFilterGroup(e.target.value)}
           >
             <option value="DEFAULT">TODOS</option>
             <option value="BRONZE">BRONZE</option>
@@ -105,11 +112,14 @@ const Navbar = ({
           <p>
             Faixa de preço:{' '}
             <span className="font-semibold">
-              {FormatCurrency('BRL', price)}
+              {FormatCurrency('BRL', filterPrice)}
             </span>
           </p>
 
-          <InputRange price={price} handlePriceChange={handlePriceChange} />
+          <InputRange
+            filterPrice={filterPrice}
+            handlePriceChange={handlePriceChange}
+          />
         </div>
       </div>
     </div>
