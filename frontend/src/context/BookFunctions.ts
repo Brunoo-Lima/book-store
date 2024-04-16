@@ -101,19 +101,22 @@ export const useBookFunctions = (): BookContextTypes => {
   };
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    const isChecked = bookData.category.includes(value);
+    const { value, checked } = e.target;
 
-    if (isChecked === true) {
-      return alert('Escolha uma categoria');
-    }
+    setBookData((prevBookData) => {
+      const updatedCategories = checked
+        ? [...prevBookData.category, value] // Adiciona a categoria selecionada
+        : prevBookData.category.filter((category) => category !== value); // Remove a categoria desmarcada
 
-    setBookData((prevBookData) => ({
-      ...prevBookData,
-      category: isChecked
-        ? prevBookData.category.filter((category) => category !== value)
-        : [...prevBookData.category, value],
-    }));
+      if (updatedCategories.length === 0) {
+        alert('Selecione pelo menos uma categoria!');
+      }
+
+      return {
+        ...prevBookData,
+        category: updatedCategories,
+      };
+    });
   };
 
   //metodos para autor
