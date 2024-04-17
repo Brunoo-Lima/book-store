@@ -22,7 +22,7 @@ export default class CreateBookService {
             categories: categoriesDomain,
         });
 
-        const thisBookExist = await bookDAO.findFirstBook(bookDomain);
+        const thisBookExist = await bookDAO.findFirstBook(bookDomain.title);
         if (thisBookExist) throw new Error('Book already exist !');
 
         const book = await bookDAO.createBook(bookDomain);

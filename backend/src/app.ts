@@ -1,6 +1,5 @@
 import express from "express";
 import "express-async-errors";
-import helmet from "helmet";
 import cors from "cors";
 import errorHandler from "./error/errorHandler";
 import bookRouter from "./Routes/book";
@@ -18,7 +17,6 @@ class App {
     private middlewares(): void {
         this.app.use(express.json());
         this.app.use(cors());
-        this.app.use(helmet());
         this.app.use(errorHandler);
     }
 

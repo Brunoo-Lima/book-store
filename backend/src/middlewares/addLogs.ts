@@ -1,8 +1,9 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import LogsChangeDao from "../dao/logs/LogsChangeDAO";
+import { CustomRequest } from "../controllers/book/CreateBookController";
 
-export const addLogsChange = async (req: Request, res: Response) => {
-    const { logsChange } = req.body;
+export const addLogsChange = async (req: CustomRequest, res: Response) => {
+    const { logsChange } = req;
     if(!logsChange) return res.status(400).json('Error logs does not sent !');
 
     const {boo_id, userId, description} = logsChange;

@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import UserDAO from '../dao/user/userDAO';
+import { CustomRequest } from '../controllers/book/CreateBookController';
 
-export interface CustomRequest extends Request {
+export interface TokenRequest extends CustomRequest{
     token: string | JwtPayload;
 }
 
@@ -23,7 +24,7 @@ export default async (req: Request, res: Response, next: NextFunction) => {
         if (!data || !data.use_id || !data.use_name) throw new Error('Invalid token payload');
 
         const { use_id, use_name } = data;
-        (req as CustomRequest).token = data; // Typing the data as CustomRequest
+        (req as TokenRequest).token = data; // Typing the data as TokenRequest
 
         const verifyUser = await UserDAO.findUser(use_name, use_id);
         if (!verifyUser) {
@@ -31,7 +32,9 @@ export default async (req: Request, res: Response, next: NextFunction) => {
                 error: 'That user does not exist!',
             });
         }
-        req.body.userId = use_id; // I created
+        //Force the "userID" be of type "TokenRequest"
+        (req as TokenRequest).userId = use_id; // I created
+
         return next();
     } catch (e) {
         return res.status(401).json({

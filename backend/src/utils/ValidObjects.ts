@@ -1,8 +1,8 @@
 import { LooseObject, QueryProps, BookDTO} from "../types/types";
 
-
+//This class allows me to send the formatted keys to the database
 export default class ValidObjectBook {
-    private convertObjectToQuery(data: BookDTO){
+    public static convertObjectToQuery(data: BookDTO){
         const objectConverted: QueryProps = {
             boo_bar_code: data.codeBar,
             boo_category_change: data.categoryOfChange,
@@ -28,7 +28,9 @@ export default class ValidObjectBook {
         }
         return objectConverted;
     }
-    public removeValuesUndefined(data: BookDTO): QueryProps {
+
+    //This method remove all undefined values from the object
+    public static removeValuesUndefined(data: BookDTO): QueryProps {
         const dataQueryBook: LooseObject = this.convertObjectToQuery(data);
 
         for (const key in dataQueryBook) {

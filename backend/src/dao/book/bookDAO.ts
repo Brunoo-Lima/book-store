@@ -1,5 +1,6 @@
 import BookDomain from '../../domain/Book'
 import { prisma } from '../../prisma/prismaClient';
+import { QueryProps } from '../../types/types';
 import AuthorDAO from '../author/AuthorDAO';
 import CategoryDAO from '../category/CategoryDAO';
 import { GroupPricingDAO } from '../groupPricing/groupPricingDAO';
@@ -100,14 +101,19 @@ class BookDAO {
         });
         return { book }
     }
-    async findFirstBook(book: BookDomain) {
+    async findFirstBook(bookTitle: string) {
         return await prisma.book.findFirst({
             where: {
-                boo_title: book.title,
+                boo_title: bookTitle,
             }
         })
     }
-
+    async updateFirstBook(dataBookToUpdate: QueryProps){
+        return await prisma.book.update({
+            where: {boo_title: dataBookToUpdate.boo_title},
+            data: {...dataBookToUpdate}
+        })
+    }
 }
 
 export { BookDAO };
