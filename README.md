@@ -33,6 +33,8 @@ yarn
 - TypeScript
 - Prisma ORM
 
-## Diagramas representativos do sistema
+## Diagramas do sistema
 
-![Diagrama de classes] ([https://github.com/Brunoo-Lima/book-store/issues/1#issue-2250760652])
+### Diagrama de Classes
+
+![BookShopClasses drawio](https://github.com/Brunoo-Lima/book-store/assets/112290478/b263c16a-2c1d-4999-8ff8-c7f72dfd6fe5)
