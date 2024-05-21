@@ -1,6 +1,10 @@
-export class CategoryDomain {
+import { randomUUID } from "crypto";
+import EntityDomain from "./EntityDomain";
+
+export class CategoryDomain extends EntityDomain {
     constructor(private category: string) {
-        this.category = category;
+        const date = Date.toString();
+        super(randomUUID(), date, date);
     }
     get name() {
         return this.category;

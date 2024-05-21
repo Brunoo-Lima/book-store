@@ -1,5 +1,6 @@
 import { AuthorDomain } from "./Author";
 import { CategoryDomain } from "./Category";
+import EntityErrorException from "./Errors/EntityErrorException";
 import Product, { ProductProps } from "./Product";
 import ISBN from "./Validations/ISBN";
 
@@ -11,7 +12,7 @@ export interface BookProps extends ProductProps {
     title: string;
     publisher: string;
     edition: string;
-    ISBN: string;
+    readonly ISBN: string;
     pages: number;
     synopsis: string;
     width: number,
@@ -31,8 +32,6 @@ export default class Book extends Product {
             costProduct: bookProps.costProduct,
             quantity: bookProps.quantity,
         });
-        const isbn = new ISBN(bookProps.ISBN);
-        isbn.validISBN();
     }
 
     get code() {
@@ -96,35 +95,8 @@ export default class Book extends Product {
     get publisher() {
         return this.bookProps.publisher;
     }
-
-    //Method factory to create a new default book
-    public static createBook(bookData: Partial<BookProps>): Book {
-        const defaultBookData: BookProps = {
-            justifyStatus: 'CREATED NEW BOOK',
-            categoryOfChange: "ACTIVATE DEFAULT",
-            code: "UNDEFINED",
-            status: "ACTIVATE",
-            codeBar: "UNDEFINED",
-            priceAcquisition: 0,
-            costProduct: 0,
-            quantity: 0,
-            authors: {} as AuthorDomain[],
-            year: 0,
-            categories: {} as CategoryDomain[],
-            title: "WITHOUT TITLE",
-            publisher: "WITHOUT PUBLISHER",
-            edition: "WITHOUT EDITION",
-            ISBN: "UNDEFINED",
-            pages: 0,
-            synopsis: "WITHOUT ",
-            width: 0,
-            height: 0,
-            weight: 0,
-            depth: 0,
-        };
-
-        const mergedBookData = { ...defaultBookData, ...bookData };
-        return new Book(mergedBookData);
+    public isbnValidated(value: string): boolean{
+        const isbn = new ISBN(value).validISBN();
+        return isbn;
     }
-
 }

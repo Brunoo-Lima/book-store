@@ -1,12 +1,14 @@
+import EntityErrorException from "../Errors/EntityErrorException";
+
 export default class ISBN {
-    constructor(private value: string) {}
+    constructor(private value: string) { }
 
     public validISBN() {
         const isbnFormatted = Array.from(this.removeCharacters());
-       (isbnFormatted.length !== 12)
-       ? this.checkIsbnThirteenDigits(isbnFormatted)
-       :this.checkIsbnTenDigits(isbnFormatted);
-
+        const isbValid = (isbnFormatted.length === 12)
+            ? this.checkIsbnThirteenDigits(isbnFormatted)
+            : this.checkIsbnTenDigits(isbnFormatted);
+        return isbValid;
     }
 
     private checkIsbnThirteenDigits(isbn: string[]) {
@@ -21,7 +23,7 @@ export default class ISBN {
 
         }
         const digitChecked = this.checkDigit(productSum, checkDigitIs);
-        if (!digitChecked) throw new Error('ISBN-13 is invalid !')
+        return digitChecked;
     }
 
     private checkIsbnTenDigits(isbn: string[]) {

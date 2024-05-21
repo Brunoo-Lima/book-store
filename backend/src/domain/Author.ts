@@ -1,15 +1,13 @@
-interface AuthorDomainProps {
-    name: string;
-}
+import { randomUUID } from "crypto";
+import EntityDomain from "./EntityDomain";
 
-export class AuthorDomain {
-    private props: AuthorDomainProps;
-
-    constructor(props: AuthorDomainProps) {
-        this.props = props;
+export class AuthorDomain extends EntityDomain{
+    constructor(private name: string) {
+        const date = Date.toString();
+        super(randomUUID(),date, date);
     }
 
-    get name() {
-        return this.props.name;
+    get nameIs() {
+        return this.name;
     }
 }

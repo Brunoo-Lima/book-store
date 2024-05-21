@@ -1,5 +1,8 @@
+import { randomUUID } from "crypto";
+import EntityDomain from "./EntityDomain";
 import GroupPricing from "./GroupPricing";
-import Validator from "./Validations/TypePricing";
+import MarginProfitValidator from "./Validations/MarginProfit";
+
 
 
 export interface ProductProps {
@@ -12,15 +15,12 @@ export interface ProductProps {
     quantity: number;
 }
 
-export default abstract class Product {
-    private groupPricing: GroupPricing;
-    private marginProfit: number;
+export default abstract class Product extends EntityDomain{
+    private groupPricing: GroupPricing | null = null;
 
     constructor(private productProps: ProductProps){
-        this.marginProfit = this.calculateMarginProfit(this.productProps.priceAcquisition);
-        this.groupPricing = this.addGroupPricing();
-        this.checkQuantity(productProps.quantity);
-        this.changeStatus(productProps.status, productProps.justifyStatus);
+        const date = Date.toString();
+        super(randomUUID(), date, date);
     }
 
     get priceAcquisition() {
@@ -48,34 +48,34 @@ export default abstract class Product {
     public get quantity(): number {
         return this.productProps.quantity;
     }
-    public alterPriceAcquisition(newValue: number, costProduct?: number): boolean {
 
-        //If someone sent the cost, the calculate is other
-        if (costProduct) this.productProps.costProduct = costProduct;
-        const marginProfit = this.calculateMarginProfit(newValue);
-        const typePricing = Validator.validateTypePricing(marginProfit);
+    //I cannot modify the price acquisition if the group pricing is different
+    public alterPriceAcquisition(newPrice: number, costProduct?: number): boolean {
+        let valid = false
 
-        //Check that the margin profit is the same as the margin class
-        if(typePricing === this.groupPricing?.typePricingIs){
-            this.productProps.priceAcquisition = newValue;
-            this.marginProfit = marginProfit;
-            return true;
+        //If the product cost is other, i use the new product cost, else, i use the old cost
+        const cost = costProduct || this.costProduct
+        const newGroupPricing = this.addGroupPricing(newPrice, cost);
+
+        if(this.groupPricingIs.typePricingIs === newGroupPricing.typePricingIs){
+            if(costProduct) this.productProps.costProduct = costProduct
+
+            this.groupPricing = newGroupPricing;
+            this.productProps.priceAcquisition = newPrice
+            valid = true
         }
-        return false;
+        return valid;
     }
 
-    private calculateMarginProfit(priceProduct: number): number {
-        const { costProduct } = this.productProps;
-        if(costProduct === 0 || priceProduct === 0) return 0;
-        return ((priceProduct - costProduct) / priceProduct) * 100;
-    }
-    private addGroupPricing(): GroupPricing {
-        return new GroupPricing(this.marginProfit as number);
+    private addGroupPricing(priceAcquisition: number, costProduct: number){
+        const marginProfit = MarginProfitValidator.calculateMarginProfit(priceAcquisition, costProduct)
+        return  new GroupPricing(marginProfit);
     }
 
     //Inactivate/Activate automatically
-    protected changeStatus(status:string, justify:string) {
-
+    protected changeStatus(status:"ACTIVATE" | "INACTIVATE", justify:string) {
+        this.productProps.status = status;
+        this.productProps.justifyStatus = justify;
     }
 
     //This validation can be in the front-end
