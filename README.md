@@ -1,10 +1,15 @@
 # PROJETO BookShop para a disciplina de Engenharia de Software 3
 
-Consulte **[Implantação](#-implanta%C3%A7%C3%A3o)** para saber como implantar o projeto.
+## ✒️ Autores
+
+###
+
+```
+Danilo de Araújo Leite Gomes,
+Bruno Jean de Souza Lima
+```
 
 ### 📋 Pré-requisitos
-
-Certifique-se de que tenha algum gerenciador de pacotes intalado na sua máquina, como:
 
 ```
 npm
@@ -28,11 +33,8 @@ yarn
 - TypeScript
 - Prisma ORM
 
-## ✒️ Autores
+## Diagramas do sistema
 
-###
+### Diagrama de Classes
 
-```
-Danilo de Araújo Leite Gomes,
-Bruno Jean de Souza Lima
-```
+![BookShopClasses drawio](https://github.com/Brunoo-Lima/book-store/assets/112290478/b263c16a-2c1d-4999-8ff8-c7f72dfd6fe5)
