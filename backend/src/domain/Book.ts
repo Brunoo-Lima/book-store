@@ -1,6 +1,5 @@
 import { AuthorDomain } from "./Author";
 import { CategoryDomain } from "./Category";
-import EntityErrorException from "./Errors/EntityErrorException";
 import Product, { ProductProps } from "./Product";
 import ISBN from "./Validations/ISBN";
 
@@ -12,7 +11,7 @@ export interface BookProps extends ProductProps {
     title: string;
     publisher: string;
     edition: string;
-    readonly ISBN: string;
+    ISBN: string;
     pages: number;
     synopsis: string;
     width: number,
@@ -31,6 +30,7 @@ export default class Book extends Product {
             priceAcquisition: bookProps.priceAcquisition,
             costProduct: bookProps.costProduct,
             quantity: bookProps.quantity,
+            groupPricing: bookProps.groupPricing
         });
     }
 

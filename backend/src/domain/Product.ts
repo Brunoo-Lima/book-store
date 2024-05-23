@@ -1,9 +1,5 @@
 import { randomUUID } from "crypto";
 import EntityDomain from "./EntityDomain";
-import GroupPricing from "./GroupPricing";
-import MarginProfitValidator from "./Validations/MarginProfit";
-
-
 
 export interface ProductProps {
     status: "ACTIVATE" | "INACTIVATE";
@@ -13,73 +9,78 @@ export interface ProductProps {
     priceAcquisition: number;
     costProduct: number;    //Include expense
     quantity: number;
+    groupPricing: {
+        type: string,
+        percent: number;
+    };
 }
 
-export default abstract class Product extends EntityDomain{
-    private groupPricing: GroupPricing | null = null;
+export default abstract class Product extends EntityDomain {
 
-    constructor(private productProps: ProductProps){
+    constructor(private productProps: ProductProps) {
         const date = Date.toString();
         super(randomUUID(), date, date);
     }
 
-    get priceAcquisition() {
+    public get priceAcquisition(): number {
         return this.productProps.priceAcquisition;
     }
-    public get groupPricingIs(): GroupPricing {
-        return this.groupPricing!;
+
+    public set priceAcquisition(value: number) {
+        this.productProps.priceAcquisition = value;
     }
 
-    public get costProduct() : number{
+    public get groupPricingIs(): object {
+        return this.productProps.groupPricing;
+    }
+
+    public set groupPricingIs(value: any) { //Verify the type
+        this.productProps.groupPricing = value;
+    }
+
+    public get costProduct(): number {
         return this.productProps.costProduct;
     }
 
-    public get categoryChange() : string {
+    public set costProduct(value: number) {
+        this.productProps.costProduct = value;
+    }
+
+    public get categoryChange(): string {
         return this.productProps.categoryOfChange!;
     }
 
-    public get justifyStatus() : string {
+    public set categoryChange(value: string) {
+        this.productProps.categoryOfChange = value;
+    }
+
+    public get justifyStatus(): string {
         return this.productProps.justifyStatus!;
     }
 
-    public get status() : string {
+    public set justifyStatus(value: string) {
+        this.productProps.justifyStatus = value;
+    }
+
+    public get status(): string {
         return this.productProps.status;
     }
+
+    public set status(value: "ACTIVATE" | "INACTIVATE") {
+        this.productProps.status = value;
+    }
+
     public get quantity(): number {
         return this.productProps.quantity;
     }
 
-    //I cannot modify the price acquisition if the group pricing is different
-    public alterPriceAcquisition(newPrice: number, costProduct?: number): boolean {
-        let valid = false
-
-        //If the product cost is other, i use the new product cost, else, i use the old cost
-        const cost = costProduct || this.costProduct
-        const newGroupPricing = this.addGroupPricing(newPrice, cost);
-
-        if(this.groupPricingIs.typePricingIs === newGroupPricing.typePricingIs){
-            if(costProduct) this.productProps.costProduct = costProduct
-
-            this.groupPricing = newGroupPricing;
-            this.productProps.priceAcquisition = newPrice
-            valid = true
-        }
-        return valid;
-    }
-
-    private addGroupPricing(priceAcquisition: number, costProduct: number){
-        const marginProfit = MarginProfitValidator.calculateMarginProfit(priceAcquisition, costProduct)
-        return  new GroupPricing(marginProfit);
+    public set quantity(value: number) {
+        this.productProps.quantity = value;
     }
 
     //Inactivate/Activate automatically
-    protected changeStatus(status:"ACTIVATE" | "INACTIVATE", justify:string) {
-        this.productProps.status = status;
-        this.productProps.justifyStatus = justify;
-    }
-
-    //This validation can be in the front-end
-    private checkQuantity(quantity: number){
-        if(quantity < 0) this.productProps.quantity = 0;
-    }
+    protected changeStatus(status: "ACTIVATE" | "INACTIVATE", justify: string) {
+    this.productProps.status = status;
+    this.productProps.justifyStatus = justify;
+}
 }

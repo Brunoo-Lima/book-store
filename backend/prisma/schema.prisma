@@ -43,9 +43,7 @@ model Book {
     boo_height            Float
     boo_weight            Float
     boo_depth             Float
-    boo_grp_id            GroupPricing @relation(fields: [fk_boo_grp_id], references: [grp_id])
     boo_logChange         LogsChange[]
-    fk_boo_grp_id         String
     fk_boo_aut_id         Author[]
     fk_boo_cte_id         Category[]
     created_at      DateTime? @default(now())
@@ -66,14 +64,6 @@ model Category {
     cte_book Book[]
 
     @@map("categories")
-}
-
-model GroupPricing {
-    grp_id           String @id @default(uuid())
-    grp_type_pricing String @unique
-    grp_book         Book[]
-
-    @@map("groups")
 }
 
 model LogsChange {
