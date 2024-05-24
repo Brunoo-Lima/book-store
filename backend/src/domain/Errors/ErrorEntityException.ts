@@ -1,4 +1,4 @@
-export default class EntityErrorException extends Error {
+export default class ErrorEntityException extends Error {
     constructor(message:string){
         super(message);
     }

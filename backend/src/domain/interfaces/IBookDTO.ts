@@ -20,4 +20,8 @@ export interface IBookDTO {
     height: number,
     weight: number,
     depth: number,
+    groupPricing: {
+        type: string,
+        percent: number; //This'll be a float number
+    }
 }

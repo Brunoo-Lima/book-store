@@ -1,10 +1,14 @@
-import EntityErrorException from "../Errors/EntityErrorException";
+import Book from "../Book";
+import { ErrorValidationsException } from "../Errors/ErrorValidationsException";
+import { IStrategy } from "../interfaces/IStrategy";
 
-export default class ISBN {
-    constructor(private value: string) { }
+export default class ISBN implements IStrategy{
+    process(book: Book): void {
+        if(book.ISBN === '' || !this.validISBN(book)) throw new ErrorValidationsException('ISBN is invalid !');
+    }
 
-    public validISBN() {
-        const isbnFormatted = Array.from(this.removeCharacters());
+    private validISBN(book: Book) {
+        const isbnFormatted = Array.from(this.removeCharacters(book));
         const isbValid = (isbnFormatted.length === 12)
             ? this.checkIsbnThirteenDigits(isbnFormatted)
             : this.checkIsbnTenDigits(isbnFormatted);
@@ -44,8 +48,8 @@ export default class ISBN {
         return (10 - result) === digit;
     }
 
-    private removeCharacters() {
-        const stringFormatted = this.value.replace(/[^\d]+/g, '').trim(); //  /[^\d]+/g === remove characters
+    private removeCharacters(book: Book) {
+        const stringFormatted = book.ISBN.replace(/[^\d]+/g, '').trim(); //  /[^\d]+/g === remove characters
         return stringFormatted;
     }
 

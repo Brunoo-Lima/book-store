@@ -1,7 +1,7 @@
 import { randomUUID } from "crypto";
 import EntityDomain from "./EntityDomain";
 
-export class CategoryDomain extends EntityDomain {
+export class Category extends EntityDomain {
     constructor(private category: string) {
         const date = Date.toString();
         super(randomUUID(), date, date);

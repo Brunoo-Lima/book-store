@@ -1,8 +1,8 @@
 import EntityDomain from "../EntityDomain";
 
 export interface IDao{
-    create(entity: EntityDomain): void;
-    update(entity: EntityDomain): void;
+    create(entity: EntityDomain): Promise<Object | null>;
+    update(entity: EntityDomain): Promise<Object | null>;
     findUnique(entity: EntityDomain): Promise<Object | null>;
-    delete(entity: EntityDomain): void;
+    inactivate(entity: EntityDomain): void;
 }

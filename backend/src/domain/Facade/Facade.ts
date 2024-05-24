@@ -6,47 +6,84 @@ import { IStrategy } from "../interfaces/IStrategy";
 
 // Context of Strategy
 export default class Facade implements IFacade {
-    private validationStrategy: IStrategy;
-    private daoStrategy: IDao;
+    private validationStrategies: IStrategy[];
+    private daos: Map<string, IDao>;
 
-    // Constructor that accepts a validation strategy
-    constructor(validationStrategy: IStrategy) {
-        this.validationStrategy = validationStrategy;
+    // Constructor that accepts a list of validation strategies
+    constructor(validationStrategies: IStrategy[]) {
+        this.validationStrategies = validationStrategies;
+        this.daos = new Map<string, IDao>();
+        this.initializeDaos();
     }
 
-    // Set the DAO strategy at runtime
-    setDaoStrategy(dao: IDao): void {
-        this.daoStrategy = dao;
+    // Initialize the map of DAOs
+    private initializeDaos(): void {
+        this.daos.set("BOOK", new BookDao());
     }
 
-    // Save an entity using the validation strategy and DAO strategy
-    save(entity: EntityDomain): void {
-        this.validationStrategy.process(entity);
-        this.getDaoForEntity(entity).create(entity);
+    // Apply all validation strategies to the entity
+    private validateEntity(entity: EntityDomain): void {
+        for (const strategy of this.validationStrategies) {
+            strategy.process(entity);
+        }
     }
 
-    update(entity: EntityDomain): void {
-        this.validationStrategy.process(entity);
-        this.getDaoForEntity(entity).update(entity);
+    // Save an entity using the validation strategies and DAO strategy
+    async save(entity: EntityDomain): Promise<Object | null> {
+        try {
+            this.validateEntity(entity);
+            const dao = this.getDaoForEntity(entity);
+            if (dao) {
+                return await dao.create(entity);
+            }
+            return null;
+        } catch (error) {
+            console.error("Error saving entity:", error);
+            throw error;
+        }
     }
 
-    inactivate(entity: EntityDomain): void {
-        this.validationStrategy.process(entity);
-        this.getDaoForEntity(entity).delete(entity);
+    async update(entity: EntityDomain): Promise<Object | null> {
+        try {
+            this.validateEntity(entity);
+            const dao = this.getDaoForEntity(entity);
+            if (dao) {
+                return await dao.update(entity);
+            }
+            return null;
+        } catch (error) {
+            console.error("Error updating entity:", error);
+            throw error;
+        }
     }
 
-    async find(entity: EntityDomain): Promise<Object | null>{
-        return await this.getDaoForEntity(entity).findUnique(entity);
+    async inactivate(entity: EntityDomain): Promise<Object | null> {
+        try {
+            this.validateEntity(entity);
+            const dao = this.getDaoForEntity(entity);
+            if (dao) await dao.inactivate(entity);
+            return null;
+        } catch (error) {
+            console.error("Error inactivating entity:", error);
+            throw error;
+        }
+    }
+
+    async findEntity(entity: EntityDomain): Promise<Object | null> {
+        try {
+            const dao = this.getDaoForEntity(entity);
+            if (dao) {
+                return await dao.findUnique(entity);
+            }
+            return null;
+        } catch (error) {
+            throw error;
+        }
     }
 
     // Determine the appropriate DAO based on the entity type
-    private getDaoForEntity(entity: EntityDomain): IDao {
-        const className = entity.constructor.name.toUpperCase();
-        switch (className) {
-            case "BOOK":
-                return new BookDao();
-            default:
-                throw new Error(`No DAO found for entity: ${className}`);
-        }
+    private getDaoForEntity(entity: EntityDomain): IDao | null {
+        const entityType = entity.constructor.name.toUpperCase();
+        return this.daos.get(entityType) || null;
     }
 }

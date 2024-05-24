@@ -1,13 +1,12 @@
-import { AuthorDomain } from "./Author";
-import { CategoryDomain } from "./Category";
+import { Author} from "./Author";
+import { Category} from "./Category";
 import Product, { ProductProps } from "./Product";
-import ISBN from "./Validations/ISBN";
 
 export interface BookProps extends ProductProps {
     code: string;
-    authors: AuthorDomain[];
+    authors: Author[];
     year: number;
-    categories: CategoryDomain[];
+    categories: Category[];
     title: string;
     publisher: string;
     edition: string;
@@ -94,9 +93,5 @@ export default class Book extends Product {
 
     get publisher() {
         return this.bookProps.publisher;
-    }
-    public isbnValidated(value: string): boolean{
-        const isbn = new ISBN(value).validISBN();
-        return isbn;
     }
 }
