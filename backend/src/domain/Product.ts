@@ -80,7 +80,7 @@ export default abstract class Product extends EntityDomain {
 
     //Inactivate/Activate automatically
     protected changeStatus(status: "ACTIVATE" | "INACTIVATE", justify: string) {
-    this.productProps.status = status;
-    this.productProps.justifyStatus = justify;
-}
+        this.productProps.status = status;
+        this.productProps.justifyStatus = justify;
+    }
 }

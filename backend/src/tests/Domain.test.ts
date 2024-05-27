@@ -3,7 +3,7 @@ import Book, { BookProps } from "../domain/Book";
 import { Author } from "../domain/Author";
 import { Category } from "../domain/Category";
 import Facade from "../domain/Facade/Facade";
-import ISBN from "../domain/Validations/ISBN";
+import ISBN from "../Validations/ISBN";
 import ErrorEntityException from "../domain/Errors/ErrorEntityException";
 import { ErrorValidationsException } from "../domain/Errors/ErrorValidationsException";
 

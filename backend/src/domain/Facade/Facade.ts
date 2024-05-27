@@ -1,8 +1,10 @@
 import BookDao from "../../DAO/BookDao";
+import { CategoryDao } from "../../DAO/CategoryDao";
+import UserDao from "../../DAO/UserDao";
 import EntityDomain from "../EntityDomain";
-import { IDao } from "../interfaces/IDao";
-import { IFacade } from "../interfaces/IFacade";
-import { IStrategy } from "../interfaces/IStrategy";
+import { IDao } from "../../interfaces/IDao";
+import { IFacade } from "../../interfaces/IFacade";
+import { IStrategy } from "../../interfaces/IStrategy";
 
 // Context of Strategy
 export default class Facade implements IFacade {
@@ -19,6 +21,8 @@ export default class Facade implements IFacade {
     // Initialize the map of DAOs
     private initializeDaos(): void {
         this.daos.set("BOOK", new BookDao());
+        this.daos.set("USER", new UserDao());
+        this.daos.set("CATEGORY", new CategoryDao());
     }
 
     // Apply all validation strategies to the entity
@@ -38,7 +42,6 @@ export default class Facade implements IFacade {
             }
             return null;
         } catch (error) {
-            console.error("Error saving entity:", error);
             throw error;
         }
     }
@@ -52,7 +55,6 @@ export default class Facade implements IFacade {
             }
             return null;
         } catch (error) {
-            console.error("Error updating entity:", error);
             throw error;
         }
     }
@@ -64,7 +66,6 @@ export default class Facade implements IFacade {
             if (dao) await dao.inactivate(entity);
             return null;
         } catch (error) {
-            console.error("Error inactivating entity:", error);
             throw error;
         }
     }

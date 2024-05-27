@@ -1,4 +1,5 @@
-import { IDao } from "../domain/interfaces/IDao";
+import EntityDomain from "../domain/EntityDomain";
+import { IDao } from "../interfaces/IDao";
 import User from "../domain/User";
 import { prisma } from "../prisma/prismaClient";
 
@@ -31,7 +32,7 @@ export default class UserDao implements IDao{
             }
         })
     }
-    async delete(user: User) {
+    async inactivate(user: User) {
         return await prisma.user.delete({
             where: {
                 use_id: user.idEntity,

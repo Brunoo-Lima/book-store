@@ -1,5 +1,5 @@
-import Book from "../Book";
-import { ErrorValidationsException } from "../Errors/ErrorValidationsException";
+import Book from "../domain/Book";
+import { ErrorValidationsException } from "../domain/Errors/ErrorValidationsException";
 import { IStrategy } from "../interfaces/IStrategy";
 
 export default class ISBN implements IStrategy{

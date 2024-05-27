@@ -17,8 +17,8 @@ model User {
     use_id          String       @id @default(uuid())
     use_name        String
     use_logs_change LogsChange[]
-    created_at      DateTime? @default(now())
-    updated_at      DateTime? @default(now())
+    created_at      DateTime?    @default(now())
+    updated_at      DateTime?    @default(now())
 
     @@map("users")
 }
@@ -43,11 +43,13 @@ model Book {
     boo_height            Float
     boo_weight            Float
     boo_depth             Float
+    boo_group_pricing     GroupPricing @relation(fields: [fk_boo_grp_id], references: [grp_id])
     boo_logChange         LogsChange[]
+    fk_boo_grp_id         String @unique
     fk_boo_aut_id         Author[]
     fk_boo_cte_id         Category[]
-    created_at      DateTime? @default(now())
-    updated_at      DateTime? @default(now())
+    created_at            DateTime?    @default(now())
+    updated_at            DateTime?    @default(now())
 
     @@map("books")
 }
@@ -77,4 +79,13 @@ model LogsChange {
     updated_at      DateTime? @default(now())
 
     @@map("logsChanged")
+}
+
+model GroupPricing {
+    grp_id      String @id @default(uuid())
+    grp_type    String
+    grp_percent Float
+    grp_book    Book?
+
+    @@map("GroupPricing")
 }

@@ -1,4 +1,4 @@
-import { ErrorValidationsException } from "../Errors/ErrorValidationsException";
+import { ErrorValidationsException } from "../domain/Errors/ErrorValidationsException";
 
 export class DomainValidate {
     public notNull(value: object, messageException: string): void {
