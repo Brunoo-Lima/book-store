@@ -29,7 +29,7 @@ export default class Book extends Product {
             priceAcquisition: bookProps.priceAcquisition,
             costProduct: bookProps.costProduct,
             quantity: bookProps.quantity,
-            groupPricing: bookProps.groupPricing
+            groupPricing: bookProps.groupPricing,
         });
     }
 

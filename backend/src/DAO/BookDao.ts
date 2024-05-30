@@ -7,6 +7,10 @@ export default class BookDao implements IDao{
     async create(book: Book): Promise<Object | null> {
         return await prisma.book.create({
             data: {
+                boo_id: book.idEntity,
+                boo_title: book.title,
+                boo_synopsis: book.synopsis,
+                boo_year: book.year,
                 boo_bar_code: book.barCode,
                 boo_category_change: book.categoryChange,
                 boo_code: book.code,
@@ -22,7 +26,9 @@ export default class BookDao implements IDao{
                 boo_price_acquisition: book.priceAcquisition,
                 boo_publisher: book.publisher,
                 boo_status: book.status,
-                boo_grp_id: book.groupPricingIs,
+                fk_boo_grp_id: book.groupPricing.idEntity,
+                created_at: book.dateCreate,
+                updated_at: book.updateAt,
             }
         });
     }
@@ -30,9 +36,20 @@ export default class BookDao implements IDao{
         throw new Error("Method not implemented.");
     }
     findUnique(entity: EntityDomain): Promise<Object | null> {
-        throw new Error("Method not implemented.");
+        return prisma.book.findMany({
+            where: {
+                ...entity
+            }
+        })
     }
-    inactivate(entity: EntityDomain): void {
-        throw new Error("Method not implemented.");
+    async inactivate(book: Book): Promise<Object | null> {
+        return await prisma.book.update({
+            data: {
+                boo_status: book.status,
+            },
+            where: {
+                boo_id: book.idEntity
+            }
+        })
     }
 }

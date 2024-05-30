@@ -6,32 +6,20 @@ import EntityDomain from "../domain/EntityDomain";
 import { ErrorValidationsException } from "../domain/Errors/ErrorValidationsException";
 import { IDao } from "../interfaces/IDao";
 import { IStrategy } from "../interfaces/IStrategy";
+import { FactoryDao } from "../DAO/FactoryDao";
 
 export class ValidExistence implements IStrategy {
     private dao: IDao | null = null;
     async process(entity: EntityDomain) {
         try{
-            this.dao = this.fillDao(entity.constructor.name);
-            if(!this.dao) throw new ErrorValidationsException('Dao cannot be null !');
+            this.dao = FactoryDao.createDao(entity.constructor.name);
 
             const entityExist = await this.dao.findUnique(entity);
-            
+
             if(entityExist) throw new ErrorValidationsException('Entity already exist !');
 
         } catch(e) {
             return e;
-        }
-    }
-    private fillDao (entityName: string): IDao | null{
-        switch(entityName.toUpperCase()){
-            case "BOOK":
-                return new BookDao();
-            case "USER":
-                return new UserDao();
-            case "CATEGORY":
-                return new CategoryDao();
-            default:
-                return null;
         }
     }
 }

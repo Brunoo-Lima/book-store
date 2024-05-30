@@ -1,5 +1,6 @@
 import { randomUUID } from "crypto";
 import EntityDomain from "./EntityDomain";
+import { GroupPricing } from "./GroupPricing";
 
 export interface ProductProps {
     status: "ACTIVATE" | "INACTIVATE";
@@ -9,10 +10,7 @@ export interface ProductProps {
     priceAcquisition: number;
     costProduct: number;    //Include expense
     quantity: number;
-    groupPricing: {
-        type: string,
-        percent: number;
-    };
+    groupPricing: GroupPricing;
 }
 
 export default abstract class Product extends EntityDomain {
@@ -30,11 +28,11 @@ export default abstract class Product extends EntityDomain {
         this.productProps.priceAcquisition = value;
     }
 
-    public get groupPricingIs(): object {
+    public get groupPricing(): GroupPricing {
         return this.productProps.groupPricing;
     }
 
-    public set groupPricingIs(value: any) { //Verify the type
+    public set groupPricing(value: GroupPricing) { //Verify the type
         this.productProps.groupPricing = value;
     }
 
