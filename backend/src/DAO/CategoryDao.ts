@@ -1,17 +1,30 @@
+import { Category } from "../domain/Category";
 import EntityDomain from "../domain/EntityDomain";
 import { IDao } from "../interfaces/IDao";
+import { prisma } from "../prisma/prismaClient";
 
 export class CategoryDao implements IDao {
-    create(entity: EntityDomain): Promise<Object | null> {
-        throw new Error("Method not implemented.");
+    async create(category: Category) {
+        return await prisma.category.create({
+            data: {
+                cte_id: category.idEntity,
+                cte_name: category.name,
+                created_at: new Date(category.dateCreate),
+                updated_at: new Date(category.dateUpdate),
+            }
+        });
     }
     update(entity: EntityDomain): Promise<Object | null> {
         throw new Error("Method not implemented.");
     }
-    findUnique(entity: EntityDomain): Promise<Object | null> {
-        throw new Error("Method not implemented.");
+    async find(category: Category): Promise<Object | null> {
+        return await prisma.category.findFirst({
+            where: {
+                cte_name: category.name
+            }
+        })
     }
-    inactivate(entity: EntityDomain): void {
+    inactivate(entity: EntityDomain): Promise<Object | null> {
         throw new Error("Method not implemented.");
     }
 }

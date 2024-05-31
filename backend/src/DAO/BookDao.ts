@@ -3,7 +3,7 @@ import EntityDomain from "../domain/EntityDomain";
 import { IDao } from "../interfaces/IDao";
 import { prisma } from "../prisma/prismaClient";
 
-export default class BookDao implements IDao{
+export default class BookDao implements IDao {
     async create(book: Book): Promise<Object | null> {
         return await prisma.book.create({
             data: {
@@ -27,21 +27,39 @@ export default class BookDao implements IDao{
                 boo_publisher: book.publisher,
                 boo_status: book.status,
                 fk_boo_grp_id: book.groupPricing.idEntity,
-                created_at: book.dateCreate,
-                updated_at: book.updateAt,
+                fk_boo_aut_id: {
+                    connect: book.authors.map((author) => {
+                        return { aut_id: author.idEntity };
+                    })
+                },
+                fk_boo_cte_id: {
+                    connect: book.categories.map((category) => {
+                        return {
+                            cte_id: category.idEntity,
+                        }
+                    })
+                },
+                created_at: new Date(book.dateCreate),
+                updated_at: new Date(book.dateUpdate)
             }
         });
     }
+
     update(entity: EntityDomain): Promise<Object | null> {
         throw new Error("Method not implemented.");
     }
-    findUnique(entity: EntityDomain): Promise<Object | null> {
-        return prisma.book.findMany({
+
+    async find(book: Book): Promise<Object | null> {
+        return await prisma.book.findFirst({
             where: {
-                ...entity
+                boo_title: book.title,
+                AND: {
+                    boo_ISBN: book.ISBN,
+                }
             }
-        })
+        });
     }
+
     async inactivate(book: Book): Promise<Object | null> {
         return await prisma.book.update({
             data: {
@@ -50,6 +68,6 @@ export default class BookDao implements IDao{
             where: {
                 boo_id: book.idEntity
             }
-        })
+        });
     }
 }

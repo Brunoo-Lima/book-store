@@ -37,17 +37,21 @@ CREATE TABLE "books" (
 );
 
 -- CreateTable
-CREATE TABLE "Author" (
+CREATE TABLE "authors" (
     "aut_id" TEXT NOT NULL,
     "aut_name" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "Author_pkey" PRIMARY KEY ("aut_id")
+    CONSTRAINT "authors_pkey" PRIMARY KEY ("aut_id")
 );
 
 -- CreateTable
 CREATE TABLE "categories" (
     "cte_id" TEXT NOT NULL,
     "cte_name" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "categories_pkey" PRIMARY KEY ("cte_id")
 );
@@ -65,12 +69,14 @@ CREATE TABLE "logsChanged" (
 );
 
 -- CreateTable
-CREATE TABLE "GroupPricing" (
+CREATE TABLE "groupPricing" (
     "grp_id" TEXT NOT NULL,
     "grp_type" TEXT NOT NULL,
     "grp_percent" DOUBLE PRECISION NOT NULL,
+    "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "GroupPricing_pkey" PRIMARY KEY ("grp_id")
+    CONSTRAINT "groupPricing_pkey" PRIMARY KEY ("grp_id")
 );
 
 -- CreateTable
@@ -89,10 +95,16 @@ CREATE TABLE "_AuthorToBook" (
 CREATE UNIQUE INDEX "books_boo_code_key" ON "books"("boo_code");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "books_boo_title_key" ON "books"("boo_title");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "books_boo_ISBN_key" ON "books"("boo_ISBN");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "books_fk_boo_grp_id_key" ON "books"("fk_boo_grp_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "authors_aut_name_key" ON "authors"("aut_name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "categories_cte_name_key" ON "categories"("cte_name");
@@ -110,7 +122,7 @@ CREATE UNIQUE INDEX "_AuthorToBook_AB_unique" ON "_AuthorToBook"("A", "B");
 CREATE INDEX "_AuthorToBook_B_index" ON "_AuthorToBook"("B");
 
 -- AddForeignKey
-ALTER TABLE "books" ADD CONSTRAINT "books_fk_boo_grp_id_fkey" FOREIGN KEY ("fk_boo_grp_id") REFERENCES "GroupPricing"("grp_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "books" ADD CONSTRAINT "books_fk_boo_grp_id_fkey" FOREIGN KEY ("fk_boo_grp_id") REFERENCES "groupPricing"("grp_id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "logsChanged" ADD CONSTRAINT "logsChanged_fk_log_boo_code_fkey" FOREIGN KEY ("fk_log_boo_code") REFERENCES "books"("boo_id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -125,7 +137,7 @@ ALTER TABLE "_BookToCategory" ADD CONSTRAINT "_BookToCategory_A_fkey" FOREIGN KE
 ALTER TABLE "_BookToCategory" ADD CONSTRAINT "_BookToCategory_B_fkey" FOREIGN KEY ("B") REFERENCES "categories"("cte_id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_AuthorToBook" ADD CONSTRAINT "_AuthorToBook_A_fkey" FOREIGN KEY ("A") REFERENCES "Author"("aut_id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_AuthorToBook" ADD CONSTRAINT "_AuthorToBook_A_fkey" FOREIGN KEY ("A") REFERENCES "authors"("aut_id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_AuthorToBook" ADD CONSTRAINT "_AuthorToBook_B_fkey" FOREIGN KEY ("B") REFERENCES "books"("boo_id") ON DELETE CASCADE ON UPDATE CASCADE;

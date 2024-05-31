@@ -1,4 +1,3 @@
-import EntityDomain from "../domain/EntityDomain";
 import { IDao } from "../interfaces/IDao";
 import User from "../domain/User";
 import { prisma } from "../prisma/prismaClient";
@@ -9,8 +8,8 @@ export default class UserDao implements IDao{
             data: {
                 use_id: user.idEntity,
                 use_name: user.name,
-                created_at: user.dateCreate,
-                updated_at: user.dateUpdate,
+                created_at: new Date(user.dateCreate),
+                updated_at: new Date(user.dateUpdate),
             }
         })
     }
@@ -25,7 +24,7 @@ export default class UserDao implements IDao{
             }
         });
     }
-    async findUnique(user: User): Promise<Object | null>{
+    async find(user: User): Promise<Object | null>{
         return await prisma.user.findUnique({
             where: {
                 use_id: user.idEntity,

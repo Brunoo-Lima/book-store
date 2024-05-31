@@ -1,10 +1,9 @@
 import Book from "../domain/Book";
-import { ErrorValidationsException } from "../domain/Errors/ErrorValidationsException";
 import { IStrategy } from "../interfaces/IStrategy";
 
 export default class ISBN implements IStrategy{
-    process(book: Book): void {
-        if(book.ISBN === '' || !this.validISBN(book)) throw new ErrorValidationsException('ISBN is invalid !');
+    process(book: Book) {
+        if(book.ISBN === '' || !this.validISBN(book)) return 'ISBN is invalid !';
     }
 
     private validISBN(book: Book) {

@@ -26,7 +26,7 @@ model User {
 model Book {
     boo_id                String       @id @default(uuid())
     boo_code              String       @unique
-    boo_title             String
+    boo_title             String       @unique
     boo_year              Int
     boo_status            String
     boo_justify_status    String
@@ -45,7 +45,7 @@ model Book {
     boo_depth             Float
     boo_group_pricing     GroupPricing @relation(fields: [fk_boo_grp_id], references: [grp_id])
     boo_logChange         LogsChange[]
-    fk_boo_grp_id         String @unique
+    fk_boo_grp_id         String       @unique
     fk_boo_aut_id         Author[]
     fk_boo_cte_id         Category[]
     created_at            DateTime?    @default(now())
@@ -55,15 +55,21 @@ model Book {
 }
 
 model Author {
-    aut_id   String @id @default(uuid())
-    aut_name String
-    aut_book Book[]
+    aut_id     String    @id @default(uuid())
+    aut_name   String    @unique
+    aut_book   Book[]
+    created_at DateTime? @default(now())
+    updated_at DateTime? @default(now())
+
+    @@map("authors")
 }
 
 model Category {
-    cte_id   String @id @default(uuid())
-    cte_name String @unique
-    cte_book Book[]
+    cte_id     String    @id @default(uuid())
+    cte_name   String    @unique
+    cte_book   Book[]
+    created_at DateTime? @default(now())
+    updated_at DateTime? @default(now())
 
     @@map("categories")
 }
@@ -82,10 +88,12 @@ model LogsChange {
 }
 
 model GroupPricing {
-    grp_id      String @id @default(uuid())
+    grp_id      String    @id @default(uuid())
     grp_type    String
     grp_percent Float
     grp_book    Book?
+    created_at  DateTime? @default(now())
+    updated_at  DateTime? @default(now())
 
-    @@map("GroupPricing")
+    @@map("groupPricing")
 }

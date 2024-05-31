@@ -16,8 +16,8 @@ export interface ProductProps {
 export default abstract class Product extends EntityDomain {
 
     constructor(private productProps: ProductProps) {
-        const date = Date.toString();
-        super(randomUUID(), date, date);
+        const date = new Date();
+        super(randomUUID(),date.toString(), date.toString());
     }
 
     public get priceAcquisition(): number {

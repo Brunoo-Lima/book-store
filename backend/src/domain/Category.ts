@@ -3,8 +3,8 @@ import EntityDomain from "./EntityDomain";
 
 export class Category extends EntityDomain {
     constructor(private category: string) {
-        const date = Date.toString();
-        super(randomUUID(), date, date);
+        const date = new Date();
+        super(randomUUID(),date.toString(), date.toString());
     }
     get name() {
         return this.category;

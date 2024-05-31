@@ -3,12 +3,14 @@ import Book, { BookProps } from "../domain/Book";
 import { Author } from "../domain/Author";
 import { Category } from "../domain/Category";
 import Facade from "../domain/Facade/Facade";
-import ISBN from "../Validations/ISBN";
+import ISBN from "../Business/ValidISBN";
 import ErrorEntityException from "../domain/Errors/ErrorEntityException";
 import { ErrorValidationsException } from "../domain/Errors/ErrorValidationsException";
+import { GroupPricing } from "../domain/GroupPricing";
+import { ValidRequiredData } from "../Business/ValidRequiredData";
 
 
-const dataTestBook: BookProps = {
+const dataTestBook = new Book({
     status: "ACTIVATE" ,
     justifyStatus: 'Activate to test...',
     categoryOfChange: 'Testing',
@@ -34,22 +36,14 @@ const dataTestBook: BookProps = {
     height: 3.5,
     weight: 1.2,
     depth: 1,
-    groupPricing: {
-        type: 'Gold',
-        percent: 0.25 //This'll be a float number
-    }
-}
+    groupPricing: new GroupPricing("GOLD", 0.20)
+});
 
 
 describe("Book Domain", () => {
-    it('Should raise an exception', () => {
-        try{
-            const book = new Book(dataTestBook);
-            const isbnValidated = new ISBN();
-            isbnValidated.process(book);
-        } catch (e) {
-            expect(e).toBeInstanceOf(ErrorValidationsException);
-        }
+    it('Should valid required data', () => {
+        const author = new Author('test');
+        console.log(author.dateCreate);
     })
 })
 

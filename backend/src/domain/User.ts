@@ -3,8 +3,8 @@ import EntityDomain from "./EntityDomain";
 
 export default class User extends EntityDomain{
     constructor(private userName: string){
-        const date = Date.toString();
-        super(randomUUID(), date, date);
+        const date = new Date();
+        super(randomUUID(),date.toString(), date.toString());
     }
 
     public get name() : string {
