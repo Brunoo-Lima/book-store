@@ -101,19 +101,10 @@ CREATE UNIQUE INDEX "books_boo_title_key" ON "books"("boo_title");
 CREATE UNIQUE INDEX "books_boo_ISBN_key" ON "books"("boo_ISBN");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "books_fk_boo_grp_id_key" ON "books"("fk_boo_grp_id");
-
--- CreateIndex
 CREATE UNIQUE INDEX "authors_aut_name_key" ON "authors"("aut_name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "categories_cte_name_key" ON "categories"("cte_name");
-
--- CreateIndex
-CREATE UNIQUE INDEX "groupPricing_grp_type_key" ON "groupPricing"("grp_type");
-
--- CreateIndex
-CREATE UNIQUE INDEX "groupPricing_grp_percent_key" ON "groupPricing"("grp_percent");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_BooksToCategories_AB_unique" ON "_BooksToCategories"("A", "B");

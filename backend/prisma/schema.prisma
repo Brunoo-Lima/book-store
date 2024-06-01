@@ -45,7 +45,7 @@ model Books {
     boo_depth             Float
     boo_group_pricing     Group_Pricing @relation(fields: [fk_boo_grp_id], references: [grp_id])
     boo_logChange         Logs_Change[]
-    fk_boo_grp_id         String        @unique
+    fk_boo_grp_id         String       
     fk_boo_aut_id         Authors[]
     fk_boo_cte_id         Categories[]
     created_at            DateTime?     @default(now())
@@ -89,9 +89,9 @@ model Logs_Change {
 
 model Group_Pricing {
     grp_id      String    @id @default(uuid())
-    grp_type    String    @unique
-    grp_percent Float     @unique
-    grp_book    Books?
+    grp_type    String
+    grp_percent Float
+    grp_book    Books[]
     created_at  DateTime? @default(now())
     updated_at  DateTime? @default(now())
 

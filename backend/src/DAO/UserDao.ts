@@ -6,7 +6,6 @@ export default class UserDao implements IDao{
     async create(user: User){
         return await prisma.users.create({
             data: {
-                use_id: user.idEntity!,
                 use_name: user.name,
                 created_at: new Date(user.dateCreate),
                 updated_at: new Date(user.dateUpdate),

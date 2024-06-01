@@ -7,7 +7,6 @@ export default class BookDao implements IDao {
     async create(book: Book): Promise<Object | null> {
         return await prisma.books.create({
             data: {
-                boo_id: book.idEntity!,
                 boo_title: book.title,
                 boo_synopsis: book.synopsis,
                 boo_year: book.year,
@@ -29,13 +28,13 @@ export default class BookDao implements IDao {
                 fk_boo_grp_id: book.groupPricing.idEntity!,
                 fk_boo_aut_id: {
                     connect: book.authors.map((author) => {
-                        return { aut_name: author.idEntity! };
+                        return { aut_id: author.idEntity! };
                     })
                 },
                 fk_boo_cte_id: {
                     connect: book.categories.map((category) => {
                         return {
-                            cte_name: category.idEntity!,
+                            cte_id: category.idEntity!,
                         }
                     })
                 },

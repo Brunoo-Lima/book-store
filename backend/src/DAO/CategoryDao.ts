@@ -7,7 +7,6 @@ export class CategoryDao implements IDao {
     async create(category: Category) {
         return await prisma.categories.create({
             data: {
-                cte_id: category.idEntity!,
                 cte_name: category.name,
                 created_at: new Date(category.dateCreate),
                 updated_at: new Date(category.dateUpdate),

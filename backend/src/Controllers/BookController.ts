@@ -49,6 +49,7 @@ export default class BookController {
                 groupPricing: groupPricing
             });
             const bookCreated = await facade.save(book);
+
             return res.json({
                 authors: authorsCreated,
                 categories: categoriesCreated,

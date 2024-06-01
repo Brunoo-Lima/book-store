@@ -7,7 +7,6 @@ export class GroupPricingDao implements IDao {
     async create(groupPricing: GroupPricing): Promise<Object | null> {
         return await prisma.group_Pricing.create({
             data: {
-                grp_id: groupPricing.idEntity!,
                 grp_type: groupPricing.getTypePricing(),
                 grp_percent: groupPricing.getPercentPrice(),
                 created_at: new Date(groupPricing.dateCreate),
