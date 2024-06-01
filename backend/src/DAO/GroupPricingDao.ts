@@ -5,9 +5,9 @@ import { prisma } from "../prisma/prismaClient";
 
 export class GroupPricingDao implements IDao {
     async create(groupPricing: GroupPricing): Promise<Object | null> {
-        return await prisma.groupPricing.create({
+        return await prisma.group_Pricing.create({
             data: {
-                grp_id: groupPricing.idEntity,
+                grp_id: groupPricing.idEntity!,
                 grp_type: groupPricing.getTypePricing(),
                 grp_percent: groupPricing.getPercentPrice(),
                 created_at: new Date(groupPricing.dateCreate),
@@ -19,7 +19,7 @@ export class GroupPricingDao implements IDao {
         throw new Error("Method not implemented.");
     }
     async find(groupPricing: GroupPricing): Promise<Object | null> {
-        return await prisma.groupPricing.findFirst({
+        return await prisma.group_Pricing.findFirst({
             where: {
                 grp_type: groupPricing.getTypePricing(),
             }

@@ -5,9 +5,9 @@ import { prisma } from "../prisma/prismaClient";
 
 export class CategoryDao implements IDao {
     async create(category: Category) {
-        return await prisma.category.create({
+        return await prisma.categories.create({
             data: {
-                cte_id: category.idEntity,
+                cte_id: category.idEntity!,
                 cte_name: category.name,
                 created_at: new Date(category.dateCreate),
                 updated_at: new Date(category.dateUpdate),
@@ -18,7 +18,7 @@ export class CategoryDao implements IDao {
         throw new Error("Method not implemented.");
     }
     async find(category: Category): Promise<Object | null> {
-        return await prisma.category.findFirst({
+        return await prisma.categories.findFirst({
             where: {
                 cte_name: category.name
             }

@@ -33,9 +33,8 @@ export default class Facade implements IFacade {
         this.callStrategy(entity);
         const dao = this.fillDao(entity);
         const entityExistInDB = await this.entityExist(entity);
-
-        if (entityExistInDB !== null) return entityExistInDB;
-
+        if (entityExistInDB) return entityExistInDB;
+        
         const savedEntity = await dao.create(entity);
         return savedEntity;
     }

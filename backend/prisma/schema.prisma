@@ -13,20 +13,20 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model User {
-    use_id          String       @id @default(uuid())
+model Users {
+    use_id          String        @id @default(uuid())
     use_name        String
-    use_logs_change LogsChange[]
-    created_at      DateTime?    @default(now())
-    updated_at      DateTime?    @default(now())
+    use_logs_change Logs_Change[]
+    created_at      DateTime?     @default(now())
+    updated_at      DateTime?     @default(now())
 
     @@map("users")
 }
 
-model Book {
-    boo_id                String       @id @default(uuid())
-    boo_code              String       @unique
-    boo_title             String       @unique
+model Books {
+    boo_id                String        @id @default(uuid())
+    boo_code              String        @unique
+    boo_title             String        @unique
     boo_year              Int
     boo_status            String
     boo_justify_status    String
@@ -36,49 +36,49 @@ model Book {
     boo_cost_product      Float
     boo_edition           String
     boo_publisher         String
-    boo_ISBN              String       @unique
+    boo_ISBN              String        @unique
     boo_pages             Int
     boo_synopsis          String
     boo_width             Float
     boo_height            Float
     boo_weight            Float
     boo_depth             Float
-    boo_group_pricing     GroupPricing @relation(fields: [fk_boo_grp_id], references: [grp_id])
-    boo_logChange         LogsChange[]
-    fk_boo_grp_id         String       @unique
-    fk_boo_aut_id         Author[]
-    fk_boo_cte_id         Category[]
-    created_at            DateTime?    @default(now())
-    updated_at            DateTime?    @default(now())
+    boo_group_pricing     Group_Pricing @relation(fields: [fk_boo_grp_id], references: [grp_id])
+    boo_logChange         Logs_Change[]
+    fk_boo_grp_id         String        @unique
+    fk_boo_aut_id         Authors[]
+    fk_boo_cte_id         Categories[]
+    created_at            DateTime?     @default(now())
+    updated_at            DateTime?     @default(now())
 
     @@map("books")
 }
 
-model Author {
+model Authors {
     aut_id     String    @id @default(uuid())
     aut_name   String    @unique
-    aut_book   Book[]
+    aut_book   Books[]
     created_at DateTime? @default(now())
     updated_at DateTime? @default(now())
 
     @@map("authors")
 }
 
-model Category {
+model Categories {
     cte_id     String    @id @default(uuid())
     cte_name   String    @unique
-    cte_book   Book[]
+    cte_book   Books[]
     created_at DateTime? @default(now())
     updated_at DateTime? @default(now())
 
     @@map("categories")
 }
 
-model LogsChange {
+model Logs_Change {
     log_id          String    @id @default(uuid())
     log_description String
-    log_boo_code    Book      @relation(fields: [fk_log_boo_code], references: [boo_id])
-    log_use_id      User      @relation(fields: [fk_log_use_id], references: [use_id])
+    log_boo_code    Books     @relation(fields: [fk_log_boo_code], references: [boo_id])
+    log_use_id      Users     @relation(fields: [fk_log_use_id], references: [use_id])
     fk_log_boo_code String
     fk_log_use_id   String
     created_at      DateTime? @default(now())
@@ -87,11 +87,11 @@ model LogsChange {
     @@map("logsChanged")
 }
 
-model GroupPricing {
+model Group_Pricing {
     grp_id      String    @id @default(uuid())
-    grp_type    String
-    grp_percent Float
-    grp_book    Book?
+    grp_type    String    @unique
+    grp_percent Float     @unique
+    grp_book    Books?
     created_at  DateTime? @default(now())
     updated_at  DateTime? @default(now())
 

@@ -1,4 +1,3 @@
-import { randomUUID } from "crypto";
 import EntityDomain from "./EntityDomain";
 import { GroupPricing } from "./GroupPricing";
 
@@ -17,7 +16,7 @@ export default abstract class Product extends EntityDomain {
 
     constructor(private productProps: ProductProps) {
         const date = new Date();
-        super(randomUUID(),date.toString(), date.toString());
+        super(date.toString(), date.toString());
     }
 
     public get priceAcquisition(): number {

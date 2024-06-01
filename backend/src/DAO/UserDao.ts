@@ -4,9 +4,9 @@ import { prisma } from "../prisma/prismaClient";
 
 export default class UserDao implements IDao{
     async create(user: User){
-        return await prisma.user.create({
+        return await prisma.users.create({
             data: {
-                use_id: user.idEntity,
+                use_id: user.idEntity!,
                 use_name: user.name,
                 created_at: new Date(user.dateCreate),
                 updated_at: new Date(user.dateUpdate),
@@ -14,27 +14,27 @@ export default class UserDao implements IDao{
         })
     }
     async update(user: User) {
-        return await prisma.user.update({
+        return await prisma.users.update({
             data: {
                 use_name: user.name,
                 updated_at: user.dateUpdate,
             },
             where: {
-                use_id: user.idEntity,
+                use_id: user.idEntity!,
             }
         });
     }
     async find(user: User): Promise<Object | null>{
-        return await prisma.user.findUnique({
+        return await prisma.users.findUnique({
             where: {
-                use_id: user.idEntity,
+                use_id: user.idEntity!,
             }
         })
     }
     async inactivate(user: User) {
-        return await prisma.user.delete({
+        return await prisma.users.delete({
             where: {
-                use_id: user.idEntity,
+                use_id: user.idEntity!,
             }
         })
     }

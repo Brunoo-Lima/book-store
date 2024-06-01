@@ -5,9 +5,9 @@ import { prisma } from "../prisma/prismaClient";
 
 export class AuthorDao implements IDao {
     async create(author: Author) {
-        return await prisma.author.create({
+        return await prisma.authors.create({
             data: {
-                aut_id: author.idEntity,
+                aut_id: author.idEntity!,
                 aut_name: author.nameIs,
                 created_at: new Date(author.dateCreate),
                 updated_at: new Date(author.dateUpdate),
@@ -20,7 +20,7 @@ export class AuthorDao implements IDao {
     }
 
     async find(author: Author): Promise<Object | null> {
-        return await prisma.author.findFirst({
+        return await prisma.authors.findFirst({
             where: {
                 aut_name: author.nameIs
             }

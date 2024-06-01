@@ -3,10 +3,14 @@ import { UUID } from "crypto";
 
 // Entity Generic, created to use in DAO
 export default class EntityDomain{
-    constructor(private id: UUID, private created_at: string, private updated_at: string){}
+    private id: UUID | null = null;
+    constructor(private created_at: string, private updated_at: string){}
 
-    public get idEntity() : string {
+    public get idEntity() : string | null{
         return this.id;
+    }
+    public set idEntity(id: UUID){
+        this.id = id;
     }
     public get dateCreate(): string{
         return this.created_at;

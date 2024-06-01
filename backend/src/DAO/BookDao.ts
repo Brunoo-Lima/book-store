@@ -5,9 +5,9 @@ import { prisma } from "../prisma/prismaClient";
 
 export default class BookDao implements IDao {
     async create(book: Book): Promise<Object | null> {
-        return await prisma.book.create({
+        return await prisma.books.create({
             data: {
-                boo_id: book.idEntity,
+                boo_id: book.idEntity!,
                 boo_title: book.title,
                 boo_synopsis: book.synopsis,
                 boo_year: book.year,
@@ -26,16 +26,16 @@ export default class BookDao implements IDao {
                 boo_price_acquisition: book.priceAcquisition,
                 boo_publisher: book.publisher,
                 boo_status: book.status,
-                fk_boo_grp_id: book.groupPricing.idEntity,
+                fk_boo_grp_id: book.groupPricing.idEntity!,
                 fk_boo_aut_id: {
                     connect: book.authors.map((author) => {
-                        return { aut_id: author.idEntity };
+                        return { aut_name: author.idEntity! };
                     })
                 },
                 fk_boo_cte_id: {
                     connect: book.categories.map((category) => {
                         return {
-                            cte_id: category.idEntity,
+                            cte_name: category.idEntity!,
                         }
                     })
                 },
@@ -50,23 +50,20 @@ export default class BookDao implements IDao {
     }
 
     async find(book: Book): Promise<Object | null> {
-        return await prisma.book.findFirst({
+        return await prisma.books.findFirst({
             where: {
                 boo_title: book.title,
-                AND: {
-                    boo_ISBN: book.ISBN,
-                }
             }
         });
     }
 
     async inactivate(book: Book): Promise<Object | null> {
-        return await prisma.book.update({
+        return await prisma.books.update({
             data: {
                 boo_status: book.status,
             },
             where: {
-                boo_id: book.idEntity
+                boo_id: book.idEntity as string
             }
         });
     }
