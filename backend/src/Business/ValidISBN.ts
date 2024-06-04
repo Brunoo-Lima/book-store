@@ -3,7 +3,10 @@ import { IStrategy } from "../interfaces/IStrategy";
 
 export default class ISBN implements IStrategy{
     process(book: Book) {
-        if(book.ISBN === '' || !this.validISBN(book)) return 'ISBN is invalid !';
+        if(book.ISBN !== '' || this.validISBN(book)) return;
+        return {
+            error: 'ISBN is invalid !'
+        };
     }
 
     private validISBN(book: Book) {

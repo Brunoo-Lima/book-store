@@ -7,7 +7,7 @@ import { CategoryDao } from "./CategoryDao";
 import { AuthorDao } from "./AuthorDao";
 
 export abstract class FactoryDao {
-    static createDao(name: string): IDao {
+    static getDao(name: string): IDao {
         switch (name.toUpperCase().trim()) {
             case "USER":
                 return new UserDao();

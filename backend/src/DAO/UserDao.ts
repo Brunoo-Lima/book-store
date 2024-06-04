@@ -1,9 +1,9 @@
 import { IDao } from "../interfaces/IDao";
-import User from "../domain/User";
+import { User } from "../domain/User";
 import { prisma } from "../prisma/prismaClient";
 
-export default class UserDao implements IDao{
-    async create(user: User){
+export default class UserDao implements IDao {
+    async create(user: User) {
         return await prisma.users.create({
             data: {
                 use_name: user.name,
@@ -23,10 +23,10 @@ export default class UserDao implements IDao{
             }
         });
     }
-    async find(user: User): Promise<Object | null>{
-        return await prisma.users.findUnique({
+    async find(user: User): Promise<Object | null> {
+        return await prisma.users.findFirst({
             where: {
-                use_id: user.idEntity!,
+                use_name: user.name,
             }
         })
     }

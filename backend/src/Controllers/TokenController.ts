@@ -1,20 +1,21 @@
 import Jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
-import User from "../domain/User";
+import { User } from "../domain/User";
 import Facade from "../domain/Facade/Facade";
 import { Users } from "@prisma/client";
+import { formatString } from "../utils/formatString";
 
 export class TokenController {
     public async store(req: Request, res: Response, next: NextFunction) {
         try {
-            const { username } = req.body
-
-            if (!username) {
+            const username = req.body.username as string
+            const userFormatted = formatString(username);
+            if (!userFormatted) {
                 return res.status(401).json({
                     error: ['Credentials invalid !']
                 })
             }
-            const user = new User(username);
+            const user = new User(userFormatted);
             const facade = new Facade();
             const userExist = await facade.findEntity(user);
 
@@ -28,6 +29,7 @@ export class TokenController {
                 use_id,
                 use_name
             }, process.env.TOKEN_SECRET!);
+            //It's "NEXT"
             return res.json({
                 token,
                 user: {
@@ -36,7 +38,7 @@ export class TokenController {
                 }
             });
         } catch (e) {
-            return res.status(400).json({
+            return res.status(401).json({
                 error: e
             })
         }

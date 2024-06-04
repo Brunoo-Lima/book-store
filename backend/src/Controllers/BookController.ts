@@ -7,15 +7,22 @@ import { Category } from "../domain/Category";
 import { GroupPricing } from "../domain/GroupPricing";
 import { ErrorValidationsException } from "../domain/Errors/ErrorValidationsException";
 import { Authors, Categories, Group_Pricing } from "@prisma/client";
+import { formatString } from "../utils/formatString";
 
 function createAuthors(authors: string[]): Author[] {
     if (!authors || !authors.length) throw new ErrorValidationsException('Authors cannot be empty!');
-    return authors.map(authorName => new Author(authorName));
+    return authors.map(authorName => {
+        const authorFormatted = formatString(authorName)
+        return new Author(authorFormatted);
+    });
 }
 
 function createCategories(categories: string[]): Category[] {
     if (!categories || !categories.length) throw new ErrorValidationsException('Categories cannot be empty!');
-    return categories.map(categoryName => new Category(categoryName));
+    return categories.map(categoryName => {
+        const categoryFormatted = formatString(categoryName);
+        return new Category(categoryFormatted);
+    });
 }
 
 export default class BookController {
@@ -29,11 +36,11 @@ export default class BookController {
             const groupPricing = new GroupPricing(bookData.groupPricing.type, bookData.groupPricing.percent);
 
             const authorsCreated = await Promise.all(authors.map(author => facade.save(author) as unknown as Authors));
-            const categoriesCreated = await Promise.all(categories.map(category => facade.save(category)  as unknown as Categories));
+            const categoriesCreated = await Promise.all(categories.map(category => facade.save(category) as unknown as Categories));
             const groupPricingCreated = await facade.save(groupPricing) as Group_Pricing;
 
-            // Atribuir os IDs criados aos objetos de autor e categoria
-            authorsCreated.forEach((createdAuthor , index) => {
+            // Assign the IDs created to the author and category objects
+            authorsCreated.forEach((createdAuthor, index) => {
                 authors[index].idEntity = createdAuthor.aut_id as `${string}-${string}-${string}-${string}-${string}`;
             });
 
@@ -48,13 +55,13 @@ export default class BookController {
                 categories: categories,
                 groupPricing: groupPricing
             });
-            const bookCreated = await facade.save(book);
 
+            const newBook = await facade.save(book);
             return res.json({
                 authors: authorsCreated,
                 categories: categoriesCreated,
                 groupPricing: groupPricingCreated,
-                book: bookCreated
+                book: newBook
             });
         } catch (error) {
             return res.json({ error: error });

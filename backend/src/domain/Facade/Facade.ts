@@ -8,8 +8,9 @@ import { ValidGrpPricing } from "../../Business/ValidGrpPricing";
 import Book from "../Book";
 import { GroupPricing } from "../GroupPricing";
 import { ValidExistence } from "../../Business/ValidExistence";
+import { ErrorValidationsException } from "../Errors/ErrorValidationsException";
 
-export default class Facade implements IFacade {
+export default class Facade implements IFacade, IStrategy {
     private strategies: Map<String, Array<IStrategy>>;
     private daos: Map<String, IDao>;
 
@@ -18,13 +19,17 @@ export default class Facade implements IFacade {
         this.daos = new Map<String, IDao>();
         this.setAllStrategies();
     }
+    process(entity: EntityDomain) {
+        return this.callStrategy(entity);
+    }
 
-    private callStrategy(entity: EntityDomain): void {
+    private async callStrategy(entity: EntityDomain): Promise<void> {
         const { name } = entity.constructor;
         const strategies = this.strategies.get(name.toUpperCase());
         if (strategies) {
             for (const strategy of strategies) {
-                strategy.process(entity);
+                const hasError = await strategy.process(entity);
+                if(hasError) throw new ErrorValidationsException('Entity with error !');
             }
         }
     }
@@ -67,7 +72,7 @@ export default class Facade implements IFacade {
         const { name } = entity.constructor;
         const daoExist = this.daos.get(name.toUpperCase().trim());
         if (daoExist) return daoExist;
-        const dao = FactoryDao.createDao(name.toUpperCase().trim());
+        const dao = FactoryDao.getDao(name.toUpperCase().trim());
 
         this.daos.set(name.toUpperCase(), dao);
 
@@ -80,7 +85,7 @@ export default class Facade implements IFacade {
             new ValidExistence()
         ]);
         this.strategies.set(GroupPricing.name.toUpperCase(), [
-            new ValidGrpPricing(),
+            new ValidGrpPricing()
         ]);
     }
 
