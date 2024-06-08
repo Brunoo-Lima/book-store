@@ -1,8 +1,8 @@
-import { Router } from "express";
-import { TokenController } from "../Controllers/Token/TokenController";
+// import { Router } from "express";
+// import { TokenController } from "../Controllers/Token/TokenController";
 
-const route = Router();
-const tokenController = new TokenController();
-route.post('/generate', tokenController.store);
+// const route = Router();
+// const tokenController = new TokenController();
+// route.post('/generate', tokenController.store);
 
-export default route;
+// export default route;
