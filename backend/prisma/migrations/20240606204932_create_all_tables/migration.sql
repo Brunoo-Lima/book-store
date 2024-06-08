@@ -19,7 +19,6 @@ CREATE TABLE "books" (
     "boo_category_change" TEXT NOT NULL,
     "boo_bar_code" TEXT NOT NULL,
     "boo_price_acquisition" DOUBLE PRECISION NOT NULL,
-    "boo_cost_product" DOUBLE PRECISION NOT NULL,
     "boo_edition" TEXT NOT NULL,
     "boo_publisher" TEXT NOT NULL,
     "boo_ISBN" TEXT NOT NULL,
@@ -59,8 +58,8 @@ CREATE TABLE "categories" (
 -- CreateTable
 CREATE TABLE "logsChanged" (
     "log_id" TEXT NOT NULL,
-    "log_description" TEXT NOT NULL,
-    "fk_log_boo_code" TEXT NOT NULL,
+    "log_type" TEXT NOT NULL,
+    "fk_log_boo_id" TEXT NOT NULL,
     "fk_log_use_id" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
@@ -122,7 +121,7 @@ CREATE INDEX "_AuthorsToBooks_B_index" ON "_AuthorsToBooks"("B");
 ALTER TABLE "books" ADD CONSTRAINT "books_fk_boo_grp_id_fkey" FOREIGN KEY ("fk_boo_grp_id") REFERENCES "groupPricing"("grp_id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "logsChanged" ADD CONSTRAINT "logsChanged_fk_log_boo_code_fkey" FOREIGN KEY ("fk_log_boo_code") REFERENCES "books"("boo_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "logsChanged" ADD CONSTRAINT "logsChanged_fk_log_boo_id_fkey" FOREIGN KEY ("fk_log_boo_id") REFERENCES "books"("boo_id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "logsChanged" ADD CONSTRAINT "logsChanged_fk_log_use_id_fkey" FOREIGN KEY ("fk_log_use_id") REFERENCES "users"("use_id") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -7,7 +7,7 @@ import ISBN from "../Business/ValidISBN";
 import ErrorEntityException from "../domain/Errors/ErrorEntityException";
 import { ErrorValidationsException } from "../domain/Errors/ErrorValidationsException";
 import { GroupPricing } from "../domain/GroupPricing";
-import { ValidRequiredData } from "../Business/ValidRequiredData";
+import { ValidRequiredData } from "../Business/ValidRequiredBookData";
 
 
 const dataTestBook = new Book({

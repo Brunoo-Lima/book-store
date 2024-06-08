@@ -5,6 +5,7 @@ import BookDao from "./BookDao";
 import { GroupPricingDao } from "./GroupPricingDao";
 import { CategoryDao } from "./CategoryDao";
 import { AuthorDao } from "./AuthorDao";
+import { LogChangeDao } from "./LogChangeDao";
 
 export abstract class FactoryDao {
     static getDao(name: string): IDao {
@@ -19,6 +20,8 @@ export abstract class FactoryDao {
                 return new CategoryDao();
             case "AUTHOR":
                 return new AuthorDao();
+            case "LOGCHANGE": 
+                return new LogChangeDao();
             default:
                 throw new Error("Unknown DAO type");
         }

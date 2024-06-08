@@ -27,7 +27,6 @@ export default class Book extends Product {
             categoryOfChange: bookProps.categoryOfChange,
             codeBar: bookProps.codeBar,
             priceAcquisition: bookProps.priceAcquisition,
-            costProduct: bookProps.costProduct,
             quantity: bookProps.quantity,
             groupPricing: bookProps.groupPricing,
         });

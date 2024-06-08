@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import Facade from "../domain/Facade/Facade";
-import { User } from "../domain/User";
+import Facade from "../../domain/Facade/Facade";
+import { User } from "../../domain/User";
 import { Users } from "@prisma/client";
-import { formatString } from "../utils/formatString";
+import { formatString } from "../../utils/formatString";
 
 export class UserController {
     async handle(req: Request, res: Response, next: NextFunction) {

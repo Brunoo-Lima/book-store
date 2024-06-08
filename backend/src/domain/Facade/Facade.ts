@@ -9,8 +9,10 @@ import Book from "../Book";
 import { GroupPricing } from "../GroupPricing";
 import { ValidExistence } from "../../Business/ValidExistence";
 import { ErrorValidationsException } from "../Errors/ErrorValidationsException";
+import { ValidRequiredBookData } from "../../Business/ValidRequiredBookData";
+import { ValidBookDataDefaults } from "../../Business/ValidBookDataDefaults";
 
-export default class Facade implements IFacade, IStrategy {
+export default class Facade implements IFacade {
     private strategies: Map<String, Array<IStrategy>>;
     private daos: Map<String, IDao>;
 
@@ -18,9 +20,6 @@ export default class Facade implements IFacade, IStrategy {
         this.strategies = new Map<String, Array<IStrategy>>();
         this.daos = new Map<String, IDao>();
         this.setAllStrategies();
-    }
-    process(entity: EntityDomain) {
-        return this.callStrategy(entity);
     }
 
     private async callStrategy(entity: EntityDomain): Promise<void> {
@@ -48,6 +47,7 @@ export default class Facade implements IFacade, IStrategy {
     async update(entity: EntityDomain): Promise<Object | null> {
         this.callStrategy(entity);
         const dao = this.fillDao(entity);
+
         const updatedEntity = await dao.update(entity);
 
         return updatedEntity;
@@ -82,10 +82,11 @@ export default class Facade implements IFacade, IStrategy {
     private setAllStrategies() {
         this.strategies.set(Book.name.toUpperCase(), [
             new ISBN(),
-            new ValidExistence()
+            new ValidRequiredBookData(),
+            new ValidBookDataDefaults()
         ]);
         this.strategies.set(GroupPricing.name.toUpperCase(), [
-            new ValidGrpPricing()
+            new ValidGrpPricing(),
         ]);
     }
 

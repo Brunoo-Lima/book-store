@@ -2,12 +2,11 @@ import EntityDomain from "./EntityDomain";
 import { GroupPricing } from "./GroupPricing";
 
 export interface ProductProps {
-    status: "ACTIVATE" | "INACTIVATE";
-    justifyStatus: string;
-    categoryOfChange: string;
+    status?: "ACTIVATE" | "INACTIVATE";
+    justifyStatus?: string;
+    categoryOfChange?: string;
     codeBar: string;
     priceAcquisition: number;
-    costProduct: number;    //Include expense
     quantity: number;
     groupPricing: GroupPricing;
 }
@@ -35,19 +34,11 @@ export default abstract class Product extends EntityDomain {
         this.productProps.groupPricing = value;
     }
 
-    public get costProduct(): number {
-        return this.productProps.costProduct;
-    }
-
-    public set costProduct(value: number) {
-        this.productProps.costProduct = value;
-    }
-
-    public get categoryChange(): string {
+    public get categoryOfChange(): string {
         return this.productProps.categoryOfChange!;
     }
 
-    public set categoryChange(value: string) {
+    public set categoryOfChange(value: string) {
         this.productProps.categoryOfChange = value;
     }
 
@@ -59,7 +50,7 @@ export default abstract class Product extends EntityDomain {
         this.productProps.justifyStatus = value;
     }
 
-    public get status(): string {
+    public get status(): string | undefined{
         return this.productProps.status;
     }
 

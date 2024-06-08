@@ -1,17 +1,10 @@
 import jwt from 'jsonwebtoken';
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import Facade from '../domain/Facade/Facade';
 import { User } from '../domain/User';
+import { CustomRequest } from '../interfaces/ICustomRequest';
+import { CustomJwt } from '../interfaces/ICustomJwt';
 
-export interface CustomJwt extends jwt.JwtPayload {
-    use_id: string,
-    use_name: string
-}
-
-//Only to create new keys in request
-export interface CustomRequest extends Request {
-    [key: string]: any
-}
 
 export default async function loginRequired(req: CustomRequest, res: Response, next: NextFunction) {
     const { authorization } = req.headers;
@@ -35,8 +28,9 @@ export default async function loginRequired(req: CustomRequest, res: Response, n
                 error: ['User was not created !']
             })
         }
-        req.userId = use_id;
-        req.username = use_name
+        req.user = {
+            entity: user,
+        }
 
         return next();
     } catch (e) {

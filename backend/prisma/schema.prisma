@@ -33,7 +33,6 @@ model Books {
     boo_category_change   String
     boo_bar_code          String
     boo_price_acquisition Float
-    boo_cost_product      Float
     boo_edition           String
     boo_publisher         String
     boo_ISBN              String        @unique
@@ -75,14 +74,14 @@ model Categories {
 }
 
 model Logs_Change {
-    log_id          String    @id @default(uuid())
-    log_description String
-    log_boo_code    Books     @relation(fields: [fk_log_boo_code], references: [boo_id])
-    log_use_id      Users     @relation(fields: [fk_log_use_id], references: [use_id])
-    fk_log_boo_code String
-    fk_log_use_id   String
-    created_at      DateTime? @default(now())
-    updated_at      DateTime? @default(now())
+    log_id        String    @id @default(uuid())
+    log_type      String
+    log_boo_id    Books     @relation(fields: [fk_log_boo_id], references: [boo_id])
+    log_use_id    Users     @relation(fields: [fk_log_use_id], references: [use_id])
+    fk_log_boo_id String
+    fk_log_use_id String
+    created_at    DateTime? @default(now())
+    updated_at    DateTime? @default(now())
 
     @@map("logsChanged")
 }

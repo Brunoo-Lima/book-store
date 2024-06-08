@@ -1,3 +1,4 @@
+import { Books } from "@prisma/client";
 import Book from "../domain/Book";
 import EntityDomain from "../domain/EntityDomain";
 import { IDao } from "../interfaces/IDao";
@@ -11,9 +12,8 @@ export default class BookDao implements IDao {
                 boo_synopsis: book.synopsis,
                 boo_year: book.year,
                 boo_bar_code: book.barCode,
-                boo_category_change: book.categoryChange,
+                boo_category_change: book.categoryOfChange,
                 boo_code: book.code,
-                boo_cost_product: 0,
                 boo_depth: book.depth,
                 boo_height: book.height,
                 boo_weight: book.weight,
@@ -24,17 +24,17 @@ export default class BookDao implements IDao {
                 boo_pages: book.pages,
                 boo_price_acquisition: book.priceAcquisition,
                 boo_publisher: book.publisher,
-                boo_status: book.status,
-                fk_boo_grp_id: book.groupPricing.idEntity!,
+                boo_status: book.status as string,
+                fk_boo_grp_id: book.groupPricing.idEntity as string,
                 fk_boo_aut_id: {
                     connect: book.authors.map((author) => {
-                        return { aut_id: author.idEntity! };
+                        return { aut_id: author.idEntity as string};
                     })
                 },
                 fk_boo_cte_id: {
                     connect: book.categories.map((category) => {
                         return {
-                            cte_id: category.idEntity!,
+                            cte_id: category.idEntity as string,
                         }
                     })
                 },
@@ -44,8 +44,16 @@ export default class BookDao implements IDao {
         });
     }
 
-    update(entity: EntityDomain): Promise<Object | null> {
-        throw new Error("Method not implemented.");
+    async update(book: Book): Promise<Object | null> {
+        const bookExist = await this.find(book)  as Books;
+        if(!bookExist) return null;
+
+        return await prisma.books.update({
+            data: {},
+            where: {
+                boo_title: book.title
+            }
+        })
     }
 
     async find(book: Book): Promise<Object | null> {
