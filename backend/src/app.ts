@@ -3,8 +3,8 @@ import "express-async-errors";
 import cors from "cors";
 import errorHandler from "./error/errorHandler";
 import route from "./Routes/BookRoutes";
-import userRoute from './Routes/UserRoute';
-import tokenRoute from './Routes/TokenRoute';
+import userRoute from "./Routes/UserRoute";
+// import tokenRoute from "./Routes/TokenRoute";
 class App {
     readonly app;
     constructor() {
@@ -22,7 +22,7 @@ class App {
     private routes(): void {
         this.app.use("/book", route);
         this.app.use("/user", userRoute);
-        this.app.use('/token', tokenRoute);
+        // this.app.use('/token', tokenRoute);
     }
 }
 

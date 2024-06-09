@@ -5,6 +5,6 @@ import { logChange } from "../Middlewares/logChange";
 
 const route = Router();
 const bookController = new BookController();
-route.post('/create', loginRequired ,bookController.handle, logChange);
+route.post("/create", loginRequired, bookController.handle);
 
 export default route;
