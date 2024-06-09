@@ -1,5 +1,5 @@
 import { Router } from "express";
-import BookController from "../Controllers/CreateBookController";
+import BookController from "../Controllers/Book/BookController";
 import loginRequired from "../Middlewares/loginRequired";
 import { logChange } from "../Middlewares/logChange";
 

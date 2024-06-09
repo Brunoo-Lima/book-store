@@ -51,7 +51,9 @@ export default class BookController {
                 bookCreated: newBook,
                 description: newBook.boo_justify_status,
             }
-            return next();
+            return res.json({
+                newBook
+            });
         } catch (error) {
             return res.json({ error: error });
         }
