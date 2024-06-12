@@ -1,9 +1,9 @@
-
-
-// Entity Generic, created to use in DAO
 export default class EntityDomain{
-    private id: string | undefined;
-    constructor(private created_at: string, private updated_at: string){}
+    constructor(
+        private id: string,
+        private created_at: string,
+        private updated_at: string,
+    ){}
 
     public get idEntity() : string | undefined{
         return this.id;

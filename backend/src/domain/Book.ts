@@ -1,96 +1,200 @@
-import { Author} from "./Author";
-import { Category} from "./Category";
-import Product, { ProductProps } from "./Product";
+import { randomUUID } from "crypto";
+import { Author } from "./Author";
+import { Category } from "./Category";
+import EntityDomain from "./EntityDomain";
+import { GroupPricing } from "./GroupPricing";
 
-export interface BookProps extends ProductProps {
-    code: string;
-    authors: Author[];
-    year: number;
-    categories: Category[];
-    title: string;
-    publisher: string;
-    edition: string;
-    ISBN: string;
-    pages: number;
-    synopsis: string;
-    width: number,
-    height: number,
-    weight: number,
-    depth: number,
+export interface BookProps {
+    boo_code: string;
+    boo_title: string;
+    boo_year: number;
+    boo_status?: "ACTIVATE" | "INACTIVATE";
+    boo_group_pricing: GroupPricing;
+    boo_author: Author[];
+    boo_categories: Category[];
+    boo_justify_status?: string;
+    boo_category_change?: string;
+    boo_bar_code: string;
+    boo_price_acquisition: number;
+    boo_edition: string;
+    boo_publisher: string;
+    boo_ISBN: string;
+    boo_pages: number;
+    boo_synopsis: string;
+    boo_width: number;
+    boo_height: number;
+    boo_weight: number;
+    boo_depth: number;
 }
 
-export default class Book extends Product {
-    constructor(private bookProps: BookProps) {
-        super({
-            status: bookProps.status,
-            justifyStatus: bookProps.justifyStatus,
-            categoryOfChange: bookProps.categoryOfChange,
-            codeBar: bookProps.codeBar,
-            priceAcquisition: bookProps.priceAcquisition,
-            quantity: bookProps.quantity,
-            groupPricing: bookProps.groupPricing,
-        });
+export default class Book extends EntityDomain {
+    private bookProps: BookProps;
+
+    constructor(bookProps: BookProps) {
+        const date = new Date();
+        super(randomUUID(), date.toString(), date.toString());
+        this.bookProps = bookProps;
     }
 
-    get code() {
-        return this.bookProps.code;
+    // Getters
+    get boo_code(): string {
+        return this.bookProps.boo_code;
     }
 
-    get title() {
-        return this.bookProps.title;
+    get boo_title(): string {
+        return this.bookProps.boo_title;
     }
 
-    get authors() {
-        return this.bookProps.authors || [];
+    get boo_year(): number {
+        return this.bookProps.boo_year;
     }
 
-    get categories() {
-        return this.bookProps.categories || [];
+    get boo_status(): "ACTIVATE" | "INACTIVATE" {
+        return this.bookProps.boo_status!;
     }
 
-    get year() {
-        return this.bookProps.year;
+    get boo_group_pricing(): GroupPricing{
+        return this.bookProps.boo_group_pricing;
     }
 
-    get pages(): number {
-        return this.bookProps.pages;
+    get boo_author(): Author[] {
+        return this.bookProps.boo_author;
     }
 
-    get ISBN() {
-        return this.bookProps.ISBN;
+    get boo_categories(): Category[] {
+        return this.bookProps.boo_categories;
     }
 
-    get edition() {
-        return this.bookProps.edition;
+    get boo_justify_status(): string | undefined {
+        return this.bookProps.boo_justify_status;
     }
 
-    get totalPages() {
-        return this.bookProps.pages;
+    get boo_category_change(): string | undefined {
+        return this.bookProps.boo_category_change;
     }
 
-    get synopsis() {
-        return this.bookProps.synopsis;
+    get boo_bar_code(): string {
+        return this.bookProps.boo_bar_code;
     }
 
-    get width() {
-        return this.bookProps.width;
-    }
-    get height() {
-        return this.bookProps.height;
-    }
-    get depth() {
-        return this.bookProps.depth;
+    get boo_price_acquisition(): number {
+        return this.bookProps.boo_price_acquisition;
     }
 
-    get weight() {
-        return this.bookProps.weight;
+    get boo_edition(): string {
+        return this.bookProps.boo_edition;
     }
 
-    get barCode() {
-        return this.bookProps.codeBar;
+    get boo_publisher(): string {
+        return this.bookProps.boo_publisher;
     }
 
-    get publisher() {
-        return this.bookProps.publisher;
+    get boo_ISBN(): string {
+        return this.bookProps.boo_ISBN;
+    }
+
+    get boo_pages(): number {
+        return this.bookProps.boo_pages;
+    }
+
+    get boo_synopsis(): string {
+        return this.bookProps.boo_synopsis;
+    }
+
+    get boo_width(): number {
+        return this.bookProps.boo_width;
+    }
+
+    get boo_height(): number {
+        return this.bookProps.boo_height;
+    }
+
+    get boo_weight(): number {
+        return this.bookProps.boo_weight;
+    }
+
+    get boo_depth(): number {
+        return this.bookProps.boo_depth;
+    }
+
+    // Setters
+    set boo_code(value: string) {
+        this.bookProps.boo_code = value;
+    }
+
+    set boo_title(value: string) {
+        this.bookProps.boo_title = value;
+    }
+
+    set boo_year(value: number) {
+        this.bookProps.boo_year = value;
+    }
+
+    set boo_status(value: "ACTIVATE" | "INACTIVATE") {
+        this.bookProps.boo_status = value;
+    }
+
+    set boo_group_pricing(value: GroupPricing) {
+        this.bookProps.boo_group_pricing = value;
+    }
+
+    set boo_author(value: Author[]) {
+        this.bookProps.boo_author = value;
+    }
+
+    set boo_categories(value: Category[]) {
+        this.bookProps.boo_categories = value;
+    }
+
+    set boo_justify_status(value: string | undefined) {
+        this.bookProps.boo_justify_status = value;
+    }
+
+    set boo_category_change(value: string | undefined) {
+        this.bookProps.boo_category_change = value;
+    }
+
+    set boo_bar_code(value: string) {
+        this.bookProps.boo_bar_code = value;
+    }
+
+    set boo_price_acquisition(value: number) {
+        this.bookProps.boo_price_acquisition = value;
+    }
+
+    set boo_edition(value: string) {
+        this.bookProps.boo_edition = value;
+    }
+
+    set boo_publisher(value: string) {
+        this.bookProps.boo_publisher = value;
+    }
+
+    set boo_ISBN(value: string) {
+        this.bookProps.boo_ISBN = value;
+    }
+
+    set boo_pages(value: number) {
+        this.bookProps.boo_pages = value;
+    }
+
+    set boo_synopsis(value: string) {
+        this.bookProps.boo_synopsis = value;
+    }
+
+    set boo_width(value: number) {
+        this.bookProps.boo_width = value;
+    }
+
+    set boo_height(value: number) {
+        this.bookProps.boo_height = value;
+    }
+
+    set boo_weight(value: number) {
+        this.bookProps.boo_weight = value;
+    }
+
+    set boo_depth(value: number) {
+        this.bookProps.boo_depth = value;
     }
 }

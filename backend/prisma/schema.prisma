@@ -24,6 +24,7 @@ model Users {
 }
 
 model Books {
+
     boo_id                String        @id @default(uuid())
     boo_code              String        @unique
     boo_title             String        @unique

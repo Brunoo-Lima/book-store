@@ -1,12 +1,15 @@
-import Book from "../domain/Book";
-import { IStrategy } from "../interfaces/IStrategy";
+import Book from "../../domain/Book";
+import { IStrategy } from "../../interfaces/IStrategy";
 
 export default class ISBN implements IStrategy{
-    process(book: Book) {
-        if(book.ISBN !== '' || this.validISBN(book)) return;
-        return {
-            error: 'ISBN is invalid !'
-        };
+    private messageError: string | undefined;
+
+    public process(book: Book): void | string {
+
+        if(book.boo_ISBN !== '' || this.validISBN(book)) return;
+        this.messageError = 'ISBN is invalid !';
+
+        return this.messageError;
     }
 
     private validISBN(book: Book) {
@@ -51,7 +54,7 @@ export default class ISBN implements IStrategy{
     }
 
     private removeCharacters(book: Book) {
-        const stringFormatted = book.ISBN.replace(/[^\d]+/g, '').trim(); //  /[^\d]+/g === remove characters
+        const stringFormatted = book.boo_ISBN.replace(/[^\d]+/g, '').trim(); //  /[^\d]+/g === remove characters
         return stringFormatted;
     }
 

@@ -3,49 +3,70 @@ import { IDao } from "../../interfaces/IDao";
 import { IFacade } from "../../interfaces/IFacade";
 import { IStrategy } from "../../interfaces/IStrategy";
 import { FactoryDao } from "../../DAO/FactoryDao";
-import ISBN from "../../Business/ValidISBN";
-import { ValidGrpPricing } from "../../Business/ValidGrpPricing";
+import ISBN from "../../Business/implementation/ValidISBN";
+import { ValidGrpPricing } from "../../Business/implementation/ValidGrpPricing";
 import Book from "../Book";
 import { GroupPricing } from "../GroupPricing";
-import { ValidExistence } from "../../Business/ValidExistence";
-import { ErrorValidationsException } from "../Errors/ErrorValidationsException";
-import { ValidRequiredBookData } from "../../Business/ValidRequiredBookData";
-import { ValidBookDataDefaults } from "../../Business/ValidBookDataDefaults";
+import { ValidExistence } from "../../Business/implementation/ValidExistence";
+import { ValidRequiredBookData } from "../../Business/implementation/ValidRequiredBookData";
+import { ValidBookDataDefaults } from "../../Business/implementation/ValidBookDataDefaults";
+
+export type Message = {
+    error?: string,
+    success?: string,
+}
 
 export default class Facade implements IFacade {
     private strategies: Map<String, Array<IStrategy>>;
     private daos: Map<String, IDao>;
+    private message: Message[];
 
     constructor() {
         this.strategies = new Map<String, Array<IStrategy>>();
         this.daos = new Map<String, IDao>();
         this.setAllStrategies();
+        this.message = new Array<Message>
     }
 
-    private async callStrategy(entity: EntityDomain): Promise<void> {
+    public async callStrategy(entity: EntityDomain): Promise<Message[] | null> {
         const { name } = entity.constructor;
         const strategies = this.strategies.get(name.toUpperCase());
+
         if (strategies) {
             for (const strategy of strategies) {
-                const hasError = await strategy.process(entity);
-                if(hasError) throw new ErrorValidationsException('Entity with error !');
+                const hasError = await strategy.process(entity) as string;
+                if (hasError !== null) {
+                    this.message.push({
+                        error: `Entity ${name} is invalid !`
+                    });
+                    return this.message;
+                }
             }
         }
+        return null;
     }
 
-    async save(entity: EntityDomain): Promise<Object | null> {
-        this.callStrategy(entity);
-        const dao = this.fillDao(entity);
-        const entityExistInDB = await this.entityExist(entity);
+    async save(entities: EntityDomain[]): Promise<Message[]> {
+        for (const entity of entities) {
+            const hasErrorInStrategy = await this.callStrategy(entity);
+            if (hasErrorInStrategy !== null) return hasErrorInStrategy;
 
-        if (entityExistInDB) return entityExistInDB;
+            const dao = this.fillDao(entity);
+            const savedEntity = await dao.create(entity);
 
-        const savedEntity = await dao.create(entity);
-        return savedEntity;
+            if (!savedEntity) {
+                this.message.push({ error: 'Entity cannot be created in database !' });
+                return this.message;
+            }
+        }
+
+        this.message.push({
+            success: 'Entity created in database !'
+        });
+        return this.message;
     }
 
     async update(entity: EntityDomain): Promise<Object | null> {
-        this.callStrategy(entity);
         const dao = this.fillDao(entity);
 
         const updatedEntity = await dao.update(entity);
@@ -54,7 +75,6 @@ export default class Facade implements IFacade {
     }
 
     async inactivate(entity: EntityDomain): Promise<Object | null> {
-        this.callStrategy(entity);
         const dao = this.fillDao(entity);
         const inactivatedEntity = await dao.inactivate(entity);
 
@@ -82,11 +102,12 @@ export default class Facade implements IFacade {
     private setAllStrategies() {
         this.strategies.set(Book.name.toUpperCase(), [
             new ISBN(),
+            new ValidExistence(),
             new ValidRequiredBookData(),
             new ValidBookDataDefaults()
         ]);
         this.strategies.set(GroupPricing.name.toUpperCase(), [
-            new ValidGrpPricing(),
+            new ValidExistence(),
         ]);
     }
 

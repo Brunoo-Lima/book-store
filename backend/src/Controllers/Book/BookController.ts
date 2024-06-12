@@ -5,108 +5,57 @@ import Book from "../../domain/Book";
 import { Author } from "../../domain/Author";
 import { Category } from "../../domain/Category";
 import { GroupPricing } from "../../domain/GroupPricing";
-import { ErrorValidationsException } from "../../domain/Errors/ErrorValidationsException";
 import { Authors, Books, Categories, Group_Pricing } from "@prisma/client";
-import { formatString } from "../../utils/formatString";
 import { CustomRequest } from "../../interfaces/ICustomRequest";
 
 export default class BookController {
-    async handle(req: CustomRequest, res: Response, next: NextFunction) {
+    async handle(req: Request, res: Response, next: NextFunction) {
         try {
             const { bookData }: IBookDTO = req.body;
-
             const facade = new Facade();
-
-            // Entity of Domain
-            const authors = createAuthors(bookData.authors!);
-            const categories = createCategories(bookData.categories!);
+            const authors = Author.createAuthors(bookData.boo_author);
+            const categories = Category.createCategories(bookData.boo_categories);
             const groupPricing = new GroupPricing(
-                bookData.groupPricing!.type,
-                bookData.groupPricing!.percent
+                bookData.boo_group_pricing.type,
+                bookData.boo_group_pricing.percent
             );
-
-            const authorsCreated = await Promise.all(
-                authors.map(
-                    (author) => facade.save(author) as unknown as Authors
-                )
-            );
-            const categoriesCreated = await Promise.all(
-                categories.map(
-                    (category) => facade.save(category) as unknown as Categories
-                )
-            );
-            const groupPricingCreated = (await facade.save(
-                groupPricing
-            )) as Group_Pricing;
-
-            // Assign the IDs created to the author and category objects
-            authorsCreated.forEach((createdAuthor, index) => {
-                authors[index].idEntity =
-                    createdAuthor.aut_id as `${string}-${string}-${string}-${string}-${string}`;
-            });
-
-            categoriesCreated.forEach((createdCategory, index) => {
-                categories[index].idEntity =
-                    createdCategory.cte_id as `${string}-${string}-${string}-${string}-${string}`;
-            });
-            groupPricing.idEntity =
-                groupPricingCreated.grp_id as `${string}-${string}-${string}-${string}-${string}`;
-
             const book = new Book({
                 ...bookData,
-                authors: authors,
-                categories: categories,
-                groupPricing: groupPricing,
+                boo_author: authors,
+                boo_categories: categories,
+                boo_group_pricing: groupPricing,
             });
 
-            const newBook = (await facade.save(book)) as Books;
-            book.idEntity = newBook.boo_id;
+            const messages = await facade.save([...authors, ...categories, groupPricing, book]);
 
-            req.log_change = {
-                bookDomain: book,
-                bookCreated: newBook,
-                description: newBook.boo_justify_status,
-            }
+            messages.forEach((message) => {
+                const { error } = message;
+                if (error) return res.status(400).json({ error });
+            })
+            const success = messages.map((message) => message.success);
+
             return res.json({
-                newBook
+                ...success
             });
         } catch (error) {
             return res.json({ error: error });
         }
     }
     async update(req: CustomRequest, res: Response, next: NextFunction) {
-        const { bookData }: IBookDTO = req.bookUpdate;
-        const facade = new Facade();
-        let authors;
+        // const { bookData }: IBookDTO = req.bookUpdate;
+        // const facade = new Facade();
+        // let authors;
 
-        // Usar o titulo para pesquisar o livro
-        if (!bookData.title)
-            return res.status(400).json({
-                error: ["You need sent the title to update !"],
-            });
+        // // Usar o titulo para pesquisar o livro
+        // if (!bookData.title)
+        //     return res.status(400).json({
+        //         error: ["You need sent the title to update !"],
+        //     });
 
-        if (bookData.authors) {
-            authors = createAuthors(bookData.authors);
-        }
+        // if (bookData.authors) {
+        //     authors = createAuthors(bookData.authors);
+        // }
 
-        // const book = await facade.findEntity()
+        // // const book = await facade.findEntity()
     }
-}
-
-function createAuthors(authors: string[]): Author[] {
-    if (!authors || !authors.length)
-        throw new ErrorValidationsException("Authors cannot be empty!");
-    return authors.map((authorName) => {
-        const authorFormatted = formatString(authorName);
-        return new Author(authorFormatted);
-    });
-}
-
-function createCategories(categories: string[]): Category[] {
-    if (!categories || !categories.length)
-        throw new ErrorValidationsException("Categories cannot be empty!");
-    return categories.map((categoryName) => {
-        const categoryFormatted = formatString(categoryName);
-        return new Category(categoryFormatted);
-    });
 }

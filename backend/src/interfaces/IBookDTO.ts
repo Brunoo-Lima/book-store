@@ -1,27 +1,25 @@
 export interface IBookDTO {
     bookData: {
-        code: string;
-        status: "ACTIVATE" | "INACTIVATE";
-        justifyStatus: string;
-        categoryOfChange: string;
-        codeBar: string;
-        priceAcquisition: number;
-        costProduct: number;
-        quantity: number;
-        authors: string[];
-        year: number;
-        categories: string[];
-        title: string;
-        publisher: string;
-        edition: string;
-        ISBN: string;
-        pages: number;
-        synopsis: string;
-        width: number;
-        height: number;
-        weight: number;
-        depth: number;
-        groupPricing: {
+        boo_code: string;
+        boo_title: string;
+        boo_year: number;
+        boo_status?: "ACTIVATE" | "INACTIVATE";
+        boo_author: string[];
+        boo_categories: string[];
+        boo_justify_status?: string;
+        boo_category_change?: string;
+        boo_bar_code: string;
+        boo_price_acquisition: number;
+        boo_edition: string;
+        boo_publisher: string;
+        boo_ISBN: string;
+        boo_pages: number;
+        boo_synopsis: string;
+        boo_width: number;
+        boo_height: number;
+        boo_weight: number;
+        boo_depth: number;
+        boo_group_pricing: {
             type: string;
             percent: number;
         };

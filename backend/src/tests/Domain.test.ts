@@ -3,11 +3,11 @@ import Book, { BookProps } from "../domain/Book";
 import { Author } from "../domain/Author";
 import { Category } from "../domain/Category";
 import Facade from "../domain/Facade/Facade";
-import ISBN from "../Business/ValidISBN";
+import ISBN from "../Business/implementation/ValidISBN";
 import ErrorEntityException from "../domain/Errors/ErrorEntityException";
 import { ErrorValidationsException } from "../domain/Errors/ErrorValidationsException";
 import { GroupPricing } from "../domain/GroupPricing";
-import { ValidRequiredData } from "../Business/ValidRequiredBookData";
+import { ValidRequiredData } from "../Business/implementation/ValidRequiredBookData";
 
 
 const dataTestBook = new Book({
