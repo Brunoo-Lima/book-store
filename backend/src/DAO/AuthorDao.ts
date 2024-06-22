@@ -7,6 +7,7 @@ export class AuthorDao implements IDao {
     async create(author: Author) {
         return await prisma.authors.create({
             data: {
+                aut_id: author.idEntity as string,
                 aut_name: author.nameIs,
                 created_at: new Date(author.dateCreate),
                 updated_at: new Date(author.dateUpdate),

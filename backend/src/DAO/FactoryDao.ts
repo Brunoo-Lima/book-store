@@ -8,7 +8,7 @@ import { AuthorDao } from "./AuthorDao";
 import { LogChangeDao } from "./LogChangeDao";
 
 export abstract class FactoryDao {
-    static getDao(name: string): IDao {
+    static createDao(name: string): IDao {
         switch (name.toUpperCase().trim()) {
             case "USER":
                 return new UserDao();
@@ -20,7 +20,7 @@ export abstract class FactoryDao {
                 return new CategoryDao();
             case "AUTHOR":
                 return new AuthorDao();
-            case "LOGCHANGE": 
+            case "LOGCHANGE":
                 return new LogChangeDao();
             default:
                 throw new Error("Unknown DAO type");

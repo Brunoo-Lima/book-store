@@ -1,32 +1,26 @@
 import { NextFunction, Request, Response } from "express";
 import Facade from "../../domain/Facade/Facade";
 import { User } from "../../domain/User";
-import { formatString } from "../../utils/formatString";
 import { sign } from "jsonwebtoken";
+import { Users } from "@prisma/client";
 
 export class UserController {
-    async handle(req: Request, res: Response, next: NextFunction) {
+    async store(req: Request, res: Response, next: NextFunction) {
         try {
             const username = req.body.username as string;
 
-            if (!username) throw new Error("You cannot sent empty data !");
+            if (!username) throw new Error("You cannot send empty data!");
 
-            const userFormatted = formatString(username);
-            const user = new User(userFormatted);
+            const user = new User(username.toUpperCase());
             const facade = new Facade();
 
-            const entityExist = await facade.findEntity(user);
-            if (entityExist) return res.status(400).json({
-                error: 'User exist in database !'
-            });
-
             const messages = await facade.save([user]);
-            const success = messages.map((message) => message.success);
 
-            messages.forEach((message) => {
-                const { error } = message
-                if(error) return res.status(400).json({error})
-            })
+            for (const message of messages) {
+                if (message.error) {
+                    return res.status(400).json({ error: message.error });
+                }
+            }
 
             const tokenSecret = process.env.TOKEN_SECRET;
             if (!tokenSecret) throw new Error("Secret token is not defined");
@@ -38,12 +32,34 @@ export class UserController {
                 },
                 tokenSecret
             );
+
             return res.json({
-                ...success,
-                token,
-            })
+                success: true,
+                token
+            });
         } catch (err) {
             next(err);
+        }
+    }
+
+    async login(req: Request, res: Response, next: NextFunction) {
+        try {
+            const username = req.body.username as string;
+            const user = new User(username.toUpperCase());
+            const facade = new Facade();
+            const userExist = await facade.findEntity([user]) as Users | null;
+
+            if (!userExist) {
+                return res.status(404).json({
+                    error: 'User cannot be found!'
+                });
+            }
+
+            return res.json({
+                user: userExist,
+            });
+        } catch (e) {
+            next(e);
         }
     }
 }

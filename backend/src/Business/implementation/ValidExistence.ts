@@ -9,7 +9,7 @@ export class ValidExistence implements IStrategy {
         return this.entityExist(entity);
     }
     private async entityExist(entity: EntityDomain): Promise<void | string>  {
-        const dao = FactoryDao.getDao(entity.constructor.name);
+        const dao = FactoryDao.createDao(entity.constructor.name);
         const entityExist = await dao.find(entity);
 
         if (entityExist) {

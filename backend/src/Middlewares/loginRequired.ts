@@ -39,7 +39,7 @@ export default async function loginRequired(
         const user = new User(use_name);
         user.idEntity = use_id;
 
-        const userExist = await facade.findEntity(user);
+        const userExist = await facade.findEntity([user]);
 
         if (!userExist) {
             return res.status(401).json({

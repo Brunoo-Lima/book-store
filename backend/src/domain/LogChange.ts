@@ -2,6 +2,8 @@ import Book from "./Book";
 import EntityDomain from "./EntityDomain";
 import { User } from "./User";
 
+
+//Não é entidade de dominio é Regra de negócio, vai para o "Business"U
 export type Logs = {
     entity: EntityDomain,
     user: User,
@@ -24,7 +26,7 @@ export class LogChange extends EntityDomain {
     private addDescription(entity: EntityDomain): string {
         const dateCreate = new Date(entity.dateCreate);
         const dateUpdate = new Date(entity.dateUpdate);
-        
+
         return (dateCreate.getTime() <= dateUpdate.getTime()) ? "CREATE" : "UPDATE";
     }
     public getLogs(): Logs {

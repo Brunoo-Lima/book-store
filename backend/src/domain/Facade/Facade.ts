@@ -4,12 +4,12 @@ import { IFacade } from "../../interfaces/IFacade";
 import { IStrategy } from "../../interfaces/IStrategy";
 import { FactoryDao } from "../../DAO/FactoryDao";
 import ISBN from "../../Business/implementation/ValidISBN";
-import { ValidGrpPricing } from "../../Business/implementation/ValidGrpPricing";
 import Book from "../Book";
 import { GroupPricing } from "../GroupPricing";
 import { ValidExistence } from "../../Business/implementation/ValidExistence";
 import { ValidRequiredBookData } from "../../Business/implementation/ValidRequiredBookData";
 import { ValidBookDataDefaults } from "../../Business/implementation/ValidBookDataDefaults";
+import { User } from "../User";
 
 export type Message = {
     error?: string,
@@ -34,10 +34,10 @@ export default class Facade implements IFacade {
 
         if (strategies) {
             for (const strategy of strategies) {
-                const hasError = await strategy.process(entity) as string;
-                if (hasError !== null) {
+                const hasError = await strategy.process(entity) as string | void;
+                if (hasError !== undefined) {
                     this.message.push({
-                        error: `Entity ${name} is invalid !`
+                        error: hasError,
                     });
                     return this.message;
                 }
@@ -49,6 +49,7 @@ export default class Facade implements IFacade {
     async save(entities: EntityDomain[]): Promise<Message[]> {
         for (const entity of entities) {
             const hasErrorInStrategy = await this.callStrategy(entity);
+
             if (hasErrorInStrategy !== null) return hasErrorInStrategy;
 
             const dao = this.fillDao(entity);
@@ -81,18 +82,26 @@ export default class Facade implements IFacade {
         return inactivatedEntity;
     }
 
-    async findEntity(entity: EntityDomain): Promise<Object | null> {
-        const dao = this.fillDao(entity);
-        const foundEntity = await dao.find(entity);
+    async findEntity(entities: EntityDomain[]): Promise<Object[] | null> {
+        const foundEntities: Object[] = [];
 
-        return foundEntity;
+        for (const entity of entities) {
+            const dao = this.fillDao(entity);
+            const foundEntity = await dao.find(entity);
+            if (foundEntity) {
+                foundEntities.push(foundEntity);
+            }
+        }
+
+        return foundEntities.length > 0 ? foundEntities : null;
     }
+
 
     private fillDao(entity: EntityDomain): IDao {
         const { name } = entity.constructor;
         const daoExist = this.daos.get(name.toUpperCase().trim());
         if (daoExist) return daoExist;
-        const dao = FactoryDao.getDao(name.toUpperCase().trim());
+        const dao = FactoryDao.createDao(name.toUpperCase().trim());
 
         this.daos.set(name.toUpperCase(), dao);
 
@@ -106,12 +115,11 @@ export default class Facade implements IFacade {
             new ValidRequiredBookData(),
             new ValidBookDataDefaults()
         ]);
+        this.strategies.set(User.name.toUpperCase(), [
+            new ValidExistence(),
+        ])
         this.strategies.set(GroupPricing.name.toUpperCase(), [
             new ValidExistence(),
         ]);
-    }
-
-    private async entityExist(entity: EntityDomain) {
-        return await this.findEntity(entity);
     }
 }

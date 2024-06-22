@@ -5,12 +5,13 @@ import Book from "../../domain/Book";
 import { Author } from "../../domain/Author";
 import { Category } from "../../domain/Category";
 import { GroupPricing } from "../../domain/GroupPricing";
-import { Authors, Books, Categories, Group_Pricing } from "@prisma/client";
+import { Authors, Categories, Group_Pricing } from "@prisma/client";
 import { CustomRequest } from "../../interfaces/ICustomRequest";
 
 export default class BookController {
     async handle(req: Request, res: Response, next: NextFunction) {
         try {
+            const allMessages = []
             const { bookData }: IBookDTO = req.body;
             const facade = new Facade();
             const authors = Author.createAuthors(bookData.boo_author);
@@ -19,6 +20,35 @@ export default class BookController {
                 bookData.boo_group_pricing.type,
                 bookData.boo_group_pricing.percent
             );
+
+            const [authorsExist, categoriesExist, groupPricingExist] = await Promise.all([
+                facade.findEntity([...authors]) as Promise<Authors[] | null>,
+                facade.findEntity([...categories]) as Promise<Categories[] | null>,
+                facade.findEntity([groupPricing]) as Promise<Group_Pricing[] | null>,
+            ]);
+
+            if (!authorsExist || authorsExist.length === 0) {
+                allMessages.push(await facade.save([...authors]));
+            } else {
+                authorsExist.forEach((createdAuthor, index) => {
+                    authors[index].idEntity = createdAuthor.aut_id;
+                });
+            }
+
+            if (!categoriesExist || categoriesExist.length === 0) {
+                allMessages.push(await facade.save([...categories]));
+            } else {
+                categoriesExist.forEach((createdCategory, index) => {
+                    categories[index].idEntity = createdCategory.cte_id;
+                });
+            }
+
+            if (!groupPricingExist || groupPricingExist.length === 0) {
+                allMessages.push(await facade.save([groupPricing]));
+            } else {
+                groupPricing.idEntity = groupPricingExist[0].grp_id;
+            }
+
             const book = new Book({
                 ...bookData,
                 boo_author: authors,
@@ -26,36 +56,19 @@ export default class BookController {
                 boo_group_pricing: groupPricing,
             });
 
-            const messages = await facade.save([...authors, ...categories, groupPricing, book]);
+            allMessages.push(await facade.save([book]));
+            const errors = allMessages.filter((message, index) => message[index].error);
 
-            messages.forEach((message) => {
-                const { error } = message;
-                if (error) return res.status(400).json({ error });
-            })
-            const success = messages.map((message) => message.success);
+            if (errors.length > 0) return res.status(400).json({ ...errors});
 
-            return res.json({
-                ...success
-            });
+            return res.json({ success: "Book created !"});
+
         } catch (error) {
-            return res.json({ error: error });
+            return res.status(500).json(error);
         }
     }
+
     async update(req: CustomRequest, res: Response, next: NextFunction) {
-        // const { bookData }: IBookDTO = req.bookUpdate;
-        // const facade = new Facade();
-        // let authors;
-
-        // // Usar o titulo para pesquisar o livro
-        // if (!bookData.title)
-        //     return res.status(400).json({
-        //         error: ["You need sent the title to update !"],
-        //     });
-
-        // if (bookData.authors) {
-        //     authors = createAuthors(bookData.authors);
-        // }
-
-        // // const book = await facade.findEntity()
+        // Código para atualizar um livro
     }
 }
