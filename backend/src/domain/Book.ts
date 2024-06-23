@@ -3,6 +3,7 @@ import { Author } from "./Author";
 import { Category } from "./Category";
 import EntityDomain from "./EntityDomain";
 import { GroupPricing } from "./GroupPricing";
+import { IBookDTO } from "../interfaces/IBookDTO";
 
 export interface BookProps {
     boo_code: string;
@@ -32,7 +33,7 @@ export default class Book extends EntityDomain {
 
     constructor(bookProps: BookProps) {
         const date = new Date();
-        super(randomUUID(), date.toString(), date.toString());
+        super(randomUUID(), date.toISOString(), date.toISOString());
         this.bookProps = bookProps;
     }
 
@@ -53,7 +54,7 @@ export default class Book extends EntityDomain {
         return this.bookProps.boo_status!;
     }
 
-    get boo_group_pricing(): GroupPricing{
+    get boo_group_pricing(): GroupPricing {
         return this.bookProps.boo_group_pricing;
     }
 
@@ -196,5 +197,53 @@ export default class Book extends EntityDomain {
 
     set boo_depth(value: number) {
         this.bookProps.boo_depth = value;
+    }
+    static createBook({bookData}: Partial<IBookDTO>): Book {
+        const defaultValues: BookProps = {
+            boo_code: "DEFAULT",
+            boo_title: "DEFAULT",
+            boo_year: 0,
+            boo_status: "ACTIVATE",
+            boo_author: [],
+            boo_categories: [],
+            boo_justify_status: "DEFAULT",
+            boo_category_change: "DEFAULT",
+            boo_bar_code: "DEFAULT",
+            boo_price_acquisition: 0,
+            boo_edition: "DEFAULT",
+            boo_publisher: "DEFAULT",
+            boo_ISBN: "DEFAULT",
+            boo_pages: 0,
+            boo_synopsis: "DEFAULT",
+            boo_width: 0,
+            boo_height: 0,
+            boo_weight: 0,
+            boo_depth: 0,
+            boo_group_pricing: new GroupPricing("DEFAULT", 0),
+        }
+
+        // Mesclar dados fornecidos com valores padrão
+        const bookProps: BookProps = {
+            ...defaultValues,
+            ...bookData,
+            boo_group_pricing: bookData?.boo_group_pricing!
+                ? new GroupPricing(bookData.boo_group_pricing.type, bookData.boo_group_pricing.percent)
+                : defaultValues.boo_group_pricing,
+            boo_author: bookData?.boo_author ? Author.createAuthors(bookData.boo_author) : defaultValues.boo_author,
+            boo_categories: bookData?.boo_categories ? Category.createCategories(bookData.boo_categories) : defaultValues.boo_categories,
+        };
+
+        return new Book(bookProps);
+    }
+    cleanDefaultValues() {
+        for (const [key, value] of Object.entries(this.bookProps)) {
+            if (typeof value === 'string' && value === "DEFAULT") {
+                delete this.bookProps[key as keyof BookProps];
+            }
+            if (typeof value === 'number' && value === 0) {
+                delete this.bookProps[key as keyof BookProps];
+            }
+            if(value === undefined) delete this.bookProps[key as keyof BookProps];
+        }
     }
 }

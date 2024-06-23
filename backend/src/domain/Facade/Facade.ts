@@ -6,12 +6,12 @@ import { FactoryDao } from "../../DAO/FactoryDao";
 import ISBN from "../../Business/implementation/ValidISBN";
 import Book from "../Book";
 import { GroupPricing } from "../GroupPricing";
-import { ValidExistence } from "../../Business/implementation/ValidExistence";
 import { ValidRequiredBookData } from "../../Business/implementation/ValidRequiredBookData";
 import { ValidBookDataDefaults } from "../../Business/implementation/ValidBookDataDefaults";
 import { User } from "../User";
+import { ValidGrpPricing } from "../../Business/implementation/ValidGrpPricing";
 
-export type Message = {
+export type Message = { //Transformar os erros em um ENUM
     error?: string,
     success?: string,
 }
@@ -53,6 +53,14 @@ export default class Facade implements IFacade {
             if (hasErrorInStrategy !== null) return hasErrorInStrategy;
 
             const dao = this.fillDao(entity);
+            const entityExist = await this.findEntity([entity]);
+
+            if (entityExist) {
+                this.message.push({
+                    error: "Entity already exist in database !",
+                })
+                return this.message;
+            }
             const savedEntity = await dao.create(entity);
 
             if (!savedEntity) {
@@ -67,12 +75,21 @@ export default class Facade implements IFacade {
         return this.message;
     }
 
-    async update(entity: EntityDomain): Promise<Object | null> {
-        const dao = this.fillDao(entity);
+    async update(entities: EntityDomain[]): Promise<Message[]> {
+        for (const entity of entities) {
+            const hasErrorInStrategy = await this.callStrategy(entity);
+            if (hasErrorInStrategy !== null) return hasErrorInStrategy;
 
-        const updatedEntity = await dao.update(entity);
+            const dao = this.fillDao(entity);
+            const updatedEntity = await dao.update(entity);
 
-        return updatedEntity;
+            if (!updatedEntity) {
+                this.message.push({ error: 'Entity cannot be updated !' });
+                return this.message;
+            }
+            this.message.push({ success: 'Entity updated !' });
+        }
+        return this.message;
     }
 
     async inactivate(entity: EntityDomain): Promise<Object | null> {
@@ -111,15 +128,9 @@ export default class Facade implements IFacade {
     private setAllStrategies() {
         this.strategies.set(Book.name.toUpperCase(), [
             new ISBN(),
-            new ValidExistence(),
             new ValidRequiredBookData(),
-            new ValidBookDataDefaults()
-        ]);
-        this.strategies.set(User.name.toUpperCase(), [
-            new ValidExistence(),
-        ])
-        this.strategies.set(GroupPricing.name.toUpperCase(), [
-            new ValidExistence(),
+            new ValidBookDataDefaults(),
+            new ValidGrpPricing(),
         ]);
     }
 }

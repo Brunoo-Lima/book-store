@@ -6,9 +6,8 @@ import { Author } from "../../domain/Author";
 import { Category } from "../../domain/Category";
 import { GroupPricing } from "../../domain/GroupPricing";
 import { Authors, Categories, Group_Pricing } from "@prisma/client";
-import { CustomRequest } from "../../interfaces/ICustomRequest";
 
-export default class BookController {
+export default class CreateBookController {
     async handle(req: Request, res: Response, next: NextFunction) {
         try {
             const allMessages = []
@@ -66,9 +65,5 @@ export default class BookController {
         } catch (error) {
             return res.status(500).json(error);
         }
-    }
-
-    async update(req: CustomRequest, res: Response, next: NextFunction) {
-        // Código para atualizar um livro
     }
 }

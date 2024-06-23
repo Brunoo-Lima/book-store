@@ -45,15 +45,54 @@ export default class BookDao implements IDao {
     }
 
     async update(book: Book): Promise<Object | null> {
-        const bookExist = await this.find(book)  as Books;
-        if(!bookExist) return null;
+        // Monta o objeto de atualização com as propriedades que não devem ser alteradas se não estiverem presentes
+        const updateData: any = {
+            updated_at: new Date(book.updateAt)
+        };
 
+        // Só inclui os autores se estiverem presentes
+        if (book.boo_author && book.boo_author.length > 0) {
+            updateData.fk_boo_aut_id = {
+                connect: book.boo_author.map((author) => {
+                    return { aut_id: author.idEntity as string };
+                })
+            };
+        }
+
+        // Só inclui as categorias se estiverem presentes
+        if (book.boo_categories && book.boo_categories.length > 0) {
+            updateData.fk_boo_cte_id = {
+                connect: book.boo_categories.map((category) => {
+                    return {
+                        cte_id: category.idEntity as string,
+                    };
+                })
+            };
+        }
+
+        // Só inclui o grupo de precificação se estiver presente
+        if (book.boo_group_pricing) {
+            updateData.fk_boo_grp_id = {
+                connect: {
+                    grp_id: book.boo_group_pricing.idEntity as string
+                }
+            };
+        }
+
+        // Inclui as outras propriedades diretamente se estiverem presentes no objeto book
+        for (const [key, value] of Object.entries(book)) {
+            if (value !== undefined && !["boo_author", "boo_categories", "boo_group_pricing"].includes(key)) {
+                updateData[key] = value;
+            }
+        }
+        console.log(updateData);
+        // Atualiza o registro no banco de dados
         return await prisma.books.update({
-            data: {},
+            data: updateData,
             where: {
                 boo_title: book.boo_title,
             }
-        })
+        });
     }
 
     async find(book: Book): Promise<Object | null> {

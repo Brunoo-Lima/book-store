@@ -5,7 +5,7 @@ import EntityDomain from "./EntityDomain";
 export class Category extends EntityDomain {
     constructor(private cte_name: string) {
         const date = new Date();
-        super(randomUUID() ,date.toString(), date.toString());
+        super(randomUUID() ,date.toISOString(), date.toISOString());
     }
     get name() {
         return this.cte_name;

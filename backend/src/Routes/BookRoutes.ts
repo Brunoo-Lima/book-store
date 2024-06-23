@@ -1,10 +1,10 @@
 import { Router } from "express";
-import BookController from "../Controllers/Book/BookController";
+import CreateBookController from "../Controllers/Book/CreateBookController";
 import loginRequired from "../Middlewares/loginRequired";
-import { logChange } from "../Middlewares/logChange";
+import { UpdateController } from "../Controllers/Book/UpdateBookController";
 
 const route = Router();
-const bookController = new BookController();
-route.post("/create", loginRequired, bookController.handle);
+route.post("/create", loginRequired, new CreateBookController().handle);
+route.put("/update", loginRequired, new UpdateController().handle)
 
 export default route;

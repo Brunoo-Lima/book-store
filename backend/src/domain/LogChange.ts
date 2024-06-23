@@ -1,3 +1,4 @@
+import { randomUUID } from "crypto";
 import Book from "./Book";
 import EntityDomain from "./EntityDomain";
 import { User } from "./User";
@@ -15,7 +16,7 @@ export class LogChange extends EntityDomain {
 
     constructor(entity: EntityDomain, user: User) {
         const date = new Date();
-        super(date.toString(), date.toString());
+        super(randomUUID(), date.toString(), date.toString());
         this.logs = {
             entity: entity,
             description: this.addDescription(entity),

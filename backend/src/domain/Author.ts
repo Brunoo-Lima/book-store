@@ -5,7 +5,7 @@ import EntityDomain from "./EntityDomain";
 export class Author extends EntityDomain{
     constructor(private aut_name: string) {
         const date = new Date();
-        super(randomUUID(),date.toString(), date.toString());
+        super(randomUUID(),date.toISOString(), date.toISOString());
     }
 
     get nameIs() {
