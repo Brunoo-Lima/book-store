@@ -35,6 +35,10 @@ yarn
 
 ## Diagramas do sistema
 
-### Diagrama de Classes
+### Diagrama de Sequência
 
-![BookShopClasses drawio](https://github.com/Brunoo-Lima/book-store/assets/112290478/b263c16a-2c1d-4999-8ff8-c7f72dfd6fe5)
+![Sequence Diagram](https://github.com/Brunoo-Lima/book-store/assets/112290478/4ba530dd-4295-4ced-978d-89641866690e)
+
+### Diagrama de Classes de Domínio
+
+
