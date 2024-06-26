@@ -1,4 +1,4 @@
-import { Response, Request, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 import { IBookDTO } from "../../interfaces/IBookDTO";
 import Facade from "../../domain/Facade/Facade";
 import Book from "../../domain/Book";
@@ -6,9 +6,10 @@ import { Author } from "../../domain/Author";
 import { Category } from "../../domain/Category";
 import { GroupPricing } from "../../domain/GroupPricing";
 import { Authors, Categories, Group_Pricing } from "@prisma/client";
+import { CustomRequest } from "../../interfaces/ICustomRequest";
 
 export default class CreateBookController {
-    async handle(req: Request, res: Response, next: NextFunction) {
+    async handle(req: CustomRequest, res: Response, next: NextFunction) {
         try {
             const allMessages = []
             const { bookData }: IBookDTO = req.body;
@@ -25,7 +26,6 @@ export default class CreateBookController {
                 facade.findEntity([...categories]) as Promise<Categories[] | null>,
                 facade.findEntity([groupPricing]) as Promise<Group_Pricing[] | null>,
             ]);
-
             if (!authorsExist || authorsExist.length === 0) {
                 allMessages.push(await facade.save([...authors]));
             } else {
@@ -54,14 +54,13 @@ export default class CreateBookController {
                 boo_categories: categories,
                 boo_group_pricing: groupPricing,
             });
-
             allMessages.push(await facade.save([book]));
             const errors = allMessages.filter((message, index) => message[index].error);
 
             if (errors.length > 0) return res.status(400).json({ ...errors});
-
-            return res.json({ success: "Book created !"});
-
+            req.bookDomain = book;
+            req.created = 'Entity was created !'
+            return next();
         } catch (error) {
             return res.status(500).json(error);
         }

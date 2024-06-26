@@ -198,7 +198,7 @@ export default class Book extends EntityDomain {
     set boo_depth(value: number) {
         this.bookProps.boo_depth = value;
     }
-    static createBook({bookData}: Partial<IBookDTO>): Book {
+    static createBook({ bookData }: IBookDTO): Book {
         const defaultValues: BookProps = {
             boo_code: "DEFAULT",
             boo_title: "DEFAULT",
@@ -221,12 +221,11 @@ export default class Book extends EntityDomain {
             boo_depth: 0,
             boo_group_pricing: new GroupPricing("DEFAULT", 0),
         }
-
         // Mesclar dados fornecidos com valores padrão
         const bookProps: BookProps = {
             ...defaultValues,
             ...bookData,
-            boo_group_pricing: bookData?.boo_group_pricing!
+            boo_group_pricing: bookData.boo_group_pricing
                 ? new GroupPricing(bookData.boo_group_pricing.type, bookData.boo_group_pricing.percent)
                 : defaultValues.boo_group_pricing,
             boo_author: bookData?.boo_author ? Author.createAuthors(bookData.boo_author) : defaultValues.boo_author,
@@ -237,13 +236,13 @@ export default class Book extends EntityDomain {
     }
     cleanDefaultValues() {
         for (const [key, value] of Object.entries(this.bookProps)) {
-            if (typeof value === 'string' && value === "DEFAULT") {
-                delete this.bookProps[key as keyof BookProps];
-            }
-            if (typeof value === 'number' && value === 0) {
-                delete this.bookProps[key as keyof BookProps];
-            }
-            if(value === undefined) delete this.bookProps[key as keyof BookProps];
+            const keyObject = key as keyof BookProps;
+
+            if(Array.isArray(value) && value.length === 0) delete this.bookProps[keyObject];
+            if (typeof value === 'string' && value === "DEFAULT") delete this.bookProps[keyObject];
+            if (typeof value === 'number' && value === 0) delete this.bookProps[keyObject];
+            if (value === undefined) delete this.bookProps[keyObject];
         }
     }
+
 }

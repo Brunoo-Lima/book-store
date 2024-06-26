@@ -27,9 +27,7 @@ export default async function loginRequired(
     try {
         const tokenSecret = process.env.TOKEN_SECRET;
 
-        if (!tokenSecret) {
-            throw new Error("Token secret not defined!");
-        }
+        if (!tokenSecret) throw new Error("Token secret not defined!");
 
         const data = jwt.verify(token, tokenSecret);
 
@@ -40,7 +38,6 @@ export default async function loginRequired(
         user.idEntity = use_id;
 
         const userExist = await facade.findEntity([user]);
-
         if (!userExist) {
             return res.status(401).json({
                 error: "User does not exist!",

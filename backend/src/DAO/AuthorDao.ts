@@ -15,14 +15,21 @@ export class AuthorDao implements IDao {
         });
     }
 
-    async update(entity: EntityDomain): Promise<Object | null> {
-        throw new Error("Method not implemented.");
+    async update(author: Author): Promise<Object | null> {
+        return await prisma.authors.update({
+            data: {
+                aut_name: author.nameIs
+            },
+            where: {
+                aut_id: author.idEntity,
+            }
+        })
     }
 
     async find(author: Author): Promise<Object | null> {
         return await prisma.authors.findFirst({
             where: {
-                aut_name: author.nameIs
+                aut_name: author.nameIs,
             }
         });
     }

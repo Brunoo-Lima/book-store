@@ -4,10 +4,14 @@ import { IDao } from "../interfaces/IDao";
 import { prisma } from "../prisma/prismaClient";
 
 export class LogChangeDao implements IDao {
+
     async create(log: LogChange): Promise<Object | null> {
         return await prisma.logs_Change.create({
             data: {
+                log_id: log.idEntity,
                 log_type: log.getLogs().description,
+                created_at: new Date(log.dateCreate),
+                updated_at: new Date(log.dateUpdate),
                 fk_log_use_id: log.getLogs().user.idEntity!,
                 fk_log_boo_id: log.getLogs().entity.idEntity!
             }

@@ -5,10 +5,8 @@ import { IStrategy } from "../../interfaces/IStrategy";
 import { FactoryDao } from "../../DAO/FactoryDao";
 import ISBN from "../../Business/implementation/ValidISBN";
 import Book from "../Book";
-import { GroupPricing } from "../GroupPricing";
 import { ValidRequiredBookData } from "../../Business/implementation/ValidRequiredBookData";
 import { ValidBookDataDefaults } from "../../Business/implementation/ValidBookDataDefaults";
-import { User } from "../User";
 import { ValidGrpPricing } from "../../Business/implementation/ValidGrpPricing";
 
 export type Message = { //Transformar os erros em um ENUM
@@ -99,20 +97,25 @@ export default class Facade implements IFacade {
         return inactivatedEntity;
     }
 
-    async findEntity(entities: EntityDomain[]): Promise<Object[] | null> {
+    async findEntity(entities: EntityDomain[]): Promise<Object | null> {
         const foundEntities: Object[] = [];
 
         for (const entity of entities) {
             const dao = this.fillDao(entity);
             const foundEntity = await dao.find(entity);
-            if (foundEntity) {
-                foundEntities.push(foundEntity);
-            }
+            if (foundEntity) foundEntities.push(foundEntity);
+
         }
 
         return foundEntities.length > 0 ? foundEntities : null;
     }
 
+    async findManyEntity(entity: EntityDomain){
+        const dao = this.fillDao(entity);
+        const entitiesExist = await dao.find(entity);
+        if (entitiesExist) return entitiesExist;
+        return null;
+    }
 
     private fillDao(entity: EntityDomain): IDao {
         const { name } = entity.constructor;

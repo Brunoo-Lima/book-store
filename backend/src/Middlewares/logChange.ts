@@ -8,20 +8,17 @@ import { User } from "../domain/User";
 
 export async function logChange(req: CustomRequest, res: Response){
     try{
-        const { log_change } = req;
-        const { entity }=  req.user;
-
-        if(!log_change) return res.status(400).json('Error logs does not sent !');
-        const bookDomain = log_change.bookDomain as Book;
-        const bookCreated = log_change.bookCreated as Books;
-
+        if(!req.user.entity || !req.bookDomain || !req.created) return res.status(400).json({
+            error: ['Something went wrong !']
+        })
+        const user =  req.user.entity as User;
+        const book = req.bookDomain as Book;
+        const logChange = new LogChange(book, user);
         const facade = new Facade();
-        const logChange = new LogChange(bookDomain, entity as User);
-        const log = await facade.save(logChange) as Logs_Change;
-        logChange.idEntity = log.log_id;
-    
+        const log = await facade.save([logChange]);
+
         return res.json({
-            book: bookCreated,
+            book: book,
             logChange: log
         });
     } catch (e) {
