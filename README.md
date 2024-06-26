@@ -41,4 +41,9 @@ yarn
 
 ### Diagrama de Classes de Domínio
 
+![Domain](https://github.com/Brunoo-Lima/book-store/assets/112290478/3c68d712-e8e1-49e7-913a-68f6ea64bf2b)
 
+
+### Diagrama de Classes de implementação
+
+![Implementation](https://github.com/Brunoo-Lima/book-store/assets/112290478/f23779bd-caae-4df7-abe7-3e747a5c2a17)
