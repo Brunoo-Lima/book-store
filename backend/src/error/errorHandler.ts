@@ -1,10 +1,10 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 
 const errorHandler = (
     err: Error,
     req: Request,
     res: Response,
-    next: NextFunction
+   // next: NextFunction
 ) => {
     if (err instanceof Error) {
         return res.status(400).json({ // Todo erro externo a aplicação cai nesse if
@@ -16,6 +16,6 @@ const errorHandler = (
         status: "error",
         message: "Internal Server Error",
     });
-};
+}
 
 export default errorHandler;

@@ -6,7 +6,7 @@ class App {
     constructor() {
         this.app = express();
         this.middlewares();
-        this.routes();
+       // this.routes();
     }
 
     private middlewares(): void {
@@ -14,8 +14,7 @@ class App {
         this.app.use(errorHandler); // Todo erro gerado passa para essa função
     }
 
-    private routes(): void {
-    }
+    // private routes(): void {}
 }
 
 export default new App().app;
