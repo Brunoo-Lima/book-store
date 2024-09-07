@@ -12,3 +12,78 @@ datasource db {
     provider = "postgresql"
     url      = env("DATABASE_URL")
 }
+
+model Client {
+    cli_id    String @id @default(uuid())
+    cli_name  String
+    cli_dateOfBirth String
+    cli_cpf String @unique
+    cli_status String
+    cli_gender String
+    cli_address Address @relation(fields: [fk_cli_add_id], references: [add_id])
+    cli_sales Sales[]
+    created_at DateTime @default(now())
+    update_at DateTime @default(now())
+    fk_cli_add_id String
+}
+
+model Address{
+    add_id String @id @default(uuid())
+    add_streetName String
+    add_publicPlace String  // Logradouro
+    add_number String
+    add_cep String
+    add_neighborhood String
+    add_compostName String
+    add_typeResidence String
+    add_city City @relation(fields: [fk_add_cit_id], references: [cit_id])
+    fk_add_cit_id String
+    client Client[]
+}
+
+model City {
+    cit_id String @id @default(uuid())
+    cit_name String
+    cit_state State @relation(fields: [fk_cit_sta_id], references: [sta_id])
+    fk_cit_sta_id String
+    address Address[]
+}
+
+model State{
+    sta_id String @id @default(uuid())
+    sta_name String
+    sta_uf String @db.VarChar(2)
+    sta_country Country @relation(fields: [fk_sta_cou_id], references: [cou_id])
+    city City[]
+    fk_sta_cou_id String
+}
+
+model Country {
+    cou_id String @id @default(uuid())
+    cou_name String
+    states State[]
+}
+
+model Sales {
+    sal_id String @id @default(uuid())
+    sal_client Client @relation(fields: [fk_sal_cli_id], references: [cli_id])
+    sal_item Item[]
+    fk_sal_ite_id String
+    fk_sal_cli_id String
+}
+
+model Item {
+    ite_id String @id @default(uuid())
+    ite_quantitySales Int
+    ite_products Product @relation(fields: [fk_ite_pro_id], references: [pro_id])
+    ite_sales Sales @relation(fields: [fk_ite_sal_id], references: [ sal_id])
+    fk_ite_sal_id String @unique
+    fk_ite_pro_id String @unique
+
+}
+model Product {
+    pro_id String @id @default(uuid())
+    pro_price Decimal
+    pro_quantity Int
+    Item Item?
+}

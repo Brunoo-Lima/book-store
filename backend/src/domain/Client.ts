@@ -12,7 +12,7 @@ export class Client extends EntityDomain{
 
     constructor(
         private _name: string,
-        private _DateOfBirth: string,
+        private _DateOfBirth: Date,
         private _email: string,
         private _cpf: CPF,
         private _statusClient: StatusClient,
@@ -31,11 +31,11 @@ export class Client extends EntityDomain{
         this._name = name;
     }
 
-    public get DateOfBirth(): string {
+    public get DateOfBirth(): Date {
         return this._DateOfBirth;
     }
 
-    public set DateofBirth(DateOfBirth: string,) {
+    public set DateOfBirth(DateOfBirth: Date) {
         this._DateOfBirth = DateOfBirth;
     }
 
