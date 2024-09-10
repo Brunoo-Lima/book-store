@@ -1,4 +1,3 @@
-import { Address } from "./Address";
 import { CPF } from "./CPF";
 import { EntityDomain } from "./EntityDomain";
 import { Phone } from "./Phone";
@@ -16,7 +15,6 @@ export class Client extends EntityDomain{
         private _email: string,
         private _cpf: CPF,
         private _statusClient: StatusClient,
-        private _Address: Address,
         private _gender: Gender,
     )
     {

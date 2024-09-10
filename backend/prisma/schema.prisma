@@ -9,61 +9,48 @@ generator client {
 }
 
 datasource db {
-    provider = "postgresql"
+    provider = "mysql"
     url      = env("DATABASE_URL")
 }
 
 model Client {
-    cli_id          String   @id @default(uuid())
+    cli_id          String    @id @default(uuid())
     cli_name        String
     cli_dateOfBirth String
-    cli_cpf         String   @unique
+    cli_cpf         String    @unique
     cli_status      String
     cli_gender      String
-    cli_address     Address  @relation(fields: [fk_cli_add_id], references: [add_id])
     cli_sales       Sales[]
-    cli_history     History  @relation(fields: [fk_cli_his_id], references: [his_id])
-    created_at      DateTime @default(now())
-    update_at       DateTime @default(now())
+    cli_phone       Phone[]
+    created_at      DateTime  @default(now())
+    update_at       DateTime  @default(now())
     fk_cli_add_id   String
-    fk_cli_his_id   String   @unique
+    cli_address     Address[]
+}
+
+model Phone {
+    pho_id         String @id @default(uuid())
+    pho_ddd        String @db.VarChar(3)
+    pho_number     String
+    pho_type_phone String
+    pho_client     Client @relation(fields: [fk_pho_cli_id], references: [cli_id])
+    fk_pho_cli_id  String
 }
 
 model Address {
-    add_id            String   @id @default(uuid())
+    add_id            String @id @default(uuid())
     add_streetName    String
-    add_publicPlace   String // Logradouro
+    add_publicPlace   String
     add_number        String
     add_cep           String
     add_neighborhood  String
     add_compostName   String
     add_typeResidence String
-    add_city          City     @relation(fields: [fk_add_cit_id], references: [cit_id])
-    fk_add_cit_id     String
-    client            Client[]
-}
-
-model City {
-    cit_id        String    @id @default(uuid())
-    cit_name      String
-    cit_state     State     @relation(fields: [fk_cit_sta_id], references: [sta_id])
-    fk_cit_sta_id String
-    address       Address[]
-}
-
-model State {
-    sta_id        String  @id @default(uuid())
-    sta_name      String
-    sta_uf        String  @db.VarChar(2)
-    sta_country   Country @relation(fields: [fk_sta_cou_id], references: [cou_id])
-    city          City[]
-    fk_sta_cou_id String
-}
-
-model Country {
-    cou_id   String  @id @default(uuid())
-    cou_name String
-    states   State[]
+    add_client        Client @relation(fields: [fk_add_cli_id], references: [cli_id])
+    add_city          String
+    add_state         String
+    add_country       String
+    fk_add_cli_id     String
 }
 
 model Sales {
@@ -73,7 +60,7 @@ model Sales {
     sal_history   History @relation(fields: [fk_sal_his_id], references: [his_id])
     fk_sal_ite_id String
     fk_sal_cli_id String
-    fk_sal_his_id String
+    fk_sal_his_id String  @unique
 }
 
 model Item {
@@ -93,7 +80,29 @@ model Product {
 }
 
 model History {
-    his_id     String  @id @default(uuid())
-    his_client Client?
+    his_id     String    @id @default(uuid())
     his_sales  Sales[]
+    his_rankig Ranking[]
+}
+
+model CreditCart {
+    cre_id           String  @id @default(uuid())
+    cre_name         String
+    cre_cvv          String  @db.VarChar(3)
+    cre_number_cart  String
+    cre_dateMaturity String
+    cre_preference   Boolean
+    cre_Flag         Flag    @relation(fields: [fk_cre_fla_id], references: [fla_id])
+    fk_cre_fla_id    String
+}
+
+model Flag {
+    fla_id          String       @id @default(uuid())
+    fla_name        String
+    fla_creditCarts CreditCart[]
+}
+
+model Ranking {
+    ran_id           String    @id @default(uuid())
+    ran_historySales History[]
 }
