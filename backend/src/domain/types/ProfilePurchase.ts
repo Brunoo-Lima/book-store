@@ -1,5 +1,4 @@
-export enum ProfileSales {
-    "NOT_CLASSIFICATION" = "Sem classificação",
+export enum ProfilePurchase {
     "BRONZE" = "Bronze",
     "SIlVER" = "Prata",
     "GOLD" = "Ouro",

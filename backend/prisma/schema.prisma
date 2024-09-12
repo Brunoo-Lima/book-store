@@ -14,18 +14,21 @@ datasource db {
 }
 
 model Client {
-    cli_id          String    @id @default(uuid())
-    cli_name        String
-    cli_dateOfBirth String
-    cli_cpf         String    @unique
-    cli_status      String
-    cli_gender      String
-    cli_sales       Sales[]
-    cli_phone       Phone[]
-    created_at      DateTime  @default(now())
-    update_at       DateTime  @default(now())
-    fk_cli_add_id   String
-    cli_address     Address[]
+    cli_id              String         @id @default(uuid())
+    cli_name            String
+    cli_dateOfBirth     String
+    cli_cpf             String         @unique
+    cli_status          String
+    cli_gender          String
+    cli_sales           Sales[]
+    cli_phone           Phone[]
+    cli_score           Float
+    cli_profilePurchase String
+    cli_classification  Classification @relation(fields: [fk_cli_cla_id], references: [cla_id])
+    fk_cli_cla_id       String         @unique
+    created_at          DateTime       @default(now())
+    update_at           DateTime       @default(now())
+    cli_address         Address[]
 }
 
 model Phone {
@@ -38,15 +41,15 @@ model Phone {
 }
 
 model Address {
-    add_id            String @id @default(uuid())
+    add_id            String  @id @default(uuid())
     add_streetName    String
     add_publicPlace   String
     add_number        String
     add_cep           String
     add_neighborhood  String
-    add_compostName   String
+    add_compostName   String?
     add_typeResidence String
-    add_client        Client @relation(fields: [fk_add_cli_id], references: [cli_id])
+    add_client        Client  @relation(fields: [fk_add_cli_id], references: [cli_id])
     add_city          String
     add_state         String
     add_country       String
@@ -54,13 +57,12 @@ model Address {
 }
 
 model Sales {
-    sal_id        String  @id @default(uuid())
-    sal_client    Client  @relation(fields: [fk_sal_cli_id], references: [cli_id])
+    sal_id        String @id @default(uuid())
+    sal_client    Client @relation(fields: [fk_sal_cli_id], references: [cli_id])
     sal_item      Item[]
-    sal_history   History @relation(fields: [fk_sal_his_id], references: [his_id])
     fk_sal_ite_id String
     fk_sal_cli_id String
-    fk_sal_his_id String  @unique
+    fk_sal_his_id String @unique
 }
 
 model Item {
@@ -79,10 +81,11 @@ model Product {
     Item         Item?
 }
 
-model History {
-    his_id     String    @id @default(uuid())
-    his_sales  Sales[]
-    his_rankig Ranking[]
+model Classification {
+    cla_id        String  @id @default(uuid())
+    cla_ranking   Ranking @relation(fields: [fk_cla_ran_id], references: [ran_id])
+    fk_cla_ran_id String
+    cla_client    Client?
 }
 
 model CreditCart {
@@ -103,6 +106,6 @@ model Flag {
 }
 
 model Ranking {
-    ran_id           String    @id @default(uuid())
-    ran_historySales History[]
+    ran_id             String           @id @default(uuid())
+    ran_classification Classification[]
 }

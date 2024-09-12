@@ -1,11 +1,10 @@
 import { Client } from "./Client";
 import { EntityDomain } from "./EntityDomain";
-import { Sales } from "./Sales";
 
-export class History extends EntityDomain {
+export class Delivery extends EntityDomain{
     constructor(
         private _client: Client,
-        private _sales: Sales[]
+        private _date: Date
     ){
         super()
     }

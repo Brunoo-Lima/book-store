@@ -1,4 +1,4 @@
-import { EntityDomain } from "../domain/EntityDomain";
+import { EntityDomain } from "../../domain/EntityDomain";
 
 export interface IDao {
     create(entity: EntityDomain): Promise<void>
