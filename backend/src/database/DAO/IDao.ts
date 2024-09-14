@@ -1,8 +1,8 @@
 import { EntityDomain } from "../../domain/EntityDomain";
 
 export interface IDao {
-    create(entity: EntityDomain): Promise<void>
-    update(entity: EntityDomain): Promise<void>
-    delete(entity: EntityDomain): Promise<void>
-    find(entity: EntityDomain):  Promise<void>
+    create(entity: EntityDomain): Promise<unknown>
+    update(entity: EntityDomain): Promise<unknown>
+    delete(entity: EntityDomain): Promise<unknown>
+    find(entity: EntityDomain):  Promise<unknown>
 }

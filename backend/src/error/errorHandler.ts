@@ -1,10 +1,11 @@
-import { Request, Response } from "express";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { NextFunction, Request, Response  } from "express";
 
 const errorHandler = (
     err: Error,
     req: Request,
     res: Response,
-   // next: NextFunction
+    next: NextFunction
 ) => {
     if (err instanceof Error) {
         return res.status(400).json({ // Todo erro externo a aplicação cai nesse if

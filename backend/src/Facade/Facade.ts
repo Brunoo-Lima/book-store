@@ -4,6 +4,7 @@ import { IDao } from "../database/DAO/IDao";
 import { IFacade } from "../interfaces/IFacade";
 import { IStrategy } from "../interfaces/IStrategy";
 import { ValidCPF } from "../Validations/ValidCPF";
+import { FactoryDao } from "../database/DAO/FactoryDao";
 
 export class Facade implements IFacade{
     private businessRolesClientSave:  Map<string, IStrategy[]>
@@ -18,17 +19,37 @@ export class Facade implements IFacade{
         this.daos = new Map<string, IDao>
         this.setStrategies()
     }
-    create(entity: EntityDomain): Promise<void> {
+    async create(entity: EntityDomain): Promise<unknown> {
+        const dao = this.fillDao(entity)
+        try{
+            const entityCreated = await dao.create(entity)
+            return entityCreated
+        } catch(e){
+            return {
+                "error": e
+            }
+        }
+    }
+    update(entity: EntityDomain): Promise<unknown> {
         throw new Error("Method not implemented.");
     }
-    update(entity: EntityDomain): Promise<void> {
+    delete(entity: EntityDomain): Promise<unknown> {
         throw new Error("Method not implemented.");
     }
-    delete(entity: EntityDomain): Promise<void> {
+    find(entity: EntityDomain): Promise<unknown> {
         throw new Error("Method not implemented.");
     }
-    find(entity: EntityDomain): Promise<void> {
-        throw new Error("Method not implemented.");
+    private fillDao(entity: EntityDomain): IDao {
+        const { name } = entity.constructor;
+        const daoExist = this.daos.get(name.toUpperCase().trim());
+
+        if (daoExist) return daoExist;
+
+        const dao = FactoryDao.createDao(name.toUpperCase().trim());
+
+        this.daos.set(name.toUpperCase(), dao);
+
+        return dao;
     }
     private setStrategies(): void{
         this.businessRolesClientSave.set(

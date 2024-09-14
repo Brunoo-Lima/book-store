@@ -10,4 +10,16 @@ export abstract class EntityDomain{
         this.created_at = new Date().toString();
         this.updated_at = new Date().toString();
     }
+
+    public get createdAt() : string {
+        return this.created_at
+    }
+
+    public get updatedAt() : string {
+        return this.updated_at
+    }
+
+    public get id() : string {
+        return this._id
+    }
 }
