@@ -20,16 +20,18 @@ model Client {
     cli_cpf             String       @unique // CPF (único)
     cli_status          String // Status (ativo/inativo)
     cli_gender          String // Gênero
+    cli_password        String
     cli_email           String       @unique // Email
     cli_phone           Phone[] // Relação 1:N com telefones
     cli_score           Float // Pontuação do cliente baseada no perfil de compra
     cli_profilePurchase String // Perfil de compra
+    cli_address         Address[] // Relação 1:N com endereços
+    cli_ranking         Ranking  @relation(fields: [fk_ran_cli_id], references: [ran_id])
+    cli_creditCards     CreditCart[] // Relação 1:N com cartões de crédito
+    cli_log             Log[]
+    fk_ran_cli_id       String       @unique
     created_at          DateTime     @default(now())
     updated_at          DateTime     @default(now())
-    cli_address         Address[] // Relação 1:N com endereços
-    cli_ranking         Ranking?
-    fk_cli_ran_id       String       @unique
-    cli_creditCards     CreditCart[] // Relação 1:N com cartões de crédito
 }
 
 model Phone {
@@ -81,22 +83,14 @@ model Flag {
 model Ranking {
     ran_id        String @id @default(uuid())
     ran_value     Int // Valor numérico do ranking (RN0027)
-    ran_client    Client @relation(fields: [fk_ran_cli_id], references: [cli_id])
+    ran_client    Client[]
     fk_ran_cli_id String @unique
 }
 
-model User {
-    use_id     String   @id @default(uuid())
-    use_name   String
-    created_at DateTime @default(now())
-    updated_at DateTime @default(now())
-    Log        Log[]
-}
-
 model Log {
-    log_id     String   @id @default(uuid())
-    log_use    User     @relation(fields: [fk_log_use_id], references: [use_id])
-    created_at DateTime @default(now())
-    updateD_at DateTime @default(now())
-    fk_log_use_id String
+    log_id        String   @id @default(uuid())
+    log_client      Client   @relation(fields: [fk_log_cli_id], references: [cli_id])
+    created_at    DateTime @default(now())
+    updateD_at    DateTime @default(now())
+    fk_log_cli_id String
 }

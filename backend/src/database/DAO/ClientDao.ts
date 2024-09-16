@@ -14,6 +14,7 @@ export class ClientDao extends DAO{
                 cli_cpf: client.cpf.code,
                 cli_status: client.statusClient,
                 cli_gender: client.gender,
+                cli_password: client.password,
                 cli_score: client.rfmScore,
                 cli_profilePurchase: client.profilePurchase,
                 created_at: new Date().toString(),
@@ -40,19 +41,19 @@ export class ClientDao extends DAO{
                         })
                     }
                 },
-                cli_email: client.email,
                 cli_ranking: {
                     connectOrCreate: {
                         create: {
-                            ran_id: client.ranking.id,
-                            ran_value: client.ranking.value
+                            ran_value: 0,
+                            fk_ran_cli_id: client.id
                         },
                         where: {
-                            fk_ran_cli_id: client.id // Chave estrangeira correta
+                            fk_ran_cli_id: client.id
                         }
                     }
                 },
-                fk_cli_ran_id: client.ranking.id // Relacionamento correto de ranking
+                cli_email: client.email,
+
             },
         });
     }
@@ -64,8 +65,29 @@ export class ClientDao extends DAO{
     public delete(entity: EntityDomain): Promise<void> {
         throw new Error("Method not implemented.");
     }
-    public find(entity: EntityDomain): Promise<void> {
-        throw new Error("Method not implemented.");
+    public async find(client: Client): Promise<object | null> {
+        return await prisma.client.findFirst({
+            select: {
+                cli_cpf: true,
+                cli_creditCards: true,
+                cli_dateOfBirth: true,
+                cli_gender: true,
+                cli_phone: true,
+                cli_profilePurchase: true,
+                cli_ranking: true,
+                cli_id: true,
+                cli_name: true,
+                cli_score: true,
+                cli_status: true,
+                cli_log: true,
+                cli_address: true,
+                created_at: true,
+            },
+            where: {
+                cli_email: client.email,
+                cli_password: client.password
+            }
+        })
     }
 
 }

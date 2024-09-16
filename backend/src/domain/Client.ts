@@ -3,7 +3,6 @@ import { CreditCart } from "./Cart";
 import { CPF } from "./CPF";
 import { EntityDomain } from "./EntityDomain";
 import { Phone } from "./Phone";
-import { Ranking } from "./Ranking";
 import { Gender } from "./types/Gender";
 import { ProfilePurchase } from "./types/ProfilePurchase";
 import { StatusClient } from "./types/StatusClient";
@@ -22,7 +21,6 @@ export class Client extends EntityDomain {
         private _rfmScore: number, // Pontuação que atrela o perfil ao cliente
         private _addresses: Address[],
         private _creditCart: CreditCart | null,
-        private _ranking: Ranking
     ) {
         super();
     }
@@ -113,13 +111,6 @@ export class Client extends EntityDomain {
 
     public set creditCart(creditCart: CreditCart | null) {
         this._creditCart = creditCart;
-    }
-    public get ranking(): Ranking {
-        return this._ranking;
-    }
-
-    public set ranking(ranking: Ranking) {
-        this._ranking = ranking;
     }
     public get password(): string {
         return this._password;

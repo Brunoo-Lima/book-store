@@ -1,3 +1,5 @@
+import { EntityDomain } from "../domain/EntityDomain";
+
 export interface IStrategy {
-    process(): string
+    process(entity: EntityDomain): object
 }

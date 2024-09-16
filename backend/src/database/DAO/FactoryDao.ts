@@ -5,7 +5,7 @@ import { IDao } from "./IDao";
 export abstract class FactoryDao {
     static createDao(name: string): IDao {
         switch (name.toUpperCase().trim()) {
-            case "CLIENT":
+            case "Client":
                 return new ClientDao();
             default:
                 throw new Error("Unknown DAO type");

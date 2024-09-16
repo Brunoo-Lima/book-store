@@ -3,8 +3,8 @@ import { EntityDomain } from "../domain/EntityDomain";
 import { IDao } from "../database/DAO/IDao";
 import { IFacade } from "../interfaces/IFacade";
 import { IStrategy } from "../interfaces/IStrategy";
-import { ValidCPF } from "../Validations/ValidCPF";
 import { FactoryDao } from "../database/DAO/FactoryDao";
+import { EntityExistInDB } from "../Validations/EntityExistInDB";
 
 export class Facade implements IFacade{
     private businessRolesClientSave:  Map<string, IStrategy[]>
@@ -20,6 +20,11 @@ export class Facade implements IFacade{
         this.setStrategies()
     }
     async create(entity: EntityDomain): Promise<unknown> {
+        const hasError = (await this.getStrategies()).map((strategy) => {
+            if ("error" in strategy) return strategy.error
+        })
+        if(hasError.length > 0) return hasError
+        
         const dao = this.fillDao(entity)
         try{
             const entityCreated = await dao.create(entity)
@@ -52,11 +57,20 @@ export class Facade implements IFacade{
         return dao;
     }
     private setStrategies(): void{
-        this.businessRolesClientSave.set(
+        this.businessRoles.set(
             this.entity.constructor.name,
             [
-                new ValidCPF()
+                new EntityExistInDB()
             ]
         )
+    }
+    private async getStrategies(): Promise<object[]> {
+        const name = this.entity.constructor.name
+        const strategies = this.businessRoles.get(name)
+        const messages = strategies?.map((strategy) => {
+            return strategy.process(this.entity)
+        }) as object[] // Força a tipagem, pois todas os métodos process retorna um objeto
+
+        return messages
     }
 }

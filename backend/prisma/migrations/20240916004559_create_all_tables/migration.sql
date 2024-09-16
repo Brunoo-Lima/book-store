@@ -6,16 +6,17 @@ CREATE TABLE `Client` (
     `cli_cpf` VARCHAR(191) NOT NULL,
     `cli_status` VARCHAR(191) NOT NULL,
     `cli_gender` VARCHAR(191) NOT NULL,
+    `cli_password` VARCHAR(191) NOT NULL,
     `cli_email` VARCHAR(191) NOT NULL,
     `cli_score` DOUBLE NOT NULL,
     `cli_profilePurchase` VARCHAR(191) NOT NULL,
+    `fk_ran_cli_id` VARCHAR(191) NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `fk_cli_ran_id` VARCHAR(191) NOT NULL,
 
     UNIQUE INDEX `Client_cli_cpf_key`(`cli_cpf`),
     UNIQUE INDEX `Client_cli_email_key`(`cli_email`),
-    UNIQUE INDEX `Client_fk_cli_ran_id_key`(`fk_cli_ran_id`),
+    UNIQUE INDEX `Client_fk_ran_cli_id_key`(`fk_ran_cli_id`),
     PRIMARY KEY (`cli_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -83,24 +84,17 @@ CREATE TABLE `Ranking` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `User` (
-    `use_id` VARCHAR(191) NOT NULL,
-    `use_name` VARCHAR(191) NOT NULL,
-    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updated_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-
-    PRIMARY KEY (`use_id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
 CREATE TABLE `Log` (
     `log_id` VARCHAR(191) NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updateD_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `fk_log_use_id` VARCHAR(191) NOT NULL,
+    `fk_log_cli_id` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`log_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- AddForeignKey
+ALTER TABLE `Client` ADD CONSTRAINT `Client_fk_ran_cli_id_fkey` FOREIGN KEY (`fk_ran_cli_id`) REFERENCES `Ranking`(`ran_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Phone` ADD CONSTRAINT `Phone_fk_pho_cli_id_fkey` FOREIGN KEY (`fk_pho_cli_id`) REFERENCES `Client`(`cli_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -115,7 +109,4 @@ ALTER TABLE `CreditCart` ADD CONSTRAINT `CreditCart_fk_cre_fla_id_fkey` FOREIGN 
 ALTER TABLE `CreditCart` ADD CONSTRAINT `CreditCart_fk_cre_cli_id_fkey` FOREIGN KEY (`fk_cre_cli_id`) REFERENCES `Client`(`cli_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Ranking` ADD CONSTRAINT `Ranking_fk_ran_cli_id_fkey` FOREIGN KEY (`fk_ran_cli_id`) REFERENCES `Client`(`cli_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `Log` ADD CONSTRAINT `Log_fk_log_use_id_fkey` FOREIGN KEY (`fk_log_use_id`) REFERENCES `User`(`use_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Log` ADD CONSTRAINT `Log_fk_log_cli_id_fkey` FOREIGN KEY (`fk_log_cli_id`) REFERENCES `Client`(`cli_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
