@@ -5,20 +5,20 @@ import { DAO } from "./DAO";
 import { prisma } from "../../prisma/prismaClient";
 
 export class ClientDao extends DAO{
-    public async create(client: Client): Promise<unknown> {
+    public async create(client: Client){
         return await prisma.client.create({
             data: {
                 cli_id: client.id,
                 cli_name: client.name,
-                cli_dateOfBirth: client.dateOfBirth.toString(),
+                cli_dateOfBirth: client.dateOfBirth,
                 cli_cpf: client.cpf.code,
                 cli_status: client.statusClient,
                 cli_gender: client.gender,
                 cli_password: client.password,
                 cli_score: client.rfmScore,
                 cli_profilePurchase: client.profilePurchase,
-                created_at: new Date().toString(),
-                updated_at: new Date().toString(),
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString(),
                 cli_address: {
                     createMany: {
                         skipDuplicates: true,
@@ -34,7 +34,7 @@ export class ClientDao extends DAO{
                                 add_state: address.state,
                                 add_streetName: address.streetName,
                                 add_typeResidence: address.typeResidence,
-                                add_compostName: address.compostName || undefined,
+                                add_compostName: address.compostName || null,
                                 add_isBilling: address.change,
                                 add_isDelivery: address.delivery
                             }

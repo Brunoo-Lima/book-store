@@ -2,7 +2,7 @@
 CREATE TABLE `Client` (
     `cli_id` VARCHAR(191) NOT NULL,
     `cli_name` VARCHAR(191) NOT NULL,
-    `cli_dateOfBirth` DATETIME(3) NOT NULL,
+    `cli_dateOfBirth` VARCHAR(191) NOT NULL,
     `cli_cpf` VARCHAR(191) NOT NULL,
     `cli_status` VARCHAR(191) NOT NULL,
     `cli_gender` VARCHAR(191) NOT NULL,

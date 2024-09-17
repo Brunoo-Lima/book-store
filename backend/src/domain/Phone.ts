@@ -1,35 +1,39 @@
 import { EntityDomain } from "./EntityDomain";
 import { TypePhone } from "./types/TypePhone";
 
+export interface PhoneProps{
+    ddd: number,
+    number: number,
+    typePhone: TypePhone
+}
+
 export class Phone extends EntityDomain{
     constructor(
-        private _ddd: number,
-        private _number: number,
-        private _typePhone: TypePhone
+        private phoneProps: PhoneProps
     ){
         super()
     }
 
     public get ddd(): number {
-        return this._ddd;
+        return this.phoneProps.ddd;
     }
 
     public set ddd(ddd: number) {
-        this._ddd = ddd;
+        this.phoneProps.ddd = ddd;
     }
 
     public get number(): number {
-        return this._number;
+        return this.phoneProps.number;
     }
     public set number(number: number) {
-        this._number = number;
+        this.phoneProps.number = number;
     }
 
     public set typePhone(typePhone: TypePhone) {
-        this._typePhone = typePhone;
+        this.phoneProps.typePhone = typePhone;
     }
 
     public get typePhone(): string {
-        return this._typePhone;
+        return this.phoneProps.typePhone;
     }
 }

@@ -1,121 +1,115 @@
-import { Client } from "./Client";
 import { EntityDomain } from "./EntityDomain";
 import { TypeResidence } from "./types/TypeResidence";
 
+
+export interface AddressProps {
+    streetName: string,
+    publicPlace: string, // Logradouro
+    number: string,
+    cep: string,
+    neighborhood: string,
+    city: string,
+    state: string,
+    country: string,
+    compostName: string,
+    typeResidence: TypeResidence,
+    change: boolean,
+    delivery: boolean,
+}
+
 export class Address extends EntityDomain {
     constructor(
-        private _client: Client,
-        private _streetName: string,
-        private _publicPlace: string, // Logradouro
-        private _number: string,
-        private _cep: string,
-        private _neighborhood: string,
-        private _city: string,
-        private _state: string,
-        private _country: string,
-        private _compostName: string,
-        private _typeResidence: TypeResidence,
-        private _change: boolean,
-        private _delivery: boolean,
+        private addressProps: AddressProps
     ) {
         super();
     }
 
-    // Métodos GET
-    get client(): Client {
-        return this._client;
-    }
-
-    public set client(client: Client) {
-        this._client = client
-    }
-
     get streetName(): string {
-        return this._streetName;
+        return this.addressProps.streetName;
     }
     public set streetName(streetName: string) {
-        this._streetName = streetName;
+        this.addressProps.streetName = streetName;
     }
 
     get publicPlace(): string {
-        return this._publicPlace;
+        return this.addressProps.publicPlace;
     }
     public set publicPlace(publicPlace: string) {
-        this._publicPlace = publicPlace;
+        this.addressProps.publicPlace = publicPlace;
     }
 
     get number(): string {
-        return this._number;
+        return this.addressProps.number;
     }
     public set number(number: string) {
-        this._number = number;
+        this.addressProps.number = number;
     }
 
 
     get cep(): string {
-        return this._cep;
+        return this.addressProps.cep;
     }
 
     public set cep(cep: string) {
-        this._cep = cep;
+        this.addressProps.cep = cep;
     }
 
     get neighborhood(): string {
-        return this._neighborhood;
+        return this.addressProps.neighborhood;
     }
 
 
     public set neighborhood(neighborhood: string) {
-        this._neighborhood = neighborhood;
+        this.addressProps.neighborhood = neighborhood;
     }
 
     get city(): string {
-        return this._city;
+        return this.addressProps.city;
     }
     public set city(city: string) {
-        this._city = city;
+        this.addressProps.city = city;
     }
 
     get state(): string {
-        return this._state;
+        return this.addressProps.state;
     }
 
     public set state(state: string) {
-        this._state = state;
+        this.addressProps.state = state;
     }
 
     get country(): string {
-        return this._country;
+        return this.addressProps.country;
     }
     public set country(country: string) {
-        this._country = country;
+        this.addressProps.country = country;
     }
     get compostName(): string {
-        return this._compostName;
+        return this.addressProps.compostName;
     }
 
     public set compostName(compostName: string) {
-        this._compostName = compostName;
+        this.addressProps.compostName = compostName;
     }
     get typeResidence(): TypeResidence {
-        return this._typeResidence;
+        return this.addressProps.typeResidence;
     }
 
     public set typeResidence(typeResidence: TypeResidence) {
-        this._typeResidence = typeResidence;
+        this.addressProps.typeResidence = typeResidence;
     }
     get delivery(): boolean {
-        return this._delivery;
+        return this.addressProps.delivery;
     }
 
     public set delivery(delivery: boolean) {
-        this._delivery = delivery;
+        this.addressProps.delivery = delivery;
     }
     get change(): boolean {
-        return this._change;
+        return this.addressProps.change;
     }
 
     public set change(change: boolean) {
-        this._change = change;
+        this.addressProps.change = change;
     }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-extraneous-class */
 import { Address } from "./Address";
 import { CreditCart } from "./Cart";
 import { CPF } from "./CPF";
@@ -6,117 +7,170 @@ import { Phone } from "./Phone";
 import { Gender } from "./types/Gender";
 import { ProfilePurchase } from "./types/ProfilePurchase";
 import { StatusClient } from "./types/StatusClient";
+import { TypePhone } from "./types/TypePhone";
+import { TypeResidence } from "./types/TypeResidence";
 
+
+export interface ClientProps{
+    phone: Phone, // Phone can be sent after of the object created
+    profilePurchase: ProfilePurchase,
+    name: string,
+    dateOfBirth: string,
+    email: string,
+    password: string,
+    cpf: CPF,
+    statusClient: StatusClient,
+    gender: Gender,
+    rfmScore: number, // Pontuação que atrela o perfil ao cliente
+    addresses: Address[],
+    creditCart: CreditCart | null,
+}
 export class Client extends EntityDomain {
     constructor(
-        private _phone: Phone, // Phone can be sent after of the object created
-        private _profilePurchase: ProfilePurchase,
-        private _name: string,
-        private _dateOfBirth: Date,
-        private _email: string,
-        private _password: string,
-        private _cpf: CPF,
-        private _statusClient: StatusClient,
-        private _gender: Gender,
-        private _rfmScore: number, // Pontuação que atrela o perfil ao cliente
-        private _addresses: Address[],
-        private _creditCart: CreditCart | null,
+        private clientProps: ClientProps
     ) {
         super();
     }
 
     public get name(): string {
-        return this._name;
+        return this.clientProps.name;
     }
 
     public set name(name: string) {
-        this._name = name;
+        this.clientProps.name = name;
     }
 
-    public get dateOfBirth(): Date {
-        return this._dateOfBirth;
+    public get dateOfBirth(): string {
+        return this.clientProps.dateOfBirth;
     }
 
-    public set dateOfBirth(DateOfBirth: Date) {
-        this._dateOfBirth = DateOfBirth;
+    public set dateOfBirth(DateOfBirth: string) {
+        this.clientProps.dateOfBirth = DateOfBirth;
     }
 
     public get email(): string {
-        return this._email;
+        return this.clientProps.email;
     }
 
     public set email(email: string) {
-        this._email = email;
+        this.clientProps.email = email;
     }
 
     public get cpf(): CPF {
-        return this._cpf;
+        return this.clientProps.cpf;
     }
 
     public set cpf(cpf: CPF) {
-        this._cpf = cpf;
+        this.clientProps.cpf = cpf;
     }
 
     public get phone(): Phone {
-        return this._phone;
+        return this.clientProps.phone;
     }
 
     public set phone(phone: Phone) {
-        this._phone = phone;
+        this.clientProps.phone = phone;
     }
 
     public get profilePurchase(): ProfilePurchase {
-        return this._profilePurchase;
+        return this.clientProps.profilePurchase;
     }
 
     public set profilePurchase(profilePurchase: ProfilePurchase) {
-        this._profilePurchase = profilePurchase;
+        this.clientProps.profilePurchase = profilePurchase;
     }
 
     public get statusClient(): StatusClient {
-        return this._statusClient;
+        return this.clientProps.statusClient;
     }
 
     public set statusClient(statusClient: StatusClient) {
-        this._statusClient = statusClient;
+        this.clientProps.statusClient = statusClient;
     }
 
     public get gender(): Gender {
-        return this._gender;
+        return this.clientProps.gender;
     }
 
     public set gender(gender: Gender) {
-        this._gender = gender;
+        this.clientProps.gender = gender;
     }
 
     public get rfmScore(): number {
-        return this._rfmScore;
+        return this.clientProps.rfmScore;
     }
 
     public set rfmScore(rfmScore: number) {
-        this._rfmScore = rfmScore;
+        this.clientProps.rfmScore = rfmScore;
     }
 
     public get addresses(): Address[] {
-        return this._addresses;
+        return this.clientProps.addresses;
     }
 
     public set addresses(addressResidence: Address[]) {
-        this._addresses = addressResidence;
+        this.clientProps.addresses = addressResidence;
     }
 
     public get creditCart(): CreditCart | null {
-        return this._creditCart;
+        return this.clientProps.creditCart;
     }
 
     public set creditCart(creditCart: CreditCart | null) {
-        this._creditCart = creditCart;
+        this.clientProps.creditCart = creditCart;
     }
     public get password(): string {
-        return this._password;
+        return this.clientProps.password;
     }
 
     public set password(password: string) {
-        this._password = password;
+        this.clientProps.password = password;
+    }
+}
+
+export class ClientFactory {
+    public static createClient(
+        email: string,
+        password: string,
+        name = "Anonymous", // Nome padrão
+        dateOfBirth = "00/00/0000", // Data de nascimento padrão
+        cpf = "000.000.000-00", // CPF padrão
+        statusClient: StatusClient = StatusClient.ACTIVATE, // Status padrão
+        gender: Gender = Gender.UNKNOWN, // Gênero padrão
+        rfmScore = 0, // Pontuação RFM padrão
+        profilePurchase: ProfilePurchase = ProfilePurchase.BRONZE, // Perfil de compra padrão
+        phone: Phone = new Phone({ddd: 11, number: 12345678, typePhone: TypePhone.FIXED}), // Telefone padrão
+        addresses: Address[] = [new Address({
+            streetName: "Unknown Street",
+            number: "000",
+            cep: "00000-000",
+            neighborhood: "Unknown Neighborhood",
+            city: "Unknown City",
+            state: "Unknown State",
+            country: "Unknown Country",
+            compostName: "House",
+            change: false,
+            delivery: false,
+            publicPlace: 'RUA',
+            typeResidence: TypeResidence.HOME
+        })], // Endereço padrão
+        creditCart: CreditCart | null = null // Cartão de crédito padrão (null)
+    ): Client {
+        const clientProps: ClientProps = {
+            name,
+            dateOfBirth,
+            email,
+            password,
+            cpf: new CPF(cpf),
+            statusClient,
+            gender,
+            rfmScore,
+            profilePurchase,
+            phone,
+            addresses,
+            creditCart
+        };
+
+        return new Client(clientProps);
     }
 }

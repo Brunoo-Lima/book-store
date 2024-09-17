@@ -16,7 +16,7 @@ datasource db {
 model Client {
     cli_id              String       @id @default(uuid()) // Código único de cliente
     cli_name            String // Nome
-    cli_dateOfBirth     DateTime // Data de nascimento
+    cli_dateOfBirth     String // Data de nascimento
     cli_cpf             String       @unique // CPF (único)
     cli_status          String // Status (ativo/inativo)
     cli_gender          String // Gênero
