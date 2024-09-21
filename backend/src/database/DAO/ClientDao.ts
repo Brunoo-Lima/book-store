@@ -3,7 +3,7 @@ import { Client } from "../../domain/Client";
 import { EntityDomain } from "../../domain/EntityDomain";
 import { DAO } from "./DAO";
 import { prisma } from "../../prisma/prismaClient";
-
+import { compareSync, hashSync } from 'bcrypt'
 export class ClientDao extends DAO{
     public async create(client: Client){
         return await prisma.client.create({
@@ -14,7 +14,7 @@ export class ClientDao extends DAO{
                 cli_cpf: client.cpf.code,
                 cli_status: client.statusClient,
                 cli_gender: client.gender,
-                cli_password: client.password,
+                cli_password: hashSync(client.password, 5),
                 cli_score: client.rfmScore,
                 cli_profilePurchase: client.profilePurchase,
                 created_at: new Date().toISOString(),
@@ -53,7 +53,6 @@ export class ClientDao extends DAO{
                     }
                 },
                 cli_email: client.email,
-
             },
         });
     }
@@ -81,13 +80,23 @@ export class ClientDao extends DAO{
                 cli_status: true,
                 cli_log: true,
                 cli_address: true,
+                cli_password: true,
                 created_at: true,
             },
             where: {
-                cli_email: client.email,
-                cli_password: client.password
+                OR: [
+                    {
+                        cli_email: {
+                            equals: client.email
+                        }
+                    },
+                    {
+                        cli_cpf: {
+                            equals: client.cpf.code
+                        }
+                    }
+                ]
             }
         })
     }
-
 }

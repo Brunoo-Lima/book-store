@@ -132,9 +132,9 @@ export class ClientFactory {
     public static createClient(
         email: string,
         password: string,
+        cpf = "000.000.000-00", // CPF padrão
         name = "Anonymous", // Nome padrão
         dateOfBirth = "00/00/0000", // Data de nascimento padrão
-        cpf = "000.000.000-00", // CPF padrão
         statusClient: StatusClient = StatusClient.ACTIVATE, // Status padrão
         gender: Gender = Gender.UNKNOWN, // Gênero padrão
         rfmScore = 0, // Pontuação RFM padrão

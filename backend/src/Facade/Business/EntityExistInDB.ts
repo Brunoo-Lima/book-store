@@ -1,6 +1,6 @@
-import { EntityDomain } from "../domain/EntityDomain";
-import { Facade } from "../Facade/Facade";
-import { IStrategy } from "../interfaces/IStrategy";
+import { EntityDomain } from "../../domain/EntityDomain";
+import { Facade } from "../../Facade/Facade";
+import { IStrategy } from "../../interfaces/IStrategy";
 
 export class EntityExistInDB implements IStrategy{
     async process(entity:EntityDomain): Promise<object> {
@@ -8,12 +8,11 @@ export class EntityExistInDB implements IStrategy{
             const facade = new Facade(entity)
             const entityExist = await facade.find()
             if(entityExist){
-                const objectError = {
-                    error: `${entity} Exists in DataBase !`
+                return  {
+                    error: `${entity.constructor.name} Exists in DataBase !`
                 }
-                return objectError
             }
-            return { success: "Entity don't exist !"}
+            return { success: "Entity was created !"}
         } catch (e){
             return {
                 error: e

@@ -1,7 +1,6 @@
 import express from "express";
 import "express-async-errors";
 import errorHandler from "./error/errorHandler";
-import routeLogin from "./routes/generateToken";
 import routeClient from "./routes/client";
 class App {
     readonly app;
@@ -17,7 +16,6 @@ class App {
     }
 
     private routes(): void {
-        this.app.use('/login', routeLogin)
         this.app.use('/client', routeClient)
     }
 }

@@ -1,5 +1,5 @@
 import { EntityDomain } from "../domain/EntityDomain";
 
 export interface IStrategy {
-    process(entity: EntityDomain): object
+    process(entity: EntityDomain): Promise<object>
 }

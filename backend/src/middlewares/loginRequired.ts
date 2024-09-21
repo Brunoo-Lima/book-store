@@ -1,31 +1,31 @@
 import jwt from 'jsonwebtoken'
-import { Response } from 'express'
+import { Response, Request } from 'express'
 import {ICustomJwt} from '../interfaces/ICustomJWT'
 import { Facade } from '../Facade/Facade'
-import { User } from '../domain/User'
-import { ICustomRequest } from '../interfaces/ICustomRequest'
+import { ClientFactory } from '../domain/Client'
+import { compareSync } from 'bcrypt'
+import { Client } from '@prisma/client'
 
-
-export async function login(req: ICustomRequest, res: Response){
-    const { authorization } = req.headers
-    if(!authorization) return res.status(401).json({
-        error: "Login is required"
-    })
-    const [, token] = authorization.split(' ')
+export async function login(req: Request, res: Response){
     try{
-        const user = jwt.verify(token, process.env.TOKEN_SECRET as string)
-        const { use_id, use_name } = user as ICustomJwt
-        const userVerify = new User(use_name)
-        const userExist = new Facade(userVerify).find(userVerify)
+        const { authorization } = req.headers
+        if(!authorization) return res.status(401).json({
+            error: "Login is required"
+        })
+        const [, token] = authorization.split(' ')
+        const client = jwt.verify(token, process.env.TOKEN_SECRET as string)
+        const { email, password } = client as ICustomJwt
+        const clientVerify = ClientFactory.createClient(email, password)
+        const clientExist = await new Facade(clientVerify).find() as Client
 
-        req.userId = use_id;
-        req.username = use_name;
-
-        if(!userExist){
+        if(!clientExist || !compareSync(password, clientExist.cli_password)){
             return res.status(401).json({
-                error: "User does't exist !"
+                error: "Client don't exist or password cannot be equals!"
             })
         }
+        // req.email = email;
+        // req.passwordClient = password;
+        // req.clientId = clientExist.cli_id;
         return res.json({
             token,
             message: "Success !"

@@ -4,8 +4,9 @@ import { IDao } from "../database/DAO/IDao";
 import { IFacade } from "../interfaces/IFacade";
 import { IStrategy } from "../interfaces/IStrategy";
 import { FactoryDao } from "../database/DAO/FactoryDao";
-import { EntityExistInDB } from "../Validations/EntityExistInDB";
-import { ValidPassword } from "../Validations/ValidPassword";
+import { EntityExistInDB } from "./Business/EntityExistInDB";
+import { ValidPassword } from "./Business/ValidPassword";
+import { ValidAddresses } from "./Business/ValidAddresses";
 
 export class Facade implements IFacade{
     private businessRolesClientSave:  Map<string, IStrategy[]>
@@ -21,8 +22,14 @@ export class Facade implements IFacade{
     async create(): Promise<unknown> {
         try{
             const strategies = await this.getStrategies()
+
             if(strategies){
-                if("error" in strategies) return strategies
+                for(const strategy of strategies){
+                    const hasErrors = await strategy
+                    if('error' in hasErrors) {
+                        return hasErrors
+                    }
+                }
             }
 
             const dao = this.fillDao(this.entity.constructor.name)
@@ -66,7 +73,8 @@ export class Facade implements IFacade{
             this.entity.constructor.name,
             [
                 new EntityExistInDB(),
-                new ValidPassword()
+                new ValidPassword(),
+                new ValidAddresses()
             ]
         )
     }
@@ -74,9 +82,9 @@ export class Facade implements IFacade{
         const name = this.entity.constructor.name
         const strategies = this.businessRolesClientSave.get(name)
         if(strategies){
-            let hasError = null
+            const hasError = []
             for(const strategy of strategies){
-               hasError = strategy.process(this.entity)
+               hasError.push(strategy.process(this.entity))
             }
             return hasError
         }
