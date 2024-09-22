@@ -7,6 +7,6 @@ import { login } from "../middlewares/loginRequired";
 const routeClient = Router()
 
 routeClient.post("/create", new ClientController().handle, log)
-routeClient.post("/find", login, new ClientController().handle) // Alterar para o store
+routeClient.post("/find", login, new ClientController().list) 
 
 export default routeClient;

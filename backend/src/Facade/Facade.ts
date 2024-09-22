@@ -19,6 +19,7 @@ export class Facade implements IFacade{
         this.daos = new Map<string, IDao>
         this.setStrategies()
     }
+
     async create(): Promise<unknown> {
         try{
             const strategies = await this.getStrategies()
@@ -54,7 +55,19 @@ export class Facade implements IFacade{
             return entityResearched
         } catch(e){
             return {
-                "error": e
+                error: e
+            }
+        }
+    }
+    async findMany(): Promise<unknown> {
+        try{
+            const dao = this.fillDao(this.entity.constructor.name)
+            const entities = await dao.findMany(this.entity)
+            console.log(entities)
+            return entities
+        } catch(e){
+            return {
+                error: e
             }
         }
     }

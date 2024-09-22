@@ -4,4 +4,5 @@ export interface IFacade {
     update(): Promise<unknown>
     delete(): Promise<unknown>
     find(): Promise<unknown>
+    findMany(): Promise<unknown>
 }

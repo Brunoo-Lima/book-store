@@ -139,7 +139,7 @@ export class ClientFactory {
         gender: Gender = Gender.UNKNOWN, // Gênero padrão
         rfmScore = 0, // Pontuação RFM padrão
         profilePurchase: ProfilePurchase = ProfilePurchase.BRONZE, // Perfil de compra padrão
-        phone: Phone = new Phone({ddd: 11, number: 12345678, typePhone: TypePhone.FIXED}), // Telefone padrão
+        phone: Phone = new Phone({ddd: "11", number: "12345678", typePhone: TypePhone.FIXED}), // Telefone padrão
         addresses: Address[] = [new Address({
             streetName: "Unknown Street",
             number: "000",

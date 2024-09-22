@@ -6,8 +6,8 @@ import { TypeResidence } from "../domain/types/TypeResidence";
 
 export interface ClientDTO {
     phone: {
-        ddd: number,
-        number: number,
+        ddd: string,
+        number: string,
         typePhone: string
     };
     profilePurchase: ProfilePurchase;

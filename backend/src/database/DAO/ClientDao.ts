@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { Client } from "../../domain/Client";
 import { EntityDomain } from "../../domain/EntityDomain";
 import { DAO } from "./DAO";
 import { prisma } from "../../prisma/prismaClient";
-import { compareSync, hashSync } from 'bcrypt'
+import {  hashSync } from 'bcrypt'
 export class ClientDao extends DAO{
     public async create(client: Client){
         return await prisma.client.create({
@@ -44,7 +45,7 @@ export class ClientDao extends DAO{
                 cli_ranking: {
                     connectOrCreate: {
                         create: {
-                            ran_value: 0,
+                            ran_value: client.rfmScore,
                             fk_ran_cli_id: client.id
                         },
                         where: {
@@ -98,5 +99,58 @@ export class ClientDao extends DAO{
                 ]
             }
         })
+    }
+    async findMany(client: Client): Promise<unknown> {
+        return await prisma.client.findMany({
+            where: {
+                cli_cpf: {
+                    contains: client.cpf.code
+                },
+                cli_email: {
+                    contains: client.email
+                },
+                cli_name: {
+                    contains: client.name
+                },
+                cli_dateOfBirth: {
+                    contains: client.dateOfBirth
+                },
+                cli_gender: {
+                    contains: client.dateOfBirth
+                },
+                cli_phone: {
+                    some: {
+                       pho_ddd: client.phone.ddd,
+                       pho_number: client.phone.number
+                    }
+                },
+                cli_profilePurchase: {
+                    contains: client.profilePurchase
+                },
+                cli_score: {
+                    equals: client.rfmScore
+                },
+                cli_status: {
+                    contains: client.statusClient
+                },
+            },
+            select: {
+                cli_cpf: true,
+                cli_id: true,
+                cli_creditCards: true,
+                cli_dateOfBirth: true,
+                cli_gender: true,
+                cli_phone: true,
+                cli_profilePurchase: true,
+                cli_ranking: true,
+                cli_name: true,
+                cli_score: true,
+                cli_status: true,
+                cli_log: true,
+                cli_address: true,
+                cli_password: true,
+                created_at: true,
+            }
+        });
     }
 }
