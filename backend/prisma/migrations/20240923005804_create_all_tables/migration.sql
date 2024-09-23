@@ -25,9 +25,11 @@ CREATE TABLE `Phone` (
     `pho_id` VARCHAR(191) NOT NULL,
     `pho_ddd` VARCHAR(3) NOT NULL,
     `pho_number` VARCHAR(191) NOT NULL,
+    `pho_numberCombine` VARCHAR(191) NOT NULL,
     `pho_type_phone` VARCHAR(191) NOT NULL,
     `fk_pho_cli_id` VARCHAR(191) NOT NULL,
 
+    UNIQUE INDEX `Phone_pho_numberCombine_key`(`pho_numberCombine`),
     PRIMARY KEY (`pho_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -87,7 +89,7 @@ CREATE TABLE `Ranking` (
 CREATE TABLE `Log` (
     `log_id` VARCHAR(191) NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updateD_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `fk_log_cli_id` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`log_id`)

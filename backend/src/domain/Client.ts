@@ -12,7 +12,7 @@ import { TypeResidence } from "./types/TypeResidence";
 
 
 export interface ClientProps{
-    phone: Phone, // Phone can be sent after of the object created
+    phones: Phone[], // Phone can be sent after of the object created
     profilePurchase: ProfilePurchase,
     name: string,
     dateOfBirth: string,
@@ -64,12 +64,12 @@ export class Client extends EntityDomain {
         this.clientProps.cpf = cpf;
     }
 
-    public get phone(): Phone {
-        return this.clientProps.phone;
+    public get phone(): Phone[] {
+        return this.clientProps.phones;
     }
 
-    public set phone(phone: Phone) {
-        this.clientProps.phone = phone;
+    public set phone(phone: Phone[]) {
+        this.clientProps.phones = phone;
     }
 
     public get profilePurchase(): ProfilePurchase {
@@ -139,7 +139,7 @@ export class ClientFactory {
         gender: Gender = Gender.UNKNOWN, // Gênero padrão
         rfmScore = 0, // Pontuação RFM padrão
         profilePurchase: ProfilePurchase = ProfilePurchase.BRONZE, // Perfil de compra padrão
-        phone: Phone = new Phone({ddd: "11", number: "12345678", typePhone: TypePhone.FIXED}), // Telefone padrão
+        phones: Phone[] = [new Phone({ddd: "11", number: "12345678", typePhone: TypePhone.FIXED})], // Telefone padrão
         addresses: Address[] = [new Address({
             streetName: "Unknown Street",
             number: "000",
@@ -166,7 +166,7 @@ export class ClientFactory {
             gender,
             rfmScore,
             profilePurchase,
-            phone,
+            phones,
             addresses,
             creditCart
         };

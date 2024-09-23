@@ -5,11 +5,13 @@ import { StatusPayment } from "../domain/types/StatusPayment";
 import { TypeResidence } from "../domain/types/TypeResidence";
 
 export interface ClientDTO {
-    phone: {
-        ddd: string,
-        number: string,
-        typePhone: string
-    };
+    phones: [
+        {
+            ddd: string,
+            number: string,
+            typePhone: string
+        }
+    ]
     profilePurchase: ProfilePurchase;
     name: string;
     dateOfBirth: string;
@@ -34,8 +36,8 @@ export interface ClientDTO {
         }
     ];
     creditCart: {
-        namePrinted:string,
-        cvv:string,
+        namePrinted: string,
+        cvv: string,
         dateValid: Date,
         flag: Flag,
         status: StatusPayment,

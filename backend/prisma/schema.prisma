@@ -26,7 +26,7 @@ model Client {
     cli_score           Float // Pontuação do cliente baseada no perfil de compra
     cli_profilePurchase String // Perfil de compra
     cli_address         Address[] // Relação 1:N com endereços
-    cli_ranking         Ranking  @relation(fields: [fk_ran_cli_id], references: [ran_id])
+    cli_ranking         Ranking      @relation(fields: [fk_ran_cli_id], references: [ran_id])
     cli_creditCards     CreditCart[] // Relação 1:N com cartões de crédito
     cli_log             Log[]
     fk_ran_cli_id       String       @unique
@@ -35,12 +35,13 @@ model Client {
 }
 
 model Phone {
-    pho_id         String @id @default(uuid())
-    pho_ddd        String @db.VarChar(3) // DDD do telefone
-    pho_number     String // Número do telefone
-    pho_type_phone String // Tipo (celular, fixo, etc.)
-    pho_client     Client @relation(fields: [fk_pho_cli_id], references: [cli_id])
-    fk_pho_cli_id  String
+    pho_id            String @id @default(uuid())
+    pho_ddd           String @db.VarChar(3) // DDD do telefone
+    pho_number        String // Número do telefone
+    pho_numberCombine String @unique
+    pho_type_phone    String // Tipo (celular, fixo, etc.)
+    pho_client        Client @relation(fields: [fk_pho_cli_id], references: [cli_id])
+    fk_pho_cli_id     String
 }
 
 model Address {
@@ -57,7 +58,7 @@ model Address {
     add_country       String // País
     add_isBilling     Boolean // Se é endereço de cobrança (RN0021)
     add_isDelivery    Boolean // Se é endereço de entrega (RN0022)
-    add_client        Client  @relation(fields: [fk_add_cli_id], references: [cli_id])
+    add_client        Client  @relation(fields: [fk_add_cli_id], references: [cli_id]) // Corrigida a relação
     fk_add_cli_id     String
 }
 
@@ -81,16 +82,16 @@ model Flag {
 }
 
 model Ranking {
-    ran_id        String @id @default(uuid())
+    ran_id        String  @id @default(uuid())
     ran_value     Int // Valor numérico do ranking (RN0027)
-    ran_client    Client[]
-    fk_ran_cli_id String @unique
+    ran_client    Client?
+    fk_ran_cli_id String  @unique
 }
 
 model Log {
     log_id        String   @id @default(uuid())
-    log_client      Client   @relation(fields: [fk_log_cli_id], references: [cli_id])
+    log_client    Client   @relation(fields: [fk_log_cli_id], references: [cli_id])
     created_at    DateTime @default(now())
-    updateD_at    DateTime @default(now())
+    updated_at    DateTime @default(now()) // Corrigido typo "updateD_at" para "updated_at"
     fk_log_cli_id String
 }

@@ -4,9 +4,9 @@ import { Client } from "../../domain/Client";
 import { EntityDomain } from "../../domain/EntityDomain";
 import { DAO } from "./DAO";
 import { prisma } from "../../prisma/prismaClient";
-import {  hashSync } from 'bcrypt'
-export class ClientDao extends DAO{
-    public async create(client: Client){
+import { hashSync } from 'bcrypt'
+export class ClientDao extends DAO {
+    public async create(client: Client) {
         return await prisma.client.create({
             data: {
                 cli_id: client.id,
@@ -22,7 +22,6 @@ export class ClientDao extends DAO{
                 updated_at: new Date().toISOString(),
                 cli_address: {
                     createMany: {
-                        skipDuplicates: true,
                         data: client.addresses.map((address) => {
                             return {
                                 add_id: address.id,
@@ -43,18 +42,25 @@ export class ClientDao extends DAO{
                     }
                 },
                 cli_ranking: {
-                    connectOrCreate: {
-                        create: {
-                            ran_value: client.rfmScore,
-                            fk_ran_cli_id: client.id
-                        },
-                        where: {
-                            fk_ran_cli_id: client.id
-                        }
+                    create: {
+                        ran_value: client.rfmScore,
+                        fk_ran_cli_id: client.id
+                    }
+                },
+                cli_phone: {
+                    createMany: {
+                        data: client.phone.map((phone) => {
+                            return {
+                                pho_ddd: phone.ddd,
+                                pho_number: phone.number,
+                                pho_numberCombine:`(${phone.ddd}) ${phone.number}`,
+                                pho_type_phone: phone.typePhone
+                            };
+                        }),
                     }
                 },
                 cli_email: client.email,
-            },
+            }
         });
     }
 
@@ -118,12 +124,7 @@ export class ClientDao extends DAO{
                 cli_gender: {
                     contains: client.dateOfBirth
                 },
-                cli_phone: {
-                    some: {
-                       pho_ddd: client.phone.ddd,
-                       pho_number: client.phone.number
-                    }
-                },
+
                 cli_profilePurchase: {
                     contains: client.profilePurchase
                 },

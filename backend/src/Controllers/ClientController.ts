@@ -16,11 +16,13 @@ export class ClientController {
         try {
             const clientDTO = req.body as ClientDTO
             const client = new Client({
-                phone: new Phone({
-                    ddd: clientDTO.phone.ddd,
-                    number: clientDTO.phone.number,
-                    typePhone: clientDTO.phone.typePhone as TypePhone
-                }), // Phone can be sent after of the object created
+                phones: clientDTO.phones.map((phone) => {
+                    return new Phone({
+                        ddd: phone.ddd,
+                        number: phone.number,
+                        typePhone: phone.typePhone as TypePhone
+                    })
+                }),
                 profilePurchase: clientDTO.profilePurchase,
                 name: clientDTO.name,
                 dateOfBirth: clientDTO.dateOfBirth,
@@ -56,7 +58,6 @@ export class ClientController {
                     error: clientCreated.error
                 })
             }
-            console.log(clientCreated)
             const clientEmail = clientCreated.cli_email
             const clientPassword = clientCreated.cli_password
 
@@ -87,11 +88,11 @@ export class ClientController {
                 gender: Gender.MEN || Gender.WOMAN ,
                 rfmScore: 0,
                 profilePurchase: ProfilePurchase.BRONZE || ProfilePurchase.DIAMANTE || ProfilePurchase.GOLD || ProfilePurchase.SIlVER,
-                phone: new Phone({
+                phones: [new Phone({
                     ddd: "",
                     number: "",
                     typePhone: TypePhone.FIXED
-                }),
+                })],
                 addresses: [],
                 creditCart: null
             });
