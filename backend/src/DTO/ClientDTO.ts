@@ -1,8 +1,8 @@
 import { Flag } from "@prisma/client";
-import { Gender } from "../domain/types/Gender";
-import { ProfilePurchase } from "../domain/types/ProfilePurchase";
-import { StatusPayment } from "../domain/types/StatusPayment";
-import { TypeResidence } from "../domain/types/TypeResidence";
+import { Gender } from "../Model/domain/types/Gender";
+import { ProfilePurchase } from "../Model/domain/types/ProfilePurchase";
+import { StatusPayment } from "../Model/domain/types/StatusPayment";
+import { TypeResidence } from "../Model/domain/types/TypeResidence";
 
 export interface ClientDTO {
     phones: [

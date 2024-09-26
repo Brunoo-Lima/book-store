@@ -13,35 +13,81 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+enum Gender {
+    MALE
+    FEMALE
+    OTHER
+}
+
+enum TypePhone {
+    FIXED
+    MOBILE
+}
+
+enum StatusClient {
+    ACTIVATE
+    INACTIVATE
+}
+
+enum TypeResidence {
+    HOME
+    APARTMENT
+}
+
+enum Flags {
+    MASTERCARD
+    VISA
+    ELO
+}
+
+model User {
+    use_id       String @id @default(uuid())
+    use_email    String @unique
+    use_password String
+}
+
 model Client {
     cli_id              String       @id @default(uuid()) // Código único de cliente
     cli_name            String // Nome
     cli_dateOfBirth     String // Data de nascimento
     cli_cpf             String       @unique // CPF (único)
-    cli_status          String // Status (ativo/inativo)
-    cli_gender          String // Gênero
+    cli_status          StatusClient // Status (ativo/inativo)
+    cli_gender          Gender // Gênero
     cli_password        String
     cli_email           String       @unique // Email
     cli_phone           Phone[] // Relação 1:N com telefones
     cli_score           Float // Pontuação do cliente baseada no perfil de compra
     cli_profilePurchase String // Perfil de compra
     cli_address         Address[] // Relação 1:N com endereços
-    cli_ranking         Ranking      @relation(fields: [fk_ran_cli_id], references: [ran_id])
+    cli_ranking         Int
     cli_creditCards     CreditCart[] // Relação 1:N com cartões de crédito
     cli_log             Log[]
     fk_ran_cli_id       String       @unique
     created_at          DateTime     @default(now())
-    updated_at          DateTime     @default(now())
+    updated_at          DateTime     @updatedAt
 }
 
 model Phone {
-    pho_id            String @id @default(uuid())
-    pho_ddd           String @db.VarChar(3) // DDD do telefone
+    pho_id            String    @id @default(uuid())
+    pho_ddd           String    @db.VarChar(3) // DDD do telefone
     pho_number        String // Número do telefone
-    pho_numberCombine String @unique
-    pho_type_phone    String // Tipo (celular, fixo, etc.)
-    pho_client        Client @relation(fields: [fk_pho_cli_id], references: [cli_id])
+    pho_numberCombine String    @unique
+    pho_type_phone    TypePhone // Tipo (celular, fixo, etc.)
+    pho_client        Client    @relation(fields: [fk_pho_cli_id], references: [cli_id])
     fk_pho_cli_id     String
+}
+
+model City {
+    cit_id      String    @id @default(uuid())
+    cit_name    String
+    cit_adresss Address[]
+}
+
+model State {
+    sta_id   String    @id @default(uuid())
+    sta_name String
+    sta_uf   String
+    Address  Address[]
 }
 
 model Address {
@@ -53,13 +99,14 @@ model Address {
     add_neighborhood  String // Bairro
     add_compostName   String? // Complemento
     add_typeResidence String // Tipo de residência (Casa, Apartamento, etc.)
-    add_city          String // Cidade
-    add_state         String // Estado
-    add_country       String // País
+    add_city          City    @relation(fields: [fk_add_cit_id], references: [cit_id])
+    add_state         State   @relation(fields: [fk_add_sta_id], references: [sta_id]) // Estado
     add_isBilling     Boolean // Se é endereço de cobrança (RN0021)
     add_isDelivery    Boolean // Se é endereço de entrega (RN0022)
     add_client        Client  @relation(fields: [fk_add_cli_id], references: [cli_id]) // Corrigida a relação
     fk_add_cli_id     String
+    fk_add_cit_id     String
+    fk_add_sta_id     String
 }
 
 model CreditCart {
@@ -70,8 +117,8 @@ model CreditCart {
     cre_dateMaturity String // Data de validade
     cre_preference   Boolean // Preferencial (RF0027)
     cre_Flag         Flag    @relation(fields: [fk_cre_fla_id], references: [fla_id])
-    fk_cre_fla_id    String
     cre_client       Client  @relation(fields: [fk_cre_cli_id], references: [cli_id])
+    fk_cre_fla_id    String
     fk_cre_cli_id    String
 }
 
@@ -81,17 +128,12 @@ model Flag {
     fla_creditCarts CreditCart[] // Relação 1:N com cartões de crédito
 }
 
-model Ranking {
-    ran_id        String  @id @default(uuid())
-    ran_value     Int // Valor numérico do ranking (RN0027)
-    ran_client    Client?
-    fk_ran_cli_id String  @unique
-}
-
 model Log {
-    log_id        String   @id @default(uuid())
-    log_client    Client   @relation(fields: [fk_log_cli_id], references: [cli_id])
-    created_at    DateTime @default(now())
-    updated_at    DateTime @default(now()) // Corrigido typo "updateD_at" para "updated_at"
-    fk_log_cli_id String
+    log_id            String   @id @default(uuid())
+    log_client        Client   @relation(fields: [fk_log_cli_id], references: [cli_id])
+    log_action        String // Descrição da ação (inserção, atualização, etc.)
+    log_updatedFields String? // Campos que foram alterados (opcional)
+    created_at        DateTime @default(now())
+    updated_at        DateTime @updatedAt
+    fk_log_cli_id     String
 }

@@ -2,6 +2,7 @@ import express from "express";
 import "express-async-errors";
 import errorHandler from "./error/errorHandler";
 import routeClient from "./routes/client";
+import routeUser from './routes/user'
 class App {
     readonly app;
     constructor() {
@@ -17,6 +18,7 @@ class App {
 
     private routes(): void {
         this.app.use('/client', routeClient)
+        this.app.use('/user', routeUser)
     }
 }
 
