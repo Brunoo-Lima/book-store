@@ -1,5 +1,4 @@
-import { EntityDomain } from "./EntityDomain";
-
+import { EntityDomain } from "./EntityDomain"
 export class Product extends EntityDomain{
     constructor(
         private _name: string,

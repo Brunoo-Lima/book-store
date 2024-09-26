@@ -1,4 +1,4 @@
-import { Client } from "../../Model/domain/Client";
+import { Client } from "../domain/Client";
 import { IStrategy } from "../../interfaces/IStrategy";
 
 export class ValidPassword implements IStrategy { //Atualizar está permitindo senhas inválidas

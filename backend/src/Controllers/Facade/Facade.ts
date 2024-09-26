@@ -1,9 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+ 
 import { EntityDomain } from "../../Model/domain/EntityDomain";
-import { IDao } from "../../database/DAO/IDao";
+import { IDao } from "../../interfaces/IDao";
 import { IFacade } from "../../interfaces/IFacade";
 import { IStrategy } from "../../interfaces/IStrategy";
-import { FactoryDao } from "../../database/DAO/FactoryDao";
+import { FactoryDao } from "../../Model/Database/DAO/FactoryDao";
 import { EntityExistInDB } from "../../Model/Business/EntityExistInDB";
 import { ValidPassword } from "../../Model/Business/ValidPassword";
 import { ValidAddresses } from "../../Model/Business/ValidAddresses";

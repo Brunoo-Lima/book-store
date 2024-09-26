@@ -1,5 +1,5 @@
-import { EntityDomain } from "../../Model/domain/EntityDomain";
-import { Facade } from "../../Facade/Facade";
+import { EntityDomain } from "../domain/EntityDomain";
+import { Facade } from "../../Controllers/Facade/Facade";
 import { IStrategy } from "../../interfaces/IStrategy";
 
 export class EntityExistInDB implements IStrategy{

@@ -1,5 +1,5 @@
 import { IStrategy } from '../../interfaces/IStrategy';
-import { Client } from '../../Model/domain/Client';
+import { Client } from '../domain/Client';
 
 export class ValidAddresses implements IStrategy {
     async process(client: Client) {
