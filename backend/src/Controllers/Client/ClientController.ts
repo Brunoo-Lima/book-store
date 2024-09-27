@@ -1,77 +1,46 @@
-// import { ClientDTO } from "../DTO/ClientDTO";
-// import { Client } from "../Model/domain/Client";
-// import { Client as ClientPrisma } from '@prisma/client'
-// import { Phone } from "../Model/domain/Phone";
-// import { TypePhone } from "../Model/domain/types/TypePhone";
-// import { CPF } from "../Model/domain/CPF";
-// import { StatusClient } from "../Model/domain/types/StatusClient";
-// import { Address } from "../Model/domain/Address";
-// import { Facade } from "../Facade/Facade";
-// import jwt from 'jsonwebtoken';
-// import { Gender } from "../Model/domain/types/Gender";
-// import { ProfilePurchase } from "../Model/domain/types/ProfilePurchase";
+
+import { NextFunction, Request, Response } from "express";
+import { ClientDTO } from "../../Model/DTO/ClientDTO"
+import { FactoryClient } from "../../Model/domain/Client";
+import { Client as ClientPrisma } from '@prisma/client'
+import { Facade } from "../Facade/Facade";
+import jwt from 'jsonwebtoken';
+
 export class ClientController {
-    async handle() {
-        // try {
-        //     const clientDTO = req.body as ClientDTO
-        //     const client = new Client({
-        //         phones: clientDTO.phones.map((phone) => {
-        //             return new Phone({
-        //                 ddd: phone.ddd,
-        //                 number: phone.number,
-        //                 typePhone: phone.typePhone as TypePhone
-        //             })
-        //         }),
-        //         profilePurchase: clientDTO.profilePurchase,
-        //         name: clientDTO.name,
-        //         dateOfBirth: clientDTO.dateOfBirth,
-        //         email: clientDTO.email,
-        //         password: clientDTO.password,
-        //         cpf: new CPF(clientDTO.cpf),
-        //         statusClient: StatusClient.ACTIVATE,
-        //         gender: clientDTO.gender,
-        //         addresses: clientDTO.addresses.map((address) => {
-        //             return new Address({
-        //                 streetName: address.streetName,
-        //                 publicPlace: address.publicPlace, // Logradouro
-        //                 number: address.number,
-        //                 cep: address.cep,
-        //                 neighborhood: address.neighborhood,
-        //                 city: address.city,
-        //                 state: address.state,
-        //                 country: address.country,
-        //                 compostName: address.compostName,
-        //                 typeResidence: address.typeResidence,
-        //                 change: address.change,
-        //                 delivery: address.delivery,
-        //             })
-        //         }),
-        //         rfmScore: 0, // Pontuação que atrela o perfil ao cliente
-        //         creditCart: null,
-        //     })
-        //     const facade = new Facade(client)
-        //     const clientCreated = await facade.create() as ClientPrisma
+    async handle(req: Request, res: Response, next: NextFunction) {
+        try {
+            const clientDTO = req.body as ClientDTO
+            if (!clientDTO) return res.json(
+                {
+                    error: "Error, Data not sent !"
+                }
+            )
 
-        //     if ("error" in clientCreated) {
-        //         return res.json({
-        //             error: clientCreated.error
-        //         })
-        //     }
-        //     const clientEmail = clientCreated.cli_email
-        //     const clientPassword = clientCreated.cli_password
+            const client = FactoryClient.createClient(clientDTO)
+            const facade = new Facade(client)
 
-        //     const token = jwt.sign({ clientEmail, clientPassword }, process.env.TOKEN_SECRET as string);
-        //     req.body.client = {
-        //         clientCreated,
-        //         token
-        //     }
-        //     return next()
+            const clientCreated = await facade.create() as ClientPrisma
 
-        // } catch (error) {
-        //     return res.status(403).json({
-        //         error: error
-        //     })
-        // }
+            if ("error" in clientCreated) {
+                return res.json({
+                    error: clientCreated.error
+                })
+            }
+            const clientEmail = clientCreated.cli_email
+            const clientPassword = clientCreated.cli_password
+
+            const token = jwt.sign({ clientEmail, clientPassword }, process.env.TOKEN_SECRET as string);
+            req.body.client = {
+                clientCreated,
+                token
+            }
+            return next()
+
+        } catch (error) {
+            return res.status(403).json({
+                error: error
+            })
+        }
     }
     async list() {
     //     try {

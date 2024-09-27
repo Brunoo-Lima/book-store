@@ -1,4 +1,4 @@
- 
+
 import { EntityDomain } from "../../Model/domain/EntityDomain";
 import { IDao } from "../../interfaces/IDao";
 import { IFacade } from "../../interfaces/IFacade";
@@ -9,13 +9,14 @@ import { ValidPassword } from "../../Model/Business/ValidPassword";
 import { ValidAddresses } from "../../Model/Business/ValidAddresses";
 
 export class Facade implements IFacade{
-    private businessRolesClientSave:  Map<string, IStrategy[]>
+    private businessRoles:  Map<string, IStrategy[]>
     private daos: Map<string, IDao>
 
     constructor(
         private entity: EntityDomain
     ){
-        this.businessRolesClientSave = new  Map<string, IStrategy[]>
+        this.businessRoles = new  Map<string, IStrategy[]>
+
         this.daos = new Map<string, IDao>
         this.setStrategies()
     }
@@ -63,7 +64,6 @@ export class Facade implements IFacade{
         try{
             const dao = this.fillDao(this.entity.constructor.name)
             const entities = await dao.findMany(this.entity)
-            console.log(entities)
             return entities
         } catch(e){
             return {
@@ -82,18 +82,24 @@ export class Facade implements IFacade{
         return dao;
     }
     private setStrategies(): void{
-        this.businessRolesClientSave.set(
-            this.entity.constructor.name,
+        this.businessRoles.set(
+            "Client",
             [
                 new EntityExistInDB(),
                 new ValidPassword(),
                 new ValidAddresses()
             ]
         )
+        this.businessRoles.set(
+            "User",
+            [
+                new EntityExistInDB()
+            ]
+        )
     }
     private async getStrategies() {
         const name = this.entity.constructor.name
-        const strategies = this.businessRolesClientSave.get(name)
+        const strategies = this.businessRoles.get(name)
         if(strategies){
             const hasError = []
             for(const strategy of strategies){
@@ -101,5 +107,6 @@ export class Facade implements IFacade{
             }
             return hasError
         }
+        return null
     }
 }

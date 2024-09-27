@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { Facade } from "../Facade/Facade";
-import { User as DomainUser } from "../../Model/domain/User"; // Importa o User do domínio
+import { User } from "../../Model/domain/User"; // Importa o User do domínio
 import { User as PrismaUser } from '@prisma/client'; // Importa o User do Prisma
 import { Authentication } from "../Authentication/Authentication";
 import { hashSync } from "bcrypt";
@@ -14,17 +14,17 @@ export class UserController{
                 error: "E-mail and Password should be sent !"
             })
 
-            const userDomain = new DomainUser(email, password)
+            const userDomain = new User(email, hashSync(password, 3))
             const facade = new Facade(userDomain)
             const userDatabase = await facade.create() as PrismaUser
-            if(!userDatabase) return res.json({
-                error: "User cannot be created !"
+
+            if(!userDatabase || "error" in userDatabase) return res.json({
+                error: `User cannot be created. because this error: ${userDatabase.error}`
             })
-            
+
             const token = Authentication.generateToken({
                 user_id: userDatabase.use_id,
                 user_email: userDatabase.use_email,
-                user_password: hashSync(userDatabase.use_password, 3)
             })
             return res.json({
                 user: userDatabase,
@@ -33,7 +33,7 @@ export class UserController{
 
         } catch (e) {
             return res.json({
-                error: `O erro: ${e} foi encontrado :(`
+                error: `${e} foi encontrado :(`
             })
         }
     }

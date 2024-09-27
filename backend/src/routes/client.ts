@@ -1,11 +1,12 @@
 import { ClientController } from "../Controllers/Client/ClientController";
 import { Router } from "express";
 import { log } from "../middlewares/logChange";
+import { authenticateJWT } from "../middlewares/loginRequired";
 
 
 const routeClient = Router()
 
-routeClient.post("/create", new ClientController().handle, log)
-routeClient.post("/find", new ClientController().list)
+routeClient.put("/create", authenticateJWT, new ClientController().handle, log)
+routeClient.post("/find", authenticateJWT, new ClientController().list)
 
 export default routeClient;

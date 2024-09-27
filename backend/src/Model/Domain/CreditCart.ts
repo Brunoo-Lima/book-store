@@ -2,64 +2,68 @@ import { EntityDomain } from "./EntityDomain";
 import { Flag } from "./Flag";
 import { StatusPayment } from "./types/StatusPayment";
 
+export interface CreditCartProps {
+    _namePrinted:string,
+    _cvv:string,
+    _dateValid: Date,
+    _flag: Flag,
+    _status: StatusPayment,
+    _preference: boolean
+}
+
 export class CreditCart extends EntityDomain{
     constructor(
-        private _namePrinted:string,
-        private _cvv:string,
-        private _dateValid: Date,
-        private _flag: Flag,
-        private _status: StatusPayment,
-        private _preference: boolean
+        private creditCartProps: CreditCartProps
 
     ){
         super()
     }
     public get namePrinted(): string {
-        return this._namePrinted;
+        return this.creditCartProps._namePrinted;
     }
 
     public set namePrinted(namePrinted: string) {
-        this._namePrinted = namePrinted;
+        this.creditCartProps._namePrinted = namePrinted;
     }
 
     public get cvv(): string {
-        return this._cvv;
+        return this.creditCartProps._cvv;
     }
 
     public set cvv(cvv: string) {
-        this._cvv = cvv;
+        this.creditCartProps._cvv = cvv;
     }
 
     public get dateValid(): Date{
-        return this._dateValid;
+        return this.creditCartProps._dateValid;
     }
 
     public set dateValid(dateValid: Date,) {
-        this._dateValid = dateValid;
+        this.creditCartProps._dateValid = dateValid;
     }
 
     public get flag(): Flag{
-        return this._flag;
+        return this.creditCartProps._flag;
     }
 
     public set flag(flag: Flag,) {
-        this._flag = flag;
+        this.creditCartProps._flag = flag;
     }
 
     public get status(): StatusPayment{
-        return this._status;
+        return this.creditCartProps._status;
     }
 
     public set status(status: StatusPayment,) {
-        this._status = status;
+        this.creditCartProps._status = status;
     }
 
     public get preference(): boolean {
-        return this._preference;
+        return this.creditCartProps._preference;
     }
 
     public set preference(preference: boolean) {
-        this._preference = preference;
+        this.creditCartProps._preference = preference;
     }
 
 }

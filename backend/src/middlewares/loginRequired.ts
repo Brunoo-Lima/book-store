@@ -1,6 +1,9 @@
+/* eslint-disable @typescript-eslint/consistent-indexed-object-style */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { ICustomRequest } from '../interfaces/ICustomRequest';
+
 
 export const authenticateJWT = (req: ICustomRequest, res: Response, next: NextFunction) => {
     const token = req.header('Authorization')?.split(' ')[1]; // Espera que o token esteja no formato "Bearer <token>"
@@ -8,7 +11,7 @@ export const authenticateJWT = (req: ICustomRequest, res: Response, next: NextFu
     if (!token) {
         return res.sendStatus(403); // Proibido se não houver token
     }
-
+    
     const secret = process.env.TOKEN_SECRET as string;
 
     jwt.verify(token, secret, (err, user) => {
