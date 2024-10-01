@@ -1,6 +1,4 @@
-import { City } from "./City";
 import { EntityDomain } from "./EntityDomain";
-import { State } from "./State";
 import { TypeResidence } from "./types/TypeResidence";
 
 
@@ -10,12 +8,13 @@ export interface AddressProps {
     number: string,
     cep: string,
     neighborhood: string,
-    city: City,
-    state: State,
+    city: string,
+    state: string,
     country: string,
     compostName: string,
     typeResidence: TypeResidence,
     change: boolean,
+    nameAddress: string,
     delivery: boolean,
 }
 
@@ -65,18 +64,18 @@ export class Address extends EntityDomain {
         this.addressProps.neighborhood = neighborhood;
     }
 
-    get city(): City {
+    get city(): string {
         return this.addressProps.city;
     }
-    public set city(city: City) {
+    public set city(city: string) {
         this.addressProps.city = city;
     }
 
-    get state(): State {
+    get state(): string {
         return this.addressProps.state;
     }
 
-    public set state(state: State) {
+    public set state(state: string) {
         this.addressProps.state = state;
     }
 
@@ -113,5 +112,12 @@ export class Address extends EntityDomain {
 
     public set change(change: boolean) {
         this.addressProps.change = change;
+    }
+    get nameAddress(): string {
+        return this.addressProps.nameAddress;
+    }
+
+    public set nameAddress(name: string) {
+        this.addressProps.nameAddress = name;
     }
 }

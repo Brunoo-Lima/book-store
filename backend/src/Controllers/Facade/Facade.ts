@@ -3,7 +3,7 @@ import { EntityDomain } from "../../Model/domain/EntityDomain";
 import { IDao } from "../../interfaces/IDao";
 import { IFacade } from "../../interfaces/IFacade";
 import { IStrategy } from "../../interfaces/IStrategy";
-import { FactoryDao } from "../../Model/Database/DAO/FactoryDao";
+import { FactoryDao } from "../../Config/Database/DAO/FactoryDao";
 import { EntityExistInDB } from "../../Model/Business/EntityExistInDB";
 import { ValidPassword } from "../../Model/Business/ValidPassword";
 import { ValidAddresses } from "../../Model/Business/ValidAddresses";
@@ -33,7 +33,6 @@ export class Facade implements IFacade{
                     }
                 }
             }
-
             const dao = this.fillDao(this.entity.constructor.name)
             const entityCreated = await dao.create(this.entity)
             return entityCreated

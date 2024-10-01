@@ -1,13 +1,11 @@
 
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { ClientDTO } from "../../Model/DTO/ClientDTO"
 import { FactoryClient } from "../../Model/domain/Client";
-import { Client as ClientPrisma } from '@prisma/client'
 import { Facade } from "../Facade/Facade";
-import jwt from 'jsonwebtoken';
 
 export class ClientController {
-    async handle(req: Request, res: Response, next: NextFunction) {
+    async handle(req: Request, res: Response) {
         try {
             const clientDTO = req.body as ClientDTO
             if (!clientDTO) return res.json(
@@ -15,26 +13,19 @@ export class ClientController {
                     error: "Error, Data not sent !"
                 }
             )
-
             const client = FactoryClient.createClient(clientDTO)
             const facade = new Facade(client)
 
-            const clientCreated = await facade.create() as ClientPrisma
+            const clientCreated = await facade.create() as number | {"error": string}
 
-            if ("error" in clientCreated) {
+            if (typeof(clientCreated) !== "number") {
                 return res.json({
                     error: clientCreated.error
                 })
             }
-            const clientEmail = clientCreated.cli_email
-            const clientPassword = clientCreated.cli_password
-
-            const token = jwt.sign({ clientEmail, clientPassword }, process.env.TOKEN_SECRET as string);
-            req.body.client = {
-                clientCreated,
-                token
-            }
-            return next()
+            return res.json({
+                success: "Client created !",
+            })
 
         } catch (error) {
             return res.status(403).json({

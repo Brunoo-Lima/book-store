@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { EntityDomain } from "../../../domain/EntityDomain";
-import { User } from "../../../domain/User";
+import { EntityDomain } from "../../../../Model/domain/EntityDomain";
+import { User } from "../../../../Model/domain/User";
 import { prisma } from "../../prisma/prismaClient";
 import { DAO } from "../DAO";
 

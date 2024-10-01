@@ -4,8 +4,9 @@ import { StatusPayment } from "./types/StatusPayment";
 
 export interface CreditCartProps {
     _namePrinted:string,
+    _number: string,
     _cvv:string,
-    _dateValid: Date,
+    _dateValid: string,
     _flag: Flag,
     _status: StatusPayment,
     _preference: boolean
@@ -18,6 +19,15 @@ export class CreditCart extends EntityDomain{
     ){
         super()
     }
+
+    public get number() : string {
+        return this.creditCartProps._number
+    }
+
+    public set number(number: string) {
+        this.creditCartProps._number = number
+    }
+
     public get namePrinted(): string {
         return this.creditCartProps._namePrinted;
     }
@@ -34,11 +44,11 @@ export class CreditCart extends EntityDomain{
         this.creditCartProps._cvv = cvv;
     }
 
-    public get dateValid(): Date{
+    public get dateValid(): string{
         return this.creditCartProps._dateValid;
     }
 
-    public set dateValid(dateValid: Date,) {
+    public set dateValid(dateValid: string,) {
         this.creditCartProps._dateValid = dateValid;
     }
 

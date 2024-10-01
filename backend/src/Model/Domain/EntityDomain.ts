@@ -7,8 +7,8 @@ export abstract class EntityDomain{
 
     constructor() {
         this._id = randomUUID()
-        this.created_at = new Date().toString();
-        this.updated_at = new Date().toString();
+        this.created_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
+        this.updated_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
     }
 
     public get createdAt() : string {

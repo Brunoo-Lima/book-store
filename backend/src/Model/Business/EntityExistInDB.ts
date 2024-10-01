@@ -6,7 +6,7 @@ export class EntityExistInDB implements IStrategy{
     async process(entity:EntityDomain): Promise<object> {
         try {
             const facade = new Facade(entity)
-            const entityExist = await facade.find()
+            const entityExist = await facade.findMany()
             if(entityExist){
                 return  {
                     error: `${entity.constructor.name} Exists in DataBase !`

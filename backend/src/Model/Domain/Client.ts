@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-extraneous-class */
 import { Address } from "./Address";
-import { CreditCart } from "./CreditCart";
+import { CreditCart } from "./CreditCard";
 import { CPF } from "./CPF";
 import { EntityDomain } from "./EntityDomain";
 import { Phone } from "./Phone";
@@ -8,8 +8,8 @@ import { Gender } from "./types/Gender";
 import { ProfilePurchase } from "./types/ProfilePurchase";
 import { StatusClient } from "./types/StatusClient";
 import { ClientDTO } from "../DTO/ClientDTO";
-import { City } from "./City";
-import { State } from "./State";
+import { TypePhone } from "./types/TypePhone";
+import { TypeResidence } from "./types/TypeResidence";
 
 export interface ClientProps{
     phones: Phone[], // Phone can be sent after of the object created
@@ -22,8 +22,9 @@ export interface ClientProps{
     statusClient: StatusClient,
     gender: Gender,
     rfmScore: number, // Pontuação que atrela o perfil ao cliente
+    ranking: number,
     addresses: Address[],
-    creditCart: CreditCart | null,
+    creditCart: CreditCart[] | null,
 }
 export class Client extends EntityDomain {
     constructor(
@@ -36,7 +37,15 @@ export class Client extends EntityDomain {
         return this.clientProps.name;
     }
 
-    public set name(name: string) {
+    public set name(ranking: number) {
+        this.clientProps.ranking = ranking;
+    }
+
+    public get ranking(): number {
+        return this.clientProps.ranking;
+    }
+
+    public set ranking(name: string) {
         this.clientProps.name = name;
     }
 
@@ -112,11 +121,11 @@ export class Client extends EntityDomain {
         this.clientProps.addresses = addressResidence;
     }
 
-    public get creditCart(): CreditCart | null {
+    public get creditCart(): CreditCart[]| null {
         return this.clientProps.creditCart;
     }
 
-    public set creditCart(creditCart: CreditCart | null) {
+    public set creditCart(creditCart: CreditCart[] | null) {
         this.clientProps.creditCart = creditCart;
     }
     public get password(): string {
@@ -135,7 +144,7 @@ export abstract class FactoryClient {
             return new Phone({
                 _ddd: phoneDTO.ddd,
                 _number: phoneDTO.number,
-                _typePhone: phoneDTO.typePhone
+                _typePhone: phoneDTO.typePhone as TypePhone
             });
         });
 
@@ -143,51 +152,51 @@ export abstract class FactoryClient {
         const addresses: Address[] = clientDTO.addresses.map(addressDTO => {
             return new Address({
                 streetName: addressDTO.streetName,
+                nameAddress: addressDTO.nameAddress,
                 publicPlace: addressDTO.publicPlace,
                 number: addressDTO.number,
                 cep: addressDTO.cep,
                 neighborhood: addressDTO.neighborhood,
-                city: new City(addressDTO.city.name),
-                state: new State(
-                    addressDTO.state.description,
-                    addressDTO.state.uf
-                ),
+                city: addressDTO.city,
+                state:addressDTO.state,
                 country: addressDTO.country,
                 compostName: addressDTO.compostName,
-                typeResidence: addressDTO.typeResidence,
+                typeResidence: addressDTO.typeResidence as TypeResidence,
                 change: addressDTO.change,
-                delivery: addressDTO.delivery
+                delivery: addressDTO.delivery,
             });
         });
 
         // Mapeamento do cartão de crédito (se houver)
-        const creditCart: CreditCart | null = clientDTO.creditCart
-            ? new CreditCart({
-                _namePrinted: clientDTO.creditCart.namePrinted,
-                _cvv: clientDTO.creditCart.cvv,
-                _dateValid: clientDTO.creditCart.dateValid,
-                _flag: clientDTO.creditCart.flag,
-                _status: clientDTO.creditCart.status,
-                _preference: clientDTO.creditCart.preference
+        const creditCart = clientDTO.creditCart != null
+            ? clientDTO.creditCart.map((card) => {
+                return new CreditCart({
+                    _namePrinted: card.namePrinted,
+                    _number: card.number,
+                    _cvv: card.cvv,
+                    _dateValid: card.dateValid,
+                    _flag: card.flag,
+                    _status: card.status,
+                    _preference: card.preference
+                })
             })
             : null;
-
         // Criando o objeto Client com os dados mapeados
         const clientProps: ClientProps = {
             phones: phones,
-            profilePurchase: clientDTO.profilePurchase,
+            profilePurchase: clientDTO.profilePurchase as ProfilePurchase,
             name: clientDTO.name,
             dateOfBirth: clientDTO.dateOfBirth,
             email: clientDTO.email,
             password: clientDTO.password,
             cpf: new CPF(clientDTO.cpf), // Assumindo que CPF tem uma classe própria
             statusClient: StatusClient.ACTIVATE, // Você pode ajustar isso de acordo com sua lógica
-            gender: clientDTO.gender,
+            gender: clientDTO.gender as Gender,
             rfmScore: 0, // Aqui você pode calcular ou ajustar a pontuação RFM
             addresses: addresses,
-            creditCart: creditCart
+            creditCart: creditCart,
+            ranking: 1
         };
-
         return new Client(clientProps);
     }
 }

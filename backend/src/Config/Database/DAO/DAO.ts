@@ -1,4 +1,4 @@
-import { EntityDomain } from "../../domain/EntityDomain";
+import { EntityDomain } from "../../../Model/domain/EntityDomain";
 import { IDao } from "../../../interfaces/IDao";
 
 export abstract class DAO implements IDao {

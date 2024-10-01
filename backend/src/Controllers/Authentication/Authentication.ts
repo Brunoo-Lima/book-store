@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 
 export class Authentication {
     static generateToken(payload: any) {
-        const secret = process.env.JWT_SECRET || 'your-secret-key';
+        const secret = process.env.TOKEN_SECRET as string;
         const options = { expiresIn: '1h' }; // Exemplo de expiração
         return jwt.sign(payload, secret, options);
     }

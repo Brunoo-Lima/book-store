@@ -3,6 +3,7 @@ import "express-async-errors";
 import errorHandler from "./error/errorHandler";
 import routeClient from "./routes/client";
 import routeUser from './routes/user'
+import cors from 'cors';
 class App {
     readonly app;
     constructor() {
@@ -13,6 +14,7 @@ class App {
 
     private middlewares(): void {
         this.app.use(express.json());
+        this.app.use(cors())
         this.app.use(errorHandler); // Todo erro gerado passa para essa função
     }
 

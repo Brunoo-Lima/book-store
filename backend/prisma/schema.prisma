@@ -13,33 +13,6 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-enum Gender {
-    MALE
-    FEMALE
-    OTHER
-}
-
-enum TypePhone {
-    FIXED
-    MOBILE
-}
-
-enum StatusClient {
-    ACTIVATE
-    INACTIVATE
-}
-
-enum TypeResidence {
-    HOME
-    APARTMENT
-}
-
-enum Flags {
-    MASTERCARD
-    VISA
-    ELO
-}
-
 
 model User {
     use_id       String @id @default(uuid())
@@ -52,8 +25,8 @@ model Client {
     cli_name            String // Nome
     cli_dateOfBirth     String // Data de nascimento
     cli_cpf             String       @unique // CPF (único)
-    cli_status          StatusClient // Status (ativo/inativo)
-    cli_gender          Gender // Gênero
+    cli_status          String // Status (ativo/inativo)
+    cli_gender          String // Gênero
     cli_password        String
     cli_email           String       @unique // Email
     cli_phone           Phone[] // Relação 1:N com telefones
@@ -61,9 +34,8 @@ model Client {
     cli_profilePurchase String // Perfil de compra
     cli_address         Address[] // Relação 1:N com endereços
     cli_ranking         Int
-    cli_creditCards     CreditCart[] // Relação 1:N com cartões de crédito
+    cli_creditCards     CreditCard[] // Relação 1:N com cartões de crédito
     cli_log             Log[]
-    fk_ran_cli_id       String       @unique
     created_at          DateTime     @default(now())
     updated_at          DateTime     @updatedAt
 }
@@ -73,26 +45,14 @@ model Phone {
     pho_ddd           String    @db.VarChar(3) // DDD do telefone
     pho_number        String // Número do telefone
     pho_numberCombine String    @unique
-    pho_type_phone    TypePhone // Tipo (celular, fixo, etc.)
+    pho_type_phone    String // Tipo (celular, fixo, etc.)
     pho_client        Client    @relation(fields: [fk_pho_cli_id], references: [cli_id])
     fk_pho_cli_id     String
 }
 
-model City {
-    cit_id      String    @id @default(uuid())
-    cit_name    String
-    cit_adresss Address[]
-}
-
-model State {
-    sta_id   String    @id @default(uuid())
-    sta_name String
-    sta_uf   String
-    Address  Address[]
-}
-
 model Address {
     add_id            String  @id @default(uuid())
+    add_name          String  @unique
     add_streetName    String // Nome da rua
     add_publicPlace   String // Logradouro
     add_number        String // Número
@@ -100,33 +60,24 @@ model Address {
     add_neighborhood  String // Bairro
     add_compostName   String? // Complemento
     add_typeResidence String // Tipo de residência (Casa, Apartamento, etc.)
-    add_city          City    @relation(fields: [fk_add_cit_id], references: [cit_id])
-    add_state         State   @relation(fields: [fk_add_sta_id], references: [sta_id]) // Estado
+    add_city          String
+    add_state         String
     add_isBilling     Boolean // Se é endereço de cobrança (RN0021)
     add_isDelivery    Boolean // Se é endereço de entrega (RN0022)
-    add_client        Client  @relation(fields: [fk_add_cli_id], references: [cli_id]) // Corrigida a relação
+    add_client        Client @relation(fields: [fk_add_cli_id], references: [cli_id])
     fk_add_cli_id     String
-    fk_add_cit_id     String
-    fk_add_sta_id     String
 }
 
-model CreditCart {
+model CreditCard {
     cre_id           String  @id @default(uuid())
     cre_name         String // Nome no cartão
     cre_number_cart  String // Número do cartão
     cre_cvv          String  @db.VarChar(3) // Código de segurança
     cre_dateMaturity String // Data de validade
     cre_preference   Boolean // Preferencial (RF0027)
-    cre_Flag         Flag    @relation(fields: [fk_cre_fla_id], references: [fla_id])
-    cre_client       Client  @relation(fields: [fk_cre_cli_id], references: [cli_id])
-    fk_cre_fla_id    String
+    cre_flag         String
+    cre_client       Client?  @relation(fields: [fk_cre_cli_id], references: [cli_id])
     fk_cre_cli_id    String
-}
-
-model Flag {
-    fla_id          String       @id @default(uuid())
-    fla_name        String // Nome da bandeira (Visa, Mastercard, etc.)
-    fla_creditCarts CreditCart[] // Relação 1:N com cartões de crédito
 }
 
 model Log {
