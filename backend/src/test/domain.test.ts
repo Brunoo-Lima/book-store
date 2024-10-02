@@ -1,6 +1,5 @@
 import { expect, it } from "vitest";
 import { Address } from "../Model/domain/Address";
-import { State } from "../Model/domain/State";
 import { Client, ClientProps } from "../Model/domain/Client";
 import { StatusClient } from "../Model/domain/types/StatusClient";
 import { TypeResidence } from "../Model/domain/types/TypeResidence";
@@ -8,7 +7,6 @@ import { ProfilePurchase } from "../Model/domain/types/ProfilePurchase";
 import { Gender } from "../Model/domain/types/Gender";
 import { TypePhone } from "../Model/domain/types/TypePhone";
 import { Phone } from "../Model/domain/Phone";
-import { City } from "../Model/domain/City";
 import { CPF } from "../Model/domain/CPF";
 
 const clientDTO = {
@@ -78,11 +76,8 @@ it("Should create domain entity", () => {
             number: addressDTO.number,
             cep: addressDTO.cep,
             neighborhood: addressDTO.neighborhood,
-            city: new City(addressDTO.city),
-            state: new State(
-                addressDTO.state
-            ),
-            country: addressDTO.country,
+            city: addressDTO.city,
+            state: addressDTO.state,
             compostName: addressDTO.compostName,
             typeResidence: addressDTO.typeResidence as TypeResidence,
             change: addressDTO.change,

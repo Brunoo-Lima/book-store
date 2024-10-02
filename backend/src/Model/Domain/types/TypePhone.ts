@@ -1,5 +1,6 @@
 export enum TypePhone{
     "FIXED" = "FIXO",
     "MOBILE" = "MOVEL",
-    "UNDEFINED" = "Undefined"
+    "UNDEFINED" = "Undefined",
+    "NULL" = -1
 }

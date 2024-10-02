@@ -1,5 +1,6 @@
 export enum Flags {
     "MASTERCARD" = "MASTERCARD",
     "VISA" = "VISA",
-    "ELO" = "ELO"
+    "ELO" = "ELO",
+    "NULL" = -1
 }

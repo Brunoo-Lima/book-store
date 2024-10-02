@@ -140,16 +140,22 @@ export class Client extends EntityDomain {
 export abstract class FactoryClient {
     static createClient(clientDTO: ClientDTO): Client {
         // Mapeamento dos telefones
-        const phones: Phone[] = clientDTO.phones.map(phoneDTO => {
+        const phones: Phone[] = clientDTO.phones ? clientDTO.phones.map(phoneDTO => {
             return new Phone({
                 _ddd: phoneDTO.ddd,
                 _number: phoneDTO.number,
                 _typePhone: phoneDTO.typePhone as TypePhone
             });
-        });
+        }): [
+            new Phone({
+                _ddd: "",
+                _number: "",
+                _typePhone: TypePhone.NULL
+            })
+        ]
 
         // Mapeamento dos endereços
-        const addresses: Address[] = clientDTO.addresses.map(addressDTO => {
+        const addresses: Address[] = clientDTO.addresses ? clientDTO.addresses.map(addressDTO => {
             return new Address({
                 streetName: addressDTO.streetName,
                 nameAddress: addressDTO.nameAddress,
@@ -159,13 +165,27 @@ export abstract class FactoryClient {
                 neighborhood: addressDTO.neighborhood,
                 city: addressDTO.city,
                 state:addressDTO.state,
-                country: addressDTO.country,
                 compostName: addressDTO.compostName,
                 typeResidence: addressDTO.typeResidence as TypeResidence,
                 change: addressDTO.change,
                 delivery: addressDTO.delivery,
             });
-        });
+        }): [
+            new Address({
+                streetName: "",
+                nameAddress:  "",
+                publicPlace:  "",
+                number:  "",
+                cep:  "",
+                neighborhood:  "",
+                city:  "",
+                state: "",
+                compostName:  "",
+                typeResidence: TypeResidence.NULL,
+                change:  false,
+                delivery: false,
+            })
+        ];
 
         // Mapeamento do cartão de crédito (se houver)
         const creditCart = clientDTO.creditCart != null

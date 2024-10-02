@@ -10,7 +10,7 @@ export interface ClientDTO {
         ddd: string | "",
         number: string | "",
         typePhone: TypePhone
-    }[]; // Alterado de uma tupla para um array
+    }[]// Alterado de uma tupla para um array
 
     profilePurchase: ProfilePurchase;
     name: string | "";
@@ -19,7 +19,7 @@ export interface ClientDTO {
     cpf: string | "";
     gender: Gender;
     password: string | "";
-    addresses: Address[];
+    addresses: Address[]
     creditCart: {
         namePrinted: string,
         number: string,
@@ -28,5 +28,5 @@ export interface ClientDTO {
         flag: Flag,
         status: StatusPayment,
         preference: boolean
-    }[] | null; // Alterado de uma tupla para um array ou null
+    }[]; // Alterado de uma tupla para um array ou null
 }

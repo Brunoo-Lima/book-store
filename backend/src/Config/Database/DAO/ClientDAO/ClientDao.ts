@@ -7,14 +7,14 @@ import { EntityDomain } from "../../../../Model/domain/EntityDomain";
 import { DAO } from "../DAO";
 import { prisma } from "../../prisma/prismaClient";
 import { randomUUID } from "crypto";
-
+import { hashSync } from "bcrypt";
 export class ClientDao extends DAO {
     public async create(client: Client) {
         return await prisma.$transaction(async (prisma) => {
             // Inserir o cliente e obter o ID gerado
             const insertedClient = await prisma.$executeRaw`
                 INSERT INTO Client (cli_id, cli_name, cli_dateOfBirth, cli_cpf, cli_status, cli_gender, cli_password, cli_email, cli_score, cli_profilePurchase, cli_ranking, created_at, updated_at)
-                VALUES (${client.id}, ${client.name}, ${client.dateOfBirth}, ${client.cpf.code}, ${client.statusClient}, ${client.gender}, ${client.password}, ${client.email}, 0, ${client.profilePurchase}, ${client.ranking}, ${client.createdAt}, ${client.updatedAt})
+                VALUES (${client.id}, ${client.name}, ${client.dateOfBirth}, ${client.cpf.code}, ${client.statusClient}, ${client.gender}, ${hashSync(client.password, 3)}, ${client.email}, 0, ${client.profilePurchase}, ${client.ranking}, ${client.createdAt}, ${client.updatedAt})
             `;
 
             // Inserir telefones

@@ -7,6 +7,7 @@ import { FactoryDao } from "../../Config/Database/DAO/FactoryDao";
 import { EntityExistInDB } from "../../Model/Business/EntityExistInDB";
 import { ValidPassword } from "../../Model/Business/ValidPassword";
 import { ValidAddresses } from "../../Model/Business/ValidAddresses";
+import { ValidDataClient } from "../../Model/Business/ValidDataClient";
 
 export class Facade implements IFacade{
     private businessRoles:  Map<string, IStrategy[]>
@@ -86,7 +87,8 @@ export class Facade implements IFacade{
             [
                 new EntityExistInDB(),
                 new ValidPassword(),
-                new ValidAddresses()
+                new ValidAddresses(),
+                new ValidDataClient()
             ]
         )
         this.businessRoles.set(

@@ -1,4 +1,5 @@
 export enum TypeResidence {
     "HOME" = "CASA",
-    "APARTMENT" = "APARTAMENTO"
+    "APARTMENT" = "APARTAMENTO",
+    "NULL" = -1
 }

@@ -17,7 +17,7 @@ export class UserController{
             const userDomain = new User(email, hashSync(password, 3))
             const facade = new Facade(userDomain)
             const userDatabase = await facade.create() as PrismaUser
-
+            
             if(!userDatabase || "error" in userDatabase) return res.json({
                 error: `User cannot be created. because this error: ${userDatabase.error}`
             })

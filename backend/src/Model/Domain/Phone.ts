@@ -33,7 +33,7 @@ export class Phone extends EntityDomain{
         this.phoneProps._typePhone = typePhone;
     }
 
-    public get typePhone(): string {
+    public get typePhone(): TypePhone {
         return this.phoneProps._typePhone;
     }
 }
