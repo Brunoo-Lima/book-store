@@ -1,5 +1,5 @@
 import { Address } from "../domain/Address";
-import { Flag } from "../domain/Flag";
+import { Flags } from "../domain/types/Flags";
 import { Gender } from "../domain/types/Gender";
 import { ProfilePurchase } from "../domain/types/ProfilePurchase";
 import { StatusPayment } from "../domain/types/StatusPayment";
@@ -25,7 +25,7 @@ export interface ClientDTO {
         number: string,
         cvv: string,
         dateValid: string,
-        flag: Flag,
+        flag: Flags,
         status: StatusPayment,
         preference: boolean
     }[]; // Alterado de uma tupla para um array ou null

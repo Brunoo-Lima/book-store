@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/adjacent-overload-signatures */
 /* eslint-disable @typescript-eslint/no-extraneous-class */
 import { Address } from "./Address";
 import { CreditCart } from "./CreditCard";
@@ -11,185 +12,189 @@ import { ClientDTO } from "../DTO/ClientDTO";
 import { TypePhone } from "./types/TypePhone";
 import { TypeResidence } from "./types/TypeResidence";
 
-export interface ClientProps{
-    phones: Phone[], // Phone can be sent after of the object created
-    profilePurchase: ProfilePurchase,
-    name: string,
-    dateOfBirth: string,
-    email: string,
-    password: string,
-    cpf: CPF,
-    statusClient: StatusClient,
-    gender: Gender,
-    rfmScore: number, // Pontuação que atrela o perfil ao cliente
-    ranking: number,
-    addresses: Address[],
-    creditCart: CreditCart[] | null,
-}
 export class Client extends EntityDomain {
     constructor(
-        private clientProps: ClientProps
+        private _phones: Phone[], // Phone can be sent after the object is created
+        private _profilePurchase: ProfilePurchase,
+        private _name: string,
+        private _dateOfBirth: string,
+        private _email: string,
+        private _password: string,
+        private _cpf: CPF,
+        private _statusClient: StatusClient,
+        private _gender: Gender,
+        private _rfmScore: number, // Pontuação que atrela o perfil ao cliente
+        private _ranking: number,
+        private _addresses: Address[],
+        private _creditCart: CreditCart[] | null,
     ) {
         super();
     }
 
+    // Getters
     public get name(): string {
-        return this.clientProps.name;
-    }
-
-    public set name(ranking: number) {
-        this.clientProps.ranking = ranking;
+        return this._name;
     }
 
     public get ranking(): number {
-        return this.clientProps.ranking;
-    }
-
-    public set ranking(name: string) {
-        this.clientProps.name = name;
+        return this._ranking;
     }
 
     public get dateOfBirth(): string {
-        return this.clientProps.dateOfBirth;
-    }
-
-    public set dateOfBirth(DateOfBirth: string) {
-        this.clientProps.dateOfBirth = DateOfBirth;
+        return this._dateOfBirth;
     }
 
     public get email(): string {
-        return this.clientProps.email;
-    }
-
-    public set email(email: string) {
-        this.clientProps.email = email;
+        return this._email;
     }
 
     public get cpf(): CPF {
-        return this.clientProps.cpf;
-    }
-
-    public set cpf(cpf: CPF) {
-        this.clientProps.cpf = cpf;
+        return this._cpf;
     }
 
     public get phone(): Phone[] {
-        return this.clientProps.phones;
-    }
-
-    public set phone(phone: Phone[]) {
-        this.clientProps.phones = phone;
+        return this._phones;
     }
 
     public get profilePurchase(): ProfilePurchase {
-        return this.clientProps.profilePurchase;
-    }
-
-    public set profilePurchase(profilePurchase: ProfilePurchase) {
-        this.clientProps.profilePurchase = profilePurchase;
+        return this._profilePurchase;
     }
 
     public get statusClient(): StatusClient {
-        return this.clientProps.statusClient;
-    }
-
-    public set statusClient(statusClient: StatusClient) {
-        this.clientProps.statusClient = statusClient;
+        return this._statusClient;
     }
 
     public get gender(): Gender {
-        return this.clientProps.gender;
-    }
-
-    public set gender(gender: Gender) {
-        this.clientProps.gender = gender;
+        return this._gender;
     }
 
     public get rfmScore(): number {
-        return this.clientProps.rfmScore;
-    }
-
-    public set rfmScore(rfmScore: number) {
-        this.clientProps.rfmScore = rfmScore;
+        return this._rfmScore;
     }
 
     public get addresses(): Address[] {
-        return this.clientProps.addresses;
+        return this._addresses;
     }
 
-    public set addresses(addressResidence: Address[]) {
-        this.clientProps.addresses = addressResidence;
+    public get creditCart(): CreditCart[] | null {
+        return this._creditCart;
     }
 
-    public get creditCart(): CreditCart[]| null {
-        return this.clientProps.creditCart;
+    public get password(): string {
+        return this._password;
+    }
+
+    // Setters
+    public set name(name: string) {
+        this._name = name;
+    }
+
+    public set ranking(ranking: number) {
+        this._ranking = ranking;
+    }
+
+    public set dateOfBirth(dateOfBirth: string) {
+        this._dateOfBirth = dateOfBirth;
+    }
+
+    public set email(email: string) {
+        this._email = email;
+    }
+
+    public set cpf(cpf: CPF) {
+        this._cpf = cpf;
+    }
+
+    public set phone(phones: Phone[]) {
+        this._phones = phones;
+    }
+
+    public set profilePurchase(profilePurchase: ProfilePurchase) {
+        this._profilePurchase = profilePurchase;
+    }
+
+    public set statusClient(statusClient: StatusClient) {
+        this._statusClient = statusClient;
+    }
+
+    public set gender(gender: Gender) {
+        this._gender = gender;
+    }
+
+    public set rfmScore(rfmScore: number) {
+        this._rfmScore = rfmScore;
+    }
+
+    public set addresses(addresses: Address[]) {
+        this._addresses = addresses;
     }
 
     public set creditCart(creditCart: CreditCart[] | null) {
-        this.clientProps.creditCart = creditCart;
-    }
-    public get password(): string {
-        return this.clientProps.password;
+        this._creditCart = creditCart;
     }
 
     public set password(password: string) {
-        this.clientProps.password = password;
+        this._password = password;
     }
 }
 
 export abstract class FactoryClient {
     static createClient(clientDTO: ClientDTO): Client {
         // Mapeamento dos telefones
-        const phones: Phone[] = clientDTO.phones ? clientDTO.phones.map(phoneDTO => {
-            return new Phone({
-                _ddd: phoneDTO.ddd,
-                _number: phoneDTO.number,
-                _typePhone: phoneDTO.typePhone as TypePhone
-            });
-        }): [
-            new Phone({
-                _ddd: "",
-                _number: "",
-                _typePhone: TypePhone.NULL
+        const phones: Phone[] = clientDTO.phones
+            ? clientDTO.phones.map(phoneDTO => {
+                return new Phone({
+                    _ddd: phoneDTO.ddd,
+                    _number: phoneDTO.number,
+                    _typePhone: phoneDTO.typePhone as TypePhone
+                });
             })
-        ]
+            : [
+                new Phone({
+                    _ddd: "",
+                    _number: "",
+                    _typePhone: TypePhone.NULL
+                })
+            ];
 
         // Mapeamento dos endereços
-        const addresses: Address[] = clientDTO.addresses ? clientDTO.addresses.map(addressDTO => {
-            return new Address({
-                streetName: addressDTO.streetName,
-                nameAddress: addressDTO.nameAddress,
-                publicPlace: addressDTO.publicPlace,
-                number: addressDTO.number,
-                cep: addressDTO.cep,
-                neighborhood: addressDTO.neighborhood,
-                city: addressDTO.city,
-                state:addressDTO.state,
-                compostName: addressDTO.compostName,
-                typeResidence: addressDTO.typeResidence as TypeResidence,
-                change: addressDTO.change,
-                delivery: addressDTO.delivery,
-            });
-        }): [
-            new Address({
-                streetName: "",
-                nameAddress:  "",
-                publicPlace:  "",
-                number:  "",
-                cep:  "",
-                neighborhood:  "",
-                city:  "",
-                state: "",
-                compostName:  "",
-                typeResidence: TypeResidence.NULL,
-                change:  false,
-                delivery: false,
+        const addresses: Address[] = clientDTO.addresses
+            ? clientDTO.addresses.map(addressDTO => {
+                return new Address({
+                    streetName: addressDTO.streetName,
+                    nameAddress: addressDTO.nameAddress,
+                    publicPlace: addressDTO.publicPlace,
+                    number: addressDTO.number,
+                    cep: addressDTO.cep,
+                    neighborhood: addressDTO.neighborhood,
+                    city: addressDTO.city,
+                    state: addressDTO.state,
+                    compostName: addressDTO.compostName,
+                    typeResidence: addressDTO.typeResidence as TypeResidence,
+                    change: addressDTO.change,
+                    delivery: addressDTO.delivery,
+                });
             })
-        ];
+            : [
+                new Address({
+                    streetName: "",
+                    nameAddress: "",
+                    publicPlace: "",
+                    number: "",
+                    cep: "",
+                    neighborhood: "",
+                    city: "",
+                    state: "",
+                    compostName: "",
+                    typeResidence: TypeResidence.NULL,
+                    change: false,
+                    delivery: false,
+                })
+            ];
 
         // Mapeamento do cartão de crédito (se houver)
-        const creditCart = clientDTO.creditCart != null
-            ? clientDTO.creditCart.map((card) => {
+        const creditCart = clientDTO.creditCart
+            ? clientDTO.creditCart.map(card => {
                 return new CreditCart({
                     _namePrinted: card.namePrinted,
                     _number: card.number,
@@ -198,25 +203,26 @@ export abstract class FactoryClient {
                     _flag: card.flag,
                     _status: card.status,
                     _preference: card.preference
-                })
+                });
             })
             : null;
+
         // Criando o objeto Client com os dados mapeados
-        const clientProps: ClientProps = {
-            phones: phones,
-            profilePurchase: clientDTO.profilePurchase as ProfilePurchase,
-            name: clientDTO.name,
-            dateOfBirth: clientDTO.dateOfBirth,
-            email: clientDTO.email,
-            password: clientDTO.password,
-            cpf: new CPF(clientDTO.cpf), // Assumindo que CPF tem uma classe própria
-            statusClient: StatusClient.ACTIVATE, // Você pode ajustar isso de acordo com sua lógica
-            gender: clientDTO.gender as Gender,
-            rfmScore: 0, // Aqui você pode calcular ou ajustar a pontuação RFM
-            addresses: addresses,
-            creditCart: creditCart,
-            ranking: 1
-        };
-        return new Client(clientProps);
+        return new Client(
+            phones,
+            clientDTO.profilePurchase as ProfilePurchase,
+            clientDTO.name,
+            clientDTO.dateOfBirth,
+            clientDTO.email,
+            clientDTO.password,
+            new CPF(clientDTO.cpf), // Assumindo que CPF tem uma classe própria
+            StatusClient.ACTIVATE, // Você pode ajustar isso conforme sua lógica
+            clientDTO.gender as Gender,
+            0, // Aqui você pode calcular ou ajustar a pontuação RFM
+            0,
+            addresses,
+            creditCart
+        );
     }
 }
+
