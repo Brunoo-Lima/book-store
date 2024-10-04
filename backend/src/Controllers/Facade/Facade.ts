@@ -94,7 +94,8 @@ export class Facade implements IFacade{
         this.businessRoles.set(
             "User",
             [
-                new EntityExistInDB()
+                new EntityExistInDB(),
+                new ValidPassword()
             ]
         )
     }

@@ -19,7 +19,8 @@ export interface ClientDTO {
     cpf: string | "";
     gender: Gender;
     password: string | "";
-    addresses: Address[]
+    confirmPassword: string | "";
+    addresses: Address[] | []
     creditCart: {
         namePrinted: string,
         number: string,

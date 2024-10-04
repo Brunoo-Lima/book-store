@@ -20,6 +20,7 @@ export class Client extends EntityDomain {
         private _dateOfBirth: string,
         private _email: string,
         private _password: string,
+        private _confirmPassword: string,
         private _cpf: CPF,
         private _statusClient: StatusClient,
         private _gender: Gender,
@@ -83,6 +84,9 @@ export class Client extends EntityDomain {
     public get password(): string {
         return this._password;
     }
+    public get confirmPassword(): string {
+        return this._confirmPassword;
+    }
 
     // Setters
     public set name(name: string) {
@@ -136,6 +140,9 @@ export class Client extends EntityDomain {
     public set password(password: string) {
         this._password = password;
     }
+    public set confirmPassword(password: string){
+        this._confirmPassword= password;
+    }
 }
 
 export abstract class FactoryClient {
@@ -175,22 +182,7 @@ export abstract class FactoryClient {
                     delivery: addressDTO.delivery,
                 });
             })
-            : [
-                new Address({
-                    streetName: "",
-                    nameAddress: "",
-                    publicPlace: "",
-                    number: "",
-                    cep: "",
-                    neighborhood: "",
-                    city: "",
-                    state: "",
-                    compostName: "",
-                    typeResidence: TypeResidence.NULL,
-                    change: false,
-                    delivery: false,
-                })
-            ];
+            :[];
 
         // Mapeamento do cartão de crédito (se houver)
         const creditCart = clientDTO.creditCart
@@ -215,11 +207,12 @@ export abstract class FactoryClient {
             clientDTO.dateOfBirth,
             clientDTO.email,
             clientDTO.password,
+            clientDTO.confirmPassword,
             new CPF(clientDTO.cpf), // Assumindo que CPF tem uma classe própria
             StatusClient.ACTIVATE, // Você pode ajustar isso conforme sua lógica
             clientDTO.gender as Gender,
-            0, // Aqui você pode calcular ou ajustar a pontuação RFM
-            0,
+            1, // Aqui você pode calcular ou ajustar a pontuação RFM (NÃO PODE SER 0)
+            1,
             addresses,
             creditCart
         );

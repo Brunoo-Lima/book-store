@@ -8,10 +8,11 @@ import { Gender } from "../Model/domain/types/Gender";
 import { TypePhone } from "../Model/domain/types/TypePhone";
 import { Phone } from "../Model/domain/Phone";
 import { CPF } from "../Model/domain/CPF";
-import { ValidDataClient } from "../Model/Business/ValidDataClient";
+// import { ValidDataClient } from "../Model/Business/ValidDataClient";
 import { CreditCart } from "../Model/domain/CreditCard";
 import { StatusPayment } from "../Model/domain/types/StatusPayment";
 import { Flags } from "../Model/domain/types/Flags";
+import { ValidPassword } from "../Model/Business/ValidPassword";
 
 const clientDTO = {
     "phones": [
@@ -28,7 +29,8 @@ const clientDTO = {
     "cpf": "12345678932",
     "gender": "MEN",
     "rfmScore": 0,
-    "password": "12245678A",
+    "password": "12245678Aa#",
+    "confirmPassword": "12245678Aa#",
     "addresses": [
         {
             "streetName": "123",
@@ -67,7 +69,9 @@ const clientDTO = {
 }
 
 it("Should create domain entity", () => {
-    const validDataRequired = new ValidDataClient()
+    // const validDataRequired = new ValidDataClient()
+    const validPassword = new ValidPassword()
+
     const phones: Phone[] = clientDTO.phones.map(phoneDTO => {
         return new Phone({
             _ddd: phoneDTO.ddd,
@@ -101,6 +105,7 @@ it("Should create domain entity", () => {
         clientDTO.dateOfBirth,
         clientDTO.email,
         clientDTO.password,
+        clientDTO.confirmPassword,
         new CPF(clientDTO.cpf), // Assumindo que CPF tem uma classe própria
         StatusClient.ACTIVATE, // Você pode ajustar isso de acordo com sua lógica
         clientDTO.gender as Gender,
@@ -117,7 +122,9 @@ it("Should create domain entity", () => {
             _preference: false,
         })]
     )
-    const object = validDataRequired.process(client)
-    console.log(object)
-    expect(object).haveOwnProperty('success')
+    // const object = validDataRequired.process(client)
+    const objectPassword = validPassword.process(client)
+
+    console.log(objectPassword)
+    expect(objectPassword).haveOwnProperty('success')
 })

@@ -13,7 +13,7 @@ class App {
     }
 
     private middlewares(): void {
-        this.app.use(express.json());
+        this.app.use(express.json()); // Certifique-se de que o body-parser está configurado para interpretar JSON
         this.app.use(cors())
         this.app.use(errorHandler); // Todo erro gerado passa para essa função
     }

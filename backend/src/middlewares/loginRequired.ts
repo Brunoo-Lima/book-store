@@ -3,21 +3,39 @@
 import { Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { ICustomRequest } from '../interfaces/ICustomRequest';
+import { ICustomJwt } from '../interfaces/ICustomJWT';
 
 
-export const authenticateJWT = (req: ICustomRequest, res: Response, next: NextFunction) => {
-    const token = req.header('Authorization')?.split(' ')[1]; // Espera que o token esteja no formato "Bearer <token>"
-    if (!token) {
-        return res.sendStatus(401); // Proibido se não houver token
+export const login = (req: ICustomRequest, res: Response, next: NextFunction) => {
+    const { authorization } = req.headers;
+    if (!authorization) {
+        return res.status(401).json({
+            errors: ['Login Required'],
+        });
     }
+    // Get the user
+    const [, token] = authorization.split(' ');
+    try {
+        const secret = process.env.TOKEN_SECRET as string;
+        const user = jwt.verify(token, secret) as ICustomJwt;
 
-    const secret = process.env.TOKEN_SECRET as string;
-
-    jwt.verify(token, secret, (err, user) => {
-        if (err) {
-            return res.sendStatus(403) // Proibido se o token for inválido
+        // Verifying if the expected properties exist in the payload
+        if (!user || !user.user_email || !user.user_password) return {
+            error: 'Invalid token payload'
         }
-        req.user = user; // Adiciona os dados do usuário à requisição
-        next(); // Passa para a próxima middleware ou rota
-    });
-};
+
+        if (!user) {
+            return res.status(401).json({
+                error: 'That user does not exist!',
+            });
+        }
+
+        req.body.user = user; // I created
+
+        return next();
+    } catch (e) {
+        return res.status(401).json({
+            errors: `Token expired or invalid. Error: ${e}`,
+        });
+    }
+}

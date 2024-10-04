@@ -3,7 +3,8 @@ import { EntityDomain } from "./EntityDomain";
 export class User extends EntityDomain{
     constructor(
         private email: string,
-        private password: string
+        private password: string,
+        private confirmPassword: string,
 
     ){
         super()
@@ -22,5 +23,12 @@ export class User extends EntityDomain{
 
     public setPassword(password: string): void {
         this.password = password;
+    }
+    public getConfirmPassword(): string {
+        return this.confirmPassword;
+    }
+
+    public setConfirmPassword(confirmPassword: string) {
+        this.confirmPassword = confirmPassword;
     }
 }

@@ -8,6 +8,7 @@ import { DAO } from "../DAO";
 import { prisma } from "../../prisma/prismaClient";
 import { randomUUID } from "crypto";
 import { hashSync } from "bcrypt";
+import { Gender } from "../../../../Model/domain/types/Gender";
 export class ClientDao extends DAO {
     public async create(client: Client) {
         return await prisma.$transaction(async (prisma) => {
@@ -38,7 +39,7 @@ export class ClientDao extends DAO {
                 for (const card of client.creditCart) {
                     await prisma.$executeRaw`
                     INSERT INTO CreditCart (cre_id, cre_cvv, cre_dateMaturity, cre_name, cre_number_cart, cre_flag, cre_preference, fk_cre_cli_id)
-                    VALUES (${randomUUID()}, ${card.cvv}, ${card.dateValid}, ${card.namePrinted}, ${card.number}, ${card.flag.flag}, ${card.preference}, ${client.id})
+                    VALUES (${randomUUID()}, ${card.cvv}, ${card.dateValid}, ${card.namePrinted}, ${card.number}, ${card.flag}, ${card.preference}, ${client.id})
                 `;
                 }
             }
@@ -89,56 +90,49 @@ export class ClientDao extends DAO {
         })
     }
     async findMany(client: Client): Promise<unknown> {
-        const filter: any = {}; // Usar any para facilitar a construção do filtro
+        const filter: any = {}; // Objeto que armazenará os filtros dinâmicos
 
-        // Adiciona filtros baseados nos campos do cliente
-        if (client.cpf && client.cpf.code) {
-            filter.cli_cpf = {
-                contains: client.cpf.code,
-            };
-        }
+        // Criação de filtros dinâmicos baseados nos campos não vazios ou indefinidos do cliente
+        if (client.name) filter.cli_name = client.name;
+        if (client.cpf && client.cpf.code) filter.cli_cpf = client.cpf.code;
+        if (client.dateOfBirth) filter.cli_dateOfBirth = client.dateOfBirth;
+        if (client.gender && client.gender !== Gender.NULL) filter.cli_gender = client.gender;
+        if (client.statusClient) filter.cli_status = client.statusClient;
 
-        if (client.email) {
-            filter.cli_email = {
-                contains: client.email,
-            };
-        }
-
-        if (client.name) {
-            filter.cli_name = {
-                contains: client.name,
-            };
-        }
-
-        if (client.dateOfBirth) {
-            filter.cli_dateOfBirth = {
-                contains: client.dateOfBirth,
-            };
-        }
-
-        if (client.profilePurchase) {
-            filter.cli_profilePurchase = {
-                contains: client.profilePurchase,
-            };
-        }
-
-        if (client.rfmScore) {
-            filter.cli_score = {
-                equals: client.rfmScore,
-            };
-        }
-
+        // Se o cliente tiver telefones, verificar cada número
         if (client.phone && client.phone.length > 0) {
             filter.cli_phone = {
-                every: {
-                    pho_ddd: {
-                        in: client.phone.map(phon => phon.ddd) // Usa um array para comparar
-                    },
-                },
+                some: {
+                    pho_number: {
+                        in: client.phone.map(phone => phone.number)
+                    }
+                }
             };
         }
 
-        // Retorna os clientes que atendem aos critérios de filtro
+        // Se o cliente tiver endereços, verificar cada campo de endereço
+        if (client.addresses && client.addresses.length > 0) {
+            filter.cli_address = {
+                some: {
+                    add_cep: {
+                        in: client.addresses.map(address => address.cep)
+                    }
+                }
+            };
+        }
+
+        // Se o cliente tiver cartões de crédito, verificar cada número de cartão
+        if (client.creditCart && client.creditCart.length > 0) {
+            filter.cli_creditCards = {
+                some: {
+                    cre_number_cart: {
+                        in: client.creditCart.map(card => card.number)
+                    }
+                }
+            };
+        }
+
+        // Realiza a consulta com base nos filtros dinâmicos
         return await prisma.client.findMany({
             where: filter,
             select: {
@@ -160,6 +154,5 @@ export class ClientDao extends DAO {
             },
         });
     }
-
 }
 
