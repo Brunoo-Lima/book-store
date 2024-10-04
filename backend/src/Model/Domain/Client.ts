@@ -156,13 +156,7 @@ export abstract class FactoryClient {
                     _typePhone: phoneDTO.typePhone as TypePhone
                 });
             })
-            : [
-                new Phone({
-                    _ddd: "",
-                    _number: "",
-                    _typePhone: TypePhone.NULL
-                })
-            ];
+            : [];
 
         // Mapeamento dos endereços
         const addresses: Address[] = clientDTO.addresses
@@ -182,7 +176,7 @@ export abstract class FactoryClient {
                     delivery: addressDTO.delivery,
                 });
             })
-            :[];
+            : [];
 
         // Mapeamento do cartão de crédito (se houver)
         const creditCart = clientDTO.creditCart
@@ -197,7 +191,7 @@ export abstract class FactoryClient {
                     _preference: card.preference
                 });
             })
-            : null;
+            : [];
 
         // Criando o objeto Client com os dados mapeados
         return new Client(

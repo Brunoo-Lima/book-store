@@ -2,19 +2,20 @@ import { Request, Response } from "express";
 import { Facade } from "../Facade/Facade";
 import { User } from "../../Model/domain/User"; // Importa o User do domínio
 import { User as PrismaUser } from '@prisma/client'; // Importa o User do Prisma
-import { Authentication } from "../Authentication/Authentication";
-
+import { hashSync } from "bcrypt";
 
 export class UserController{
     async handle(req: Request, res: Response){
         try{
             const {email, password, confirmPassword } = req.body
 
-            if(!email || !password) return res.json({
-                error: "E-mail and Password should be sent !"
+            if(!email || !password || password !== confirmPassword) return res.json({
+                error: "E-mail and Password should be sent or password do not equals !"
             })
 
-            const userDomain = new User(email, password, confirmPassword)
+            const hashPassword = hashSync(password, 2);
+            const userDomain = new User(email, hashPassword, hashPassword)
+
             const facade = new Facade(userDomain)
             const userDatabase = await facade.create() as PrismaUser
 
@@ -22,14 +23,8 @@ export class UserController{
                 error: `Error: ${userDatabase.error}`
             })
 
-            const token = Authentication.generateToken({
-                user_id: userDatabase.use_id,
-                user_email: userDatabase.use_email,
-                user_password: userDatabase.use_password
-            })
             return res.json({
                 user: userDatabase,
-                token
             })
 
         } catch (e) {

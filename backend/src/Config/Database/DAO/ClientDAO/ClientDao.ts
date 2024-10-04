@@ -9,6 +9,7 @@ import { prisma } from "../../prisma/prismaClient";
 import { randomUUID } from "crypto";
 import { hashSync } from "bcrypt";
 import { Gender } from "../../../../Model/domain/types/Gender";
+import { TypeResidence } from "../../../../Model/domain/types/TypeResidence";
 export class ClientDao extends DAO {
     public async create(client: Client) {
         return await prisma.$transaction(async (prisma) => {
@@ -89,48 +90,55 @@ export class ClientDao extends DAO {
             }
         })
     }
-    async findMany(client: Client): Promise<unknown> {
-        const filter: any = {}; // Objeto que armazenará os filtros dinâmicos
+    public async findMany(client: Client): Promise<unknown> {
+        const filter: any = {};
 
-        // Criação de filtros dinâmicos baseados nos campos não vazios ou indefinidos do cliente
+        // Aplicação dos filtros dinâmicos
         if (client.name) filter.cli_name = client.name;
         if (client.cpf && client.cpf.code) filter.cli_cpf = client.cpf.code;
         if (client.dateOfBirth) filter.cli_dateOfBirth = client.dateOfBirth;
         if (client.gender && client.gender !== Gender.NULL) filter.cli_gender = client.gender;
         if (client.statusClient) filter.cli_status = client.statusClient;
 
-        // Se o cliente tiver telefones, verificar cada número
+        // Se o cliente tiver telefones, adiciona filtro para telefones
         if (client.phone && client.phone.length > 0) {
-            filter.cli_phone = {
+            filter.phones = {
                 some: {
-                    pho_number: {
-                        in: client.phone.map(phone => phone.number)
-                    }
-                }
+                    pho_number: { in: client.phone.map(phone => phone.number) },
+                    pho_ddd: { in: client.phone.map(phone => phone.ddd) },
+                },
             };
         }
 
-        // Se o cliente tiver endereços, verificar cada campo de endereço
+        // Se o cliente tiver endereços, adiciona filtro para endereços
         if (client.addresses && client.addresses.length > 0) {
-            filter.cli_address = {
+            filter.addresses = {
                 some: {
-                    add_cep: {
-                        in: client.addresses.map(address => address.cep)
-                    }
-                }
+                    add_streetName: { in: client.addresses.map(address => address.streetName) },
+                    add_publicPlace: { in: client.addresses.map(address => address.publicPlace) },
+                    add_number: { in: client.addresses.map(address => address.number) },
+                    add_cep: { in: client.addresses.map(address => address.cep) },
+                    add_neighborhood: { in: client.addresses.map(address => address.neighborhood) },
+                    add_city: { in: client.addresses.map(address => address.city) },
+                    add_state: { in: client.addresses.map(address => address.state) },
+                    add_compostName: { in: client.addresses.map(address => address.compostName) },
+                    add_typeResidence: { in: client.addresses.map(address => address.typeResidence) },
+                    add_isBilling: { in: client.addresses.map(address => address.change) },
+                    add_isDelivery: { in: client.addresses.map(address => address.delivery) },
+                },
             };
         }
 
-        // Se o cliente tiver cartões de crédito, verificar cada número de cartão
+        // Se o cliente tiver cartões de crédito, adiciona filtro para cartões
         if (client.creditCart && client.creditCart.length > 0) {
-            filter.cli_creditCards = {
+            filter.creditCart = {
                 some: {
-                    cre_number_cart: {
-                        in: client.creditCart.map(card => card.number)
-                    }
-                }
+                    cre_number_cart: { in: client.creditCart.map(card => card.number) },
+                },
             };
         }
+
+        console.log(filter);
 
         // Realiza a consulta com base nos filtros dinâmicos
         return await prisma.client.findMany({
@@ -138,17 +146,17 @@ export class ClientDao extends DAO {
             select: {
                 cli_cpf: true,
                 cli_id: true,
-                cli_creditCards: true,
+                cli_creditCards: true,  // Relação correta deve ser 'creditCart' se esse for o nome no esquema
                 cli_dateOfBirth: true,
                 cli_gender: true,
-                cli_phone: true,
+                cli_phone: true,        // Relação correta deve ser 'phones' se esse for o nome no esquema
                 cli_profilePurchase: true,
                 cli_ranking: true,
                 cli_name: true,
                 cli_score: true,
                 cli_status: true,
                 cli_log: true,
-                cli_address: true,
+                cli_address: true,      // Relação correta deve ser 'addresses' se esse for o nome no esquema
                 cli_password: true,
                 created_at: true,
             },

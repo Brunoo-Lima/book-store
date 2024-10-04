@@ -3,6 +3,7 @@ import "express-async-errors";
 import errorHandler from "./error/errorHandler";
 import routeClient from "./routes/client";
 import routeUser from './routes/user'
+import routeLogin from './routes/login'
 import cors from 'cors';
 class App {
     readonly app;
@@ -21,6 +22,7 @@ class App {
     private routes(): void {
         this.app.use('/client', routeClient)
         this.app.use('/user', routeUser)
+        this.app.use('/login', routeLogin)
     }
 }
 

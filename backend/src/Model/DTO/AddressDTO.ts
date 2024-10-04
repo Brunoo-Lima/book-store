@@ -11,6 +11,6 @@ export interface AddressDTO {
     state: string,
     compostName: string,
     typeResidence: TypeResidence,
-    change: boolean,
-    delivery: boolean
+    change: boolean | undefined,
+    delivery: boolean | undefined
 }

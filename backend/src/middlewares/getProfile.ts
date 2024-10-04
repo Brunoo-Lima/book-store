@@ -6,16 +6,16 @@ import { ICustomRequest } from '../interfaces/ICustomRequest';
 import { ICustomJwt } from '../interfaces/ICustomJWT';
 
 
-export const login = (req: ICustomRequest, res: Response, next: NextFunction) => {
-    const { authorization } = req.headers;
-    if (!authorization) {
-        return res.status(401).json({
-            errors: ['Login Required'],
-        });
-    }
-    // Get the user
-    const [, token] = authorization.split(' ');
+export const getProfile = (req: ICustomRequest, res: Response, next: NextFunction) => {
     try {
+        const { authorization } = req.headers;
+        if (!authorization) {
+            return res.status(401).json({
+                errors: 'Login Required !',
+            });
+        }
+        // Get the user
+        const [, token] = authorization.split(' ');
         const secret = process.env.TOKEN_SECRET as string;
         const user = jwt.verify(token, secret) as ICustomJwt;
 
@@ -30,12 +30,12 @@ export const login = (req: ICustomRequest, res: Response, next: NextFunction) =>
             });
         }
 
-        req.body.user = user; // I created
+        req.body.user = user;
 
         return next();
     } catch (e) {
         return res.status(401).json({
-            errors: `Token expired or invalid. Error: ${e}`,
+            errors: `Token expired or invalid.${e}`,
         });
     }
 }

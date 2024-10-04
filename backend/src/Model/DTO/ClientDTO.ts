@@ -1,9 +1,9 @@
-import { Address } from "../domain/Address";
 import { Flags } from "../domain/types/Flags";
 import { Gender } from "../domain/types/Gender";
 import { ProfilePurchase } from "../domain/types/ProfilePurchase";
 import { StatusPayment } from "../domain/types/StatusPayment";
 import { TypePhone } from "../domain/types/TypePhone";
+import { AddressDTO } from "./AddressDTO";
 
 export interface ClientDTO {
     phones: {
@@ -20,7 +20,7 @@ export interface ClientDTO {
     gender: Gender;
     password: string | "";
     confirmPassword: string | "";
-    addresses: Address[] | []
+    addresses: AddressDTO[] | []
     creditCart: {
         namePrinted: string,
         number: string,

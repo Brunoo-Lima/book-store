@@ -12,9 +12,9 @@ export interface AddressProps {
     state: string,
     compostName: string,
     typeResidence: TypeResidence,
-    change: boolean,
     nameAddress: string,
-    delivery: boolean,
+    change: boolean | undefined,
+    delivery: boolean | undefined,
 }
 
 export class Address extends EntityDomain {
@@ -91,14 +91,14 @@ export class Address extends EntityDomain {
     public set typeResidence(typeResidence: TypeResidence) {
         this.addressProps.typeResidence = typeResidence;
     }
-    get delivery(): boolean {
+    get delivery(): boolean | undefined{
         return this.addressProps.delivery;
     }
 
     public set delivery(delivery: boolean) {
         this.addressProps.delivery = delivery;
     }
-    get change(): boolean {
+    get change(): boolean | undefined{
         return this.addressProps.change;
     }
 
