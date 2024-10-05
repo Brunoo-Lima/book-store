@@ -1,6 +1,5 @@
 import { EntityDomain } from "./EntityDomain";
 import { Flags } from "./types/Flags";
-import { StatusPayment } from "./types/StatusPayment";
 
 export interface CreditCartProps {
     _namePrinted:string,
@@ -8,7 +7,6 @@ export interface CreditCartProps {
     _cvv:string,
     _dateValid: string,
     _flag: Flags,
-    _status: StatusPayment,
     _preference: boolean
 }
 
@@ -58,14 +56,6 @@ export class CreditCart extends EntityDomain{
 
     public set flag(flag: Flags) {
         this.creditCartProps._flag = flag;
-    }
-
-    public get status(): StatusPayment{
-        return this.creditCartProps._status;
-    }
-
-    public set status(status: StatusPayment,) {
-        this.creditCartProps._status = status;
     }
 
     public get preference(): boolean {

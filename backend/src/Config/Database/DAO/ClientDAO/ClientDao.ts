@@ -9,7 +9,6 @@ import { prisma } from "../../prisma/prismaClient";
 import { randomUUID } from "crypto";
 import { hashSync } from "bcrypt";
 import { Gender } from "../../../../Model/domain/types/Gender";
-import { TypeResidence } from "../../../../Model/domain/types/TypeResidence";
 import { StatusClient } from "../../../../Model/domain/types/StatusClient";
 export class ClientDao extends DAO {
     public async create(client: Client) {
@@ -40,7 +39,7 @@ export class ClientDao extends DAO {
             if (client.creditCart) {
                 for (const card of client.creditCart) {
                     await prisma.$executeRaw`
-                    INSERT INTO CreditCart (cre_id, cre_cvv, cre_dateMaturity, cre_name, cre_number_cart, cre_flag, cre_preference, fk_cre_cli_id)
+                    INSERT INTO CreditCard (cre_id, cre_cvv, cre_dateMaturity, cre_name, cre_number_cart, cre_flag, cre_preference, fk_cre_cli_id)
                     VALUES (${randomUUID()}, ${card.cvv}, ${card.dateValid}, ${card.namePrinted}, ${card.number}, ${card.flag}, ${card.preference}, ${client.id})
                 `;
                 }
@@ -50,9 +49,38 @@ export class ClientDao extends DAO {
     }
 
 
-    public update(entity: EntityDomain): Promise<void> {
-        throw new Error("Method not implemented.");
+    public async update(client: Client): Promise<object | null> {
+        return await prisma.client.update({
+            data: {
+                cli_password: {
+                    set: hashSync(client.password, 2)
+                },
+                cli_address: {
+                    updateMany: client.addresses.map((address) => ({
+                        where: { add_id: address.id }, // Certifique-se de que o `add_id` está correto
+                        data: {
+                            add_name: { set: address.nameAddress },
+                            add_streetName: { set: address.streetName },
+                            add_publicPlace: { set: address.publicPlace },
+                            add_number: { set: address.number },
+                            add_cep: { set: address.cep },
+                            add_neighborhood: { set: address.neighborhood },
+                            add_city: { set: address.city },
+                            add_state: { set: address.state },
+                            add_compostName: { set: address.compostName },
+                            add_typeResidence: { set: address.typeResidence as string},
+                            add_isBilling: { set: address.change },
+                            add_isDelivery: { set: address.delivery }
+                        }
+                    }))
+                }
+            },
+            where: {
+                cli_cpf: client.cpf.code
+            }
+        });
     }
+
     public delete(entity: EntityDomain): Promise<void> {
         throw new Error("Method not implemented.");
     }
@@ -156,17 +184,17 @@ export class ClientDao extends DAO {
             select: {
                 cli_cpf: true,
                 cli_id: true,
-                cli_creditCards: true,  // Relação correta deve ser 'creditCart' se esse for o nome no esquema
+                cli_creditCards: true,
                 cli_dateOfBirth: true,
                 cli_gender: true,
-                cli_phone: true,        // Relação correta deve ser 'phones' se esse for o nome no esquema
+                cli_phone: true,
                 cli_profilePurchase: true,
                 cli_ranking: true,
                 cli_name: true,
                 cli_score: true,
                 cli_status: true,
                 cli_log: true,
-                cli_address: true,      // Relação correta deve ser 'addresses' se esse for o nome no esquema
+                cli_address: true,
                 cli_password: true,
                 created_at: true,
             },

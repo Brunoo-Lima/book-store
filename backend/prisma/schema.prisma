@@ -65,6 +65,9 @@ model Address {
     add_isBilling     Boolean // Se é endereço de cobrança (RN0021)
     add_isDelivery    Boolean // Se é endereço de entrega (RN0022)
     add_client        Client @relation(fields: [fk_add_cli_id], references: [cli_id])
+
+    @@unique([add_cep, add_name, add_number, add_streetName])
+    
     fk_add_cli_id     String
 }
 

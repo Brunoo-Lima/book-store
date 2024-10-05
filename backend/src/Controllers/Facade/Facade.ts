@@ -8,6 +8,7 @@ import { EntityExistInDB } from "../../Model/Business/EntityExistInDB";
 import { ValidPassword } from "../../Model/Business/ValidPassword";
 import { ValidAddresses } from "../../Model/Business/ValidAddresses";
 import { ValidDataClient } from "../../Model/Business/ValidDataClient";
+import { ValidDataToUpdate } from "../../Model/Business/ValidDataToUpdate";
 
 export class Facade implements IFacade{
     private businessRoles:  Map<string, IStrategy[]>
@@ -17,14 +18,13 @@ export class Facade implements IFacade{
         private entity: EntityDomain
     ){
         this.businessRoles = new  Map<string, IStrategy[]>
-
         this.daos = new Map<string, IDao>
         this.setStrategies()
     }
 
     async create(): Promise<unknown> {
         try{
-            const strategies = await this.getStrategies()
+            const strategies = await this.getStrategies(this.entity.constructor.name)
 
             if(strategies){
                 for(const strategy of strategies){
@@ -43,8 +43,26 @@ export class Facade implements IFacade{
             }
         }
     }
-    update(): Promise<unknown> {
-        throw new Error("Method not implemented.");
+    async update(): Promise<unknown> {
+        try{
+            const strategies = await this.getStrategies(`U${this.entity.constructor.name}`)
+            if(strategies){
+                for(const strategy of strategies){
+                    const hasErrors = await strategy
+                    if('error' in hasErrors) {
+                        return hasErrors
+                    }
+                }
+            }
+            const dao = this.fillDao(this.entity.constructor.name)
+            const entityResearched = await dao.update(this.entity)
+            return entityResearched
+        } catch(e){
+            console.log(e)
+            return {
+                error: e
+            }
+        }
     }
     delete(): Promise<unknown> {
         throw new Error("Method not implemented.");
@@ -66,7 +84,6 @@ export class Facade implements IFacade{
             const entities = await dao.findMany(this.entity)
             return entities
         } catch(e){
-            console.log(e)
             return {
                 error: e
             }
@@ -84,7 +101,7 @@ export class Facade implements IFacade{
     }
     private setStrategies(): void{
         this.businessRoles.set(
-            "Client",
+            "CLIENT",
             [
                 new EntityExistInDB(),
                 new ValidPassword(),
@@ -93,16 +110,22 @@ export class Facade implements IFacade{
             ]
         )
         this.businessRoles.set(
-            "User",
+            "UCLIENT",
+            [
+                new ValidDataToUpdate()
+            ]
+        )
+        this.businessRoles.set(
+            "USER",
             [
                 new EntityExistInDB(),
                 new ValidPassword()
             ]
         )
+
     }
-    private async getStrategies() {
-        const name = this.entity.constructor.name
-        const strategies = this.businessRoles.get(name)
+    private async getStrategies(key: string) {
+        const strategies = this.businessRoles.get(key.toUpperCase())
         if(strategies){
             const hasError = []
             for(const strategy of strategies){

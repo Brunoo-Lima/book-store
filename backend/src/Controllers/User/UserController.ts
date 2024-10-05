@@ -3,7 +3,7 @@ import { Facade } from "../Facade/Facade";
 import { User } from "../../Model/domain/User"; // Importa o User do domínio
 import { User as PrismaUser } from '@prisma/client'; // Importa o User do Prisma
 import { hashSync } from "bcrypt";
-
+import jwt from 'jsonwebtoken'
 export class UserController{
     async handle(req: Request, res: Response){
         try{
@@ -23,8 +23,15 @@ export class UserController{
                 error: `Error: ${userDatabase.error}`
             })
 
+            const secret = process.env.TOKEN_SECRET as string
+            const token = jwt.sign({
+                user_email: userDatabase.use_email,
+                user_password: userDatabase.use_password
+            }, secret, {expiresIn: '1d'})
+
             return res.json({
                 user: userDatabase,
+                token
             })
 
         } catch (e) {

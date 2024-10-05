@@ -11,6 +11,7 @@ import { StatusClient } from "./types/StatusClient";
 import { ClientDTO } from "../DTO/ClientDTO";
 import { TypePhone } from "./types/TypePhone";
 import { TypeResidence } from "./types/TypeResidence";
+import { Flags } from "./types/Flags";
 
 export class Client extends EntityDomain {
     constructor(
@@ -178,6 +179,7 @@ export abstract class FactoryClient {
             })
             : [];
 
+
         // Mapeamento do cartão de crédito (se houver)
         const creditCart = clientDTO.creditCart
             ? clientDTO.creditCart.map(card => {
@@ -186,8 +188,7 @@ export abstract class FactoryClient {
                     _number: card.number,
                     _cvv: card.cvv,
                     _dateValid: card.dateValid,
-                    _flag: card.flag,
-                    _status: card.status,
+                    _flag: card.flag as Flags,
                     _preference: card.preference
                 });
             })
