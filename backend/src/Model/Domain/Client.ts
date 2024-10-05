@@ -203,7 +203,7 @@ export abstract class FactoryClient {
             clientDTO.password,
             clientDTO.confirmPassword,
             new CPF(clientDTO.cpf), // Assumindo que CPF tem uma classe própria
-            StatusClient.ACTIVATE, // Você pode ajustar isso conforme sua lógica
+            clientDTO.statusClient, // Você pode ajustar isso conforme sua lógica
             clientDTO.gender as Gender,
             1, // Aqui você pode calcular ou ajustar a pontuação RFM (NÃO PODE SER 0)
             1,

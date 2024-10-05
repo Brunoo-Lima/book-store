@@ -1,6 +1,7 @@
 import { Flags } from "../domain/types/Flags";
 import { Gender } from "../domain/types/Gender";
 import { ProfilePurchase } from "../domain/types/ProfilePurchase";
+import { StatusClient } from "../domain/types/StatusClient";
 import { StatusPayment } from "../domain/types/StatusPayment";
 import { TypePhone } from "../domain/types/TypePhone";
 import { AddressDTO } from "./AddressDTO";
@@ -13,6 +14,7 @@ export interface ClientDTO {
     }[]// Alterado de uma tupla para um array
 
     profilePurchase: ProfilePurchase;
+    statusClient: StatusClient;
     name: string | "";
     dateOfBirth: string | "";
     email: string | "";

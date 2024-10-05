@@ -66,6 +66,7 @@ export class Facade implements IFacade{
             const entities = await dao.findMany(this.entity)
             return entities
         } catch(e){
+            console.log(e)
             return {
                 error: e
             }

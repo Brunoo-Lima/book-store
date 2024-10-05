@@ -3,11 +3,13 @@ import { Request, Response } from "express";
 import { ClientDTO } from "../../Model/DTO/ClientDTO"
 import { FactoryClient } from "../../Model/domain/Client";
 import { Facade } from "../Facade/Facade";
+import { StatusClient } from "../../Model/domain/types/StatusClient";
 
 export class CreateClientController {
     async handle(req: Request, res: Response) {
         try {
             const clientDTO = req.body as ClientDTO
+            clientDTO.statusClient = StatusClient.ACTIVATE
             if (!clientDTO) return res.json(
                 {
                     error: "Error, Data not sent !"

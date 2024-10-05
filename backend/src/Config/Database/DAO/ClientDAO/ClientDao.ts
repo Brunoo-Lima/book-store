@@ -10,6 +10,7 @@ import { randomUUID } from "crypto";
 import { hashSync } from "bcrypt";
 import { Gender } from "../../../../Model/domain/types/Gender";
 import { TypeResidence } from "../../../../Model/domain/types/TypeResidence";
+import { StatusClient } from "../../../../Model/domain/types/StatusClient";
 export class ClientDao extends DAO {
     public async create(client: Client) {
         return await prisma.$transaction(async (prisma) => {
@@ -94,15 +95,25 @@ export class ClientDao extends DAO {
         const filter: any = {};
 
         // Aplicação dos filtros dinâmicos
-        if (client.name) filter.cli_name = client.name;
-        if (client.cpf && client.cpf.code) filter.cli_cpf = client.cpf.code;
-        if (client.dateOfBirth) filter.cli_dateOfBirth = client.dateOfBirth;
-        if (client.gender && client.gender !== Gender.NULL) filter.cli_gender = client.gender;
-        if (client.statusClient) filter.cli_status = client.statusClient;
+        if (client.name) filter.cli_name = {
+            contains: client.name
+        };
+        if (client.cpf && client.cpf.code) filter.cli_cpf = {
+            contains: client.cpf.code
+        };
+        if (client.dateOfBirth) filter.cli_dateOfBirth = {
+            equals: client.dateOfBirth
+        };
+        if (client.gender && client.gender !== Gender.NULL) filter.cli_gender = {
+            equals: client.gender
+        };
+        if (client.statusClient && client.statusClient !== StatusClient.NULL) filter.cli_status = {
+            equals: client.statusClient
+        };
 
         // Se o cliente tiver telefones, adiciona filtro para telefones
         if (client.phone && client.phone.length > 0) {
-            filter.phones = {
+            filter.cli_phone = {
                 some: {
                     pho_number: { in: client.phone.map(phone => phone.number) },
                     pho_ddd: { in: client.phone.map(phone => phone.ddd) },
@@ -112,33 +123,32 @@ export class ClientDao extends DAO {
 
         // Se o cliente tiver endereços, adiciona filtro para endereços
         if (client.addresses && client.addresses.length > 0) {
-            filter.addresses = {
-                some: {
-                    add_streetName: { in: client.addresses.map(address => address.streetName) },
-                    add_publicPlace: { in: client.addresses.map(address => address.publicPlace) },
-                    add_number: { in: client.addresses.map(address => address.number) },
-                    add_cep: { in: client.addresses.map(address => address.cep) },
-                    add_neighborhood: { in: client.addresses.map(address => address.neighborhood) },
-                    add_city: { in: client.addresses.map(address => address.city) },
-                    add_state: { in: client.addresses.map(address => address.state) },
-                    add_compostName: { in: client.addresses.map(address => address.compostName) },
-                    add_typeResidence: { in: client.addresses.map(address => address.typeResidence) },
-                    add_isBilling: { in: client.addresses.map(address => address.change) },
-                    add_isDelivery: { in: client.addresses.map(address => address.delivery) },
-                },
+            filter.cli_address = {
+                some: client.addresses.map(address => ({
+                    add_name: { contains: address.nameAddress },
+                    add_streetName: { contains: address.streetName },
+                    add_publicPlace: { contains: address.publicPlace },
+                    add_number: { contains: address.number },
+                    add_cep: { contains: address.cep },
+                    add_neighborhood: { contains: address.neighborhood },
+                    add_city: { contains: address.city },
+                    add_state: { contains: address.state },
+                    add_compostName: { contains: address.compostName },
+                    add_typeResidence: { equals: address.typeResidence },
+                    add_isBilling: { equals: address.change },
+                    add_isDelivery: { equals: address.delivery }
+                }))[0]
             };
         }
 
         // Se o cliente tiver cartões de crédito, adiciona filtro para cartões
         if (client.creditCart && client.creditCart.length > 0) {
-            filter.creditCart = {
-                some: {
-                    cre_number_cart: { in: client.creditCart.map(card => card.number) },
-                },
+            filter.cli_creditCards = {
+                some: client.creditCart.map(card => ({
+                    cre_number_cart: { contains: card.number }
+                }))
             };
         }
-
-        console.log(filter);
 
         // Realiza a consulta com base nos filtros dinâmicos
         return await prisma.client.findMany({
@@ -162,5 +172,6 @@ export class ClientDao extends DAO {
             },
         });
     }
+
 }
 
