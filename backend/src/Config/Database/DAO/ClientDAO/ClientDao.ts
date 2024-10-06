@@ -52,31 +52,62 @@ export class ClientDao extends DAO {
     public async update(client: Client): Promise<object | null> {
         return await prisma.client.update({
             data: {
-                cli_password: {
-                    set: hashSync(client.password, 2)
-                },
+                cli_password: client.password ? { set: hashSync(client.password, 2)}: undefined,
+                cli_cpf: client.cpf.code ? { set: client.cpf.code} : undefined,
+                cli_dateOfBirth: client.dateOfBirth ? { set: client.dateOfBirth }: undefined,
+                cli_email: client.email ? { set: client.email } : undefined,
+                cli_gender: client.gender ? { set: client.gender as string } : undefined,
+                cli_name: client.name ? { set: client.name } : undefined,
+                cli_phone: client.phone ? {
+                    updateMany: client.phone.map((phon) => ({ // Relacionamentos many to many, tem que ser updateMany, mesmo atualizando 1 dado só
+                        where: { pho_id: phon.id }, // Certifique-se de passar o ID do telefone correto
+                        data: {
+                            pho_ddd: phon.ddd,
+                            pho_number: phon.number,
+                            pho_numberCombine: `(${phon.ddd} ${phon.number})`
+                        }
+                    }))
+                } : undefined,
+                cli_profilePurchase: client.profilePurchase ? { set: client.profilePurchase as string } : undefined,
+                cli_ranking: client.ranking ? { set: client.ranking } : undefined,
+                cli_score: client.rfmScore ? { set: client.rfmScore } : undefined,
+                cli_status: client.statusClient ? { set: client.statusClient as string } : undefined,
                 cli_address: {
                     updateMany: client.addresses.map((address) => ({
                         where: { add_id: address.id }, // Certifique-se de que o `add_id` está correto
                         data: {
-                            add_name: { set: address.nameAddress },
-                            add_streetName: { set: address.streetName },
-                            add_publicPlace: { set: address.publicPlace },
-                            add_number: { set: address.number },
-                            add_cep: { set: address.cep },
-                            add_neighborhood: { set: address.neighborhood },
-                            add_city: { set: address.city },
-                            add_state: { set: address.state },
-                            add_compostName: { set: address.compostName },
-                            add_typeResidence: { set: address.typeResidence as string},
-                            add_isBilling: { set: address.change },
-                            add_isDelivery: { set: address.delivery }
+                            add_name: address.nameAddress ? { set: address.nameAddress } : undefined,
+                            add_streetName: address.streetName ?  { set: address.streetName } : undefined,
+                            add_publicPlace: address.publicPlace ? { set: address.publicPlace } : undefined,
+                            add_number: address.number ? { set: address.number } : undefined,
+                            add_cep: address.cep ? { set: address.cep } : undefined,
+                            add_neighborhood: address.neighborhood ?{ set: address.neighborhood } : undefined,
+                            add_city: address.city ?{ set: address.city } : undefined,
+                            add_state: address.state ?{ set: address.state } : undefined,
+                            add_compostName: address.compostName ?{ set: address.compostName } : undefined,
+                            add_typeResidence: address.typeResidence ?{ set: address.typeResidence as string} : undefined,
+                            add_isBilling: address.change ?{ set: address.change } : undefined,
+                            add_isDelivery: address.delivery ?{ set: address.delivery } : undefined
                         }
                     }))
-                }
+                },
+                cli_creditCards: client.creditCart && client.creditCart.length !== 0? {
+                    update: {
+                        where: {
+                            cre_id: client.creditCart[0].id
+                        },
+                        data: {
+                            cre_cvv: client.creditCart ? client.creditCart[0].cvv : undefined,
+                            cre_flag: client.creditCart ?client.creditCart[0].flag as string : undefined,
+                            cre_dateMaturity: client.creditCart ?client.creditCart[0].dateValid : undefined,
+                            cre_name: client.creditCart ?client.creditCart[0].namePrinted : undefined,
+                            cre_number_cart: client.creditCart ?client.creditCart[0].number : undefined,
+                        }
+                    }
+                }: undefined
             },
             where: {
-                cli_cpf: client.cpf.code
+                cli_id: client.id
             }
         });
     }
@@ -113,6 +144,11 @@ export class ClientDao extends DAO {
                     {
                         cli_cpf: {
                             equals: client.cpf.code
+                        }
+                    },
+                    {
+                        cli_id: {
+                            equals: client.id
                         }
                     }
                 ]

@@ -10,15 +10,21 @@ import { compareSync } from 'bcrypt';
 export class Authentication {
     async login(req: Request, res: Response){
         try{
-            const { email, password } = req.body
-            if(!email || !password){
+            const { email, password, confirmPassword } = req.body
+            if(!email || !password || password !== confirmPassword){
                 return res.status(401).json({
                     error: "E-mail and Password should be sent or password do not equals !"
                 })
             }
-            const user = new User(email, password, password)
+
+            const user = new User(email, password, confirmPassword)
             const facade = new Facade(user)
             const userExist = await facade.find() as PrismaUser
+
+            if(!userExist) return res.json({
+                error: 'User not found in database !'
+            })
+            
             const comparePassword = compareSync(password, userExist.use_password)
 
             if(!comparePassword){
@@ -26,10 +32,6 @@ export class Authentication {
                     error: 'E-mail or password is incorrect !'
                 })
             }
-
-            if(!userExist) return res.json({
-                error: 'User not found in database !'
-            })
 
             const secret = process.env.TOKEN_SECRET as string
             const token = jwt.sign({

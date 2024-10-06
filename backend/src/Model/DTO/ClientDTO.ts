@@ -1,3 +1,4 @@
+import { UUID } from "crypto";
 import { Flags } from "../domain/types/Flags";
 import { Gender } from "../domain/types/Gender";
 import { ProfilePurchase } from "../domain/types/ProfilePurchase";
@@ -11,7 +12,7 @@ export interface ClientDTO {
         number: string | "",
         typePhone: TypePhone
     }[]// Alterado de uma tupla para um array
-
+    id: UUID;
     profilePurchase: ProfilePurchase;
     statusClient: StatusClient;
     name: string | "";

@@ -112,7 +112,8 @@ export class Facade implements IFacade{
         this.businessRoles.set(
             "UCLIENT",
             [
-                new ValidDataToUpdate()
+                new ValidDataToUpdate(),
+                new ValidAddresses()
             ]
         )
         this.businessRoles.set(
