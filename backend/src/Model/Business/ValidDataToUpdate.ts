@@ -1,22 +1,21 @@
 import { IStrategy } from "../../interfaces/IStrategy";
 import { Client } from "../domain/Client";
-import { ValidAddresses } from "./ValidAddresses";
+import { ValidAddressToUpdate } from "./ValidAddressToUpdate";
 import { ValidPassword } from "./ValidPassword";
-
 export class ValidDataToUpdate implements IStrategy {
-    async process(client: Client) {
+    async process(client: Client): Promise<string | object | undefined>{
         try {
-            if(client.addresses.length > 0){
-                const validAddress = new ValidAddresses().process(client)
-                if("error" in validAddress){
-                    return (await validAddress).error
-                }
-            }
-
             if (client.password) {
                 const verifyPassword = new ValidPassword().process(client)
                 if ("error" in verifyPassword) {
-                    return verifyPassword.error
+                    return verifyPassword.error as object
+                }
+            }
+            if(client.addresses.length > 0){
+                const verifyAddress =  await new ValidAddressToUpdate().process(client)
+
+                if (verifyAddress.error) {
+                    return verifyAddress
                 }
             }
             return {

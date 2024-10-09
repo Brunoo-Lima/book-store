@@ -17,7 +17,7 @@ export class ValidDataClient implements IStrategy {
                 if(client.creditCart === null) continue;
             }
 
-            if(!client[keyClient]){
+            if(!client[keyClient] && client[keyClient] !== 0){
                 return {
                     error: `The field ${keyClient} is required and was not provided. You send: ${client[keyClient]}`
                 };

@@ -206,8 +206,8 @@ export abstract class FactoryClient {
             new CPF(clientDTO.cpf), // Assumindo que CPF tem uma classe própria
             clientDTO.statusClient, // Você pode ajustar isso conforme sua lógica
             clientDTO.gender as Gender,
-            -1, // Aqui você pode calcular ou ajustar a pontuação RFM (NÃO PODE SER 0)
-            -1,
+            0, // Aqui você pode calcular ou ajustar a pontuação RFM (NÃO PODE SER 0)
+            0,
             addresses,
             creditCart
         );
