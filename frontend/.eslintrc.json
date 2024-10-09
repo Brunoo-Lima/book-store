@@ -1,0 +1,4 @@
+{
+  "extends": "next/core-web-vitals",
+  "@typescript-eslint/no-non-null-assertion": "off"
+}
