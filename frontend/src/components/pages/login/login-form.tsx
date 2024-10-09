@@ -3,6 +3,8 @@ import { useAuth } from '../../../hooks/useAuth';
 import { ILoginForm, LoginSchema } from '../../../validations/login-schema';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { toast } from 'react-toastify';
+import { useState } from 'react';
+import handleError from '@/utilities/handle-toast';
 
 interface ILoginProps {
   create: () => void;
@@ -22,7 +24,7 @@ export default function LoginForm({ create }: ILoginProps) {
     try {
       await login(form.email, form.password);
     } catch (err: any) {
-      toast.warn('Usuário ou senha inválidos!');
+      handleError('Usuário ou senha inválidos!');
     }
   };
 

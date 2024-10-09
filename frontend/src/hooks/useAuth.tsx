@@ -2,7 +2,6 @@
 'use client';
 
 import { loginService } from '@/services/login';
-import handleError from '@/utilities/handle-toast';
 import { redirect, usePathname, useRouter } from 'next/navigation';
 import {
   createContext,
@@ -26,8 +25,10 @@ export interface AuthToken {
 interface IAuthProvider {
   user: IUser;
   setUser: React.Dispatch<React.SetStateAction<IUser>>;
-  login: (user: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<void>;
   logout: () => void;
+  loading: boolean;
+  isAuthenticated: boolean;
 }
 
 interface ChildrenProps {
@@ -51,19 +52,18 @@ const AuthProvider = ({ children }: ChildrenProps) => {
         try {
           setAuthToken({ token: storageToken });
 
-          const data = await loginService(JSON.parse(storageToken));
-
-          setUser({
-            id: data.user.id,
-            email: data.user.email,
-          });
+          // setUser({
+          //   id: data.user.id,
+          //   email: data.user.email,
+          // });
         } catch (err) {
           logout();
         }
-        // setLoading(false);
       } else {
         router.push('/');
       }
+
+      setLoading(false);
     };
 
     fetchUserData();
@@ -76,10 +76,17 @@ const AuthProvider = ({ children }: ChildrenProps) => {
     }
   }, [router]);
 
-  const login = async (user: string, password: string) => {
+  useEffect(() => {
+    if (!loading && !authToken.token && pathname !== '/') {
+      router.push('/');
+    }
+  }, [loading, authToken.token, pathname, router]);
+
+  const login = async (email: string, password: string) => {
+    setLoading(true);
     try {
       const { user: userData, token } = await loginService({
-        email: user,
+        email,
         password,
       });
 
@@ -92,31 +99,26 @@ const AuthProvider = ({ children }: ChildrenProps) => {
         });
 
         localStorage.setItem('@token:access', token);
-        router.push('/clientes');
-      } else {
-        toast.error('Usuário ou senha inválidos!');
       }
-    } catch (err) {
+
+      router.replace('/clientes');
+
+      // else {
+      //   toast.error('Usuário ou senha inválidos!');
+      // }
+    } catch (err: any) {
       toast.error('Erro ao tentar logar, verifique suas credenciais.');
     }
+
+    setLoading(false);
   };
 
   const logout = () => {
     setUser({} as IUser);
+    setAuthToken({} as AuthToken);
     localStorage.removeItem('@token:access');
-    localStorage.removeItem('@user:data');
     router.push('/');
   };
-
-  const isAuthenticated = !!user.id;
-
-  const publicRoutes = ['/'];
-
-  useEffect(() => {
-    if (!loading && !isAuthenticated && !publicRoutes.includes(pathname)) {
-      redirect('/');
-    }
-  }, [loading, isAuthenticated, pathname]);
 
   const authValues = useMemo(
     () => ({
@@ -124,10 +126,10 @@ const AuthProvider = ({ children }: ChildrenProps) => {
       setUser,
       login,
       logout,
-      isAuthenticated,
-      publicRoutes,
+      loading,
+      isAuthenticated: !!user.id,
     }),
-    [user]
+    [user, loading]
   );
 
   // if (loading) {

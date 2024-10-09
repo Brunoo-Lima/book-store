@@ -1,6 +1,6 @@
 import { IUser } from '@/@types/user';
 import api from './api';
-import { toast } from 'react-toastify';
+import axios from 'axios';
 
 interface IUserData {
   id: string;
@@ -27,15 +27,21 @@ export const loginService = async ({
     }
 
     return data;
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
 
-    return {
-      token: '',
-      user: {
-        id: '',
-        email: '',
-      },
-    } as ILogin;
+      if (status === 400) {
+        throw new Error('Usuário ou senha inválidos');
+      } else if (status === 500) {
+        throw new Error('Erro interno do servidor');
+      }
+      const message =
+        error.response?.data?.message ||
+        'Erro desconhecido, Por favor, tente novamente.';
+
+      throw new Error(message);
+    }
+    throw new Error('Erro ao realizar login');
   }
 };
