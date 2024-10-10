@@ -2,7 +2,7 @@
 'use client';
 
 import { loginService } from '@/services/login';
-import { redirect, usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   createContext,
   ReactNode,
