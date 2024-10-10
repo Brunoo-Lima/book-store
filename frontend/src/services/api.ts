@@ -13,11 +13,7 @@ api.interceptors.request.use(
       const accessToken =
         sessionStorage.getItem('@token:access') ||
         localStorage.getItem('@token:access');
-      if (
-        accessToken &&
-        !config.url?.includes('auth/local') &&
-        !config.url?.includes('auth/reset-password')
-      ) {
+      if (accessToken && !config.url?.includes('login/token')) {
         config.headers!.Authorization = `Bearer ${accessToken}`;
       }
     }

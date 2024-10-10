@@ -13,18 +13,11 @@ import {
 } from 'react';
 import { toast } from 'react-toastify';
 
-interface IUser {
-  id: string;
-  email: string;
-}
-
 export interface AuthToken {
   token: string;
 }
 
 interface IAuthProvider {
-  user: IUser;
-  setUser: React.Dispatch<React.SetStateAction<IUser>>;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   loading: boolean;
@@ -38,7 +31,6 @@ interface ChildrenProps {
 export const AuthContext = createContext({} as IAuthProvider);
 
 const AuthProvider = ({ children }: ChildrenProps) => {
-  const [user, setUser] = useState<IUser>({} as IUser);
   const [authToken, setAuthToken] = useState<AuthToken>({} as AuthToken);
   const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
@@ -49,16 +41,7 @@ const AuthProvider = ({ children }: ChildrenProps) => {
       const storageToken = localStorage.getItem('@token:access');
 
       if (storageToken) {
-        try {
-          setAuthToken({ token: storageToken });
-
-          // setUser({
-          //   id: data.user.id,
-          //   email: data.user.email,
-          // });
-        } catch (err) {
-          logout();
-        }
+        setAuthToken({ token: storageToken });
       } else {
         router.push('/');
       }
@@ -70,11 +53,10 @@ const AuthProvider = ({ children }: ChildrenProps) => {
   }, []);
 
   useEffect(() => {
-    const accessToken = localStorage.getItem('@token:access');
-    if (accessToken && pathname === '/') {
+    if (authToken.token && pathname === '/') {
       router.replace('/clientes');
     }
-  }, [router]);
+  }, [authToken.token, pathname, router]);
 
   useEffect(() => {
     if (!loading && !authToken.token && pathname !== '/') {
@@ -85,36 +67,24 @@ const AuthProvider = ({ children }: ChildrenProps) => {
   const login = async (email: string, password: string) => {
     setLoading(true);
     try {
-      const { user: userData, token } = await loginService({
+      const { token } = await loginService({
         email,
         password,
       });
 
-      if (userData && token) {
+      if (token) {
         setAuthToken({ token });
-
-        setUser({
-          id: userData.id,
-          email: userData.email,
-        });
-
         localStorage.setItem('@token:access', token);
+        router.replace('/clientes');
       }
-
-      router.replace('/clientes');
-
-      // else {
-      //   toast.error('Usuário ou senha inválidos!');
-      // }
     } catch (err: any) {
       toast.error('Erro ao tentar logar, verifique suas credenciais.');
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   const logout = () => {
-    setUser({} as IUser);
     setAuthToken({} as AuthToken);
     localStorage.removeItem('@token:access');
     router.push('/');
@@ -122,19 +92,17 @@ const AuthProvider = ({ children }: ChildrenProps) => {
 
   const authValues = useMemo(
     () => ({
-      user,
-      setUser,
       login,
       logout,
       loading,
-      isAuthenticated: !!user.id,
+      isAuthenticated: !!authToken.token,
     }),
-    [user, loading]
+    [loading, authToken.token]
   );
 
-  // if (loading) {
-  //   return null;
-  // }
+  if (loading) {
+    return null;
+  }
 
   return (
     <AuthContext.Provider value={authValues}>{children}</AuthContext.Provider>

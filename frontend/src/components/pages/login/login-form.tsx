@@ -34,7 +34,7 @@ export default function LoginForm({ create }: ILoginProps) {
       className="flex flex-col w-[300px] space-y-5"
     >
       <div className="flex flex-col">
-        <label htmlFor="user">Email</label>
+        <label htmlFor="email">Email</label>
         <input
           className="text-black text-base rounded-md h-8 ps-2 pe-2 outline-none border-[1.5px] border-transparent focus-visible:border-blue-500"
           type="text"
@@ -76,7 +76,7 @@ export default function LoginForm({ create }: ILoginProps) {
         disabled={isSubmitting}
         className="bg-blue-500 text-white h-10 rounded-md hover:bg-blue-700/80 transition duration-300"
       >
-        Entrar
+        {isSubmitting ? 'Carregando...' : 'Entrar'}
       </button>
     </form>
   );
