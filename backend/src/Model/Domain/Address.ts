@@ -18,6 +18,7 @@ export interface AddressProps {
 }
 
 export class Address extends EntityDomain {
+
     constructor(
         private addressProps: AddressProps
     ) {

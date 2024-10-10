@@ -1,60 +1,91 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable prefer-const */
+
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { Client } from "../../../../Model/domain/Client";
 import { EntityDomain } from "../../../../Model/domain/EntityDomain";
 import { DAO } from "../DAO";
 import { prisma } from "../../prisma/prismaClient";
-import { randomUUID } from "crypto";
 import { hashSync } from "bcrypt";
 import { Gender } from "../../../../Model/domain/types/Gender";
 import { StatusClient } from "../../../../Model/domain/types/StatusClient";
 export class ClientDao extends DAO {
     public async create(client: Client) {
-        return await prisma.$transaction(async (prisma) => {
-            // Inserir o cliente e obter o ID gerado
-            const insertedClient = await prisma.$executeRaw`
-                INSERT INTO Client (cli_id, cli_name, cli_dateOfBirth, cli_cpf, cli_status, cli_gender, cli_password, cli_email, cli_score, cli_profilePurchase, cli_ranking, created_at, updated_at)
-                VALUES (${client.id}, ${client.name}, ${client.dateOfBirth}, ${client.cpf.code}, ${client.statusClient}, ${client.gender}, ${hashSync(client.password, 3)}, ${client.email}, 0, ${client.profilePurchase}, ${client.ranking}, ${client.createdAt}, ${client.updatedAt})
-            `;
+        return await prisma.client.create({
+            data: {
+                cli_id: client.id,
+                cli_name: client.name,
+                cli_dateOfBirth: client.dateOfBirth,
+                cli_cpf: client.cpf.code,
+                cli_status: client.statusClient as string,
+                cli_gender: client.gender as string,
+                cli_password: hashSync(client.password, 3),
+                cli_email: client.email,
+                cli_score: 0,
+                cli_profilePurchase: client.profilePurchase as string,
+                cli_ranking: client.ranking,
+                created_at: new Date(client.createdAt),
+                updated_at: new Date(client.updatedAt),
 
-            // Inserir telefones
-            for (const phon of client.phone) {
-                await prisma.$executeRaw`
-                INSERT INTO Phone (pho_id, pho_ddd, pho_number, pho_numberCombine, pho_type_phone, fk_pho_cli_id)
-                VALUES (${randomUUID()}, ${phon.ddd}, ${phon.number}, ${`(${phon.ddd}) ${phon.number}`}, ${phon.typePhone}, ${client.id})
-            `;
-            }
+                // Inserir telefones relacionados
+                cli_phone: {
+                    createMany: {
+                        data: client.phone.map(phon => ({
+                            pho_id: phon.id,
+                            pho_ddd: phon.ddd,
+                            pho_number: phon.number,
+                            pho_numberCombine: `(${phon.ddd}) ${phon.number}`,
+                            pho_type_phone: phon.typePhone as string
+                        }))
+                    }
+                },
 
-            // Inserir endereços
-            for (const address of client.addresses) {
-                await prisma.$executeRaw`
-                INSERT INTO Address (add_id, add_name, add_streetName, add_publicPlace, add_number, add_cep, add_neighborhood, add_compostName, add_typeResidence, add_city, add_state, add_isBilling, add_isDelivery, fk_add_cli_id)
-                VALUES (${randomUUID()}, ${address.nameAddress}, ${address.streetName}, ${address.publicPlace}, ${address.number}, ${address.cep}, ${address.neighborhood}, ${address.compostName}, ${address.typeResidence}, ${address.city}, ${address.state}, ${address.change}, ${address.delivery}, ${client.id})
-            `;
-            }
+                // Inserir endereços relacionados
+                cli_address: {
+                    createMany: {
+                        data: client.addresses.map(address => ({
+                            add_id: address.id,
+                            add_name: address.nameAddress,
+                            add_streetName: address.streetName,
+                            add_publicPlace: address.publicPlace,
+                            add_number: address.number,
+                            add_cep: address.cep,
+                            add_neighborhood: address.neighborhood,
+                            add_compostName: address.compostName,
+                            add_typeResidence: address.typeResidence as string,
+                            add_city: address.city,
+                            add_state: address.state,
+                            add_isBilling: address.change as boolean,
+                            add_isDelivery: address.delivery as boolean
+                        }))
+                    }
+                },
 
-            // Inserir cartões de crédito
-            if (client.creditCart) {
-                for (const card of client.creditCart) {
-                    await prisma.$executeRaw`
-                    INSERT INTO CreditCard (cre_id, cre_cvv, cre_dateMaturity, cre_name, cre_number_cart, cre_flag, cre_preference, fk_cre_cli_id)
-                    VALUES (${randomUUID()}, ${card.cvv}, ${card.dateValid}, ${card.namePrinted}, ${card.number}, ${card.flag}, ${card.preference}, ${client.id})
-                `;
-                }
+                // Inserir cartões de crédito relacionados (se existirem)
+                cli_creditCards: client.creditCart ? {
+                    create: client.creditCart.map(card => ({
+                        cre_id: card.id,
+                        cre_cvv: card.cvv,
+                        cre_dateMaturity: card.dateValid,
+                        cre_name: card.namePrinted,
+                        cre_number_cart: card.number,
+                        cre_flag: card.flag as string,
+                        cre_preference: card.preference
+                    }))
+                } : undefined
             }
-            return insertedClient
         });
+
     }
+
 
 
     public async update(client: Client): Promise<object | null> {
         return await prisma.client.update({
             data: {
-                cli_password: client.password ? { set: hashSync(client.password, 2)}: undefined,
-                cli_cpf: client.cpf.code ? { set: client.cpf.code} : undefined,
-                cli_dateOfBirth: client.dateOfBirth ? { set: client.dateOfBirth }: undefined,
+                cli_password: client.password ? { set: hashSync(client.password, 2) } : undefined,
+                cli_cpf: client.cpf.code ? { set: client.cpf.code } : undefined,
+                cli_dateOfBirth: client.dateOfBirth ? { set: client.dateOfBirth } : undefined,
                 cli_email: client.email ? { set: client.email } : undefined,
                 cli_gender: client.gender ? { set: client.gender as string } : undefined,
                 cli_name: client.name ? { set: client.name } : undefined,
@@ -77,34 +108,35 @@ export class ClientDao extends DAO {
                         where: { add_id: address.id }, // Certifique-se de que o `add_id` está correto
                         data: {
                             add_name: address.nameAddress ? { set: address.nameAddress } : undefined,
-                            add_streetName: address.streetName ?  { set: address.streetName } : undefined,
+                            add_streetName: address.streetName ? { set: address.streetName } : undefined,
                             add_publicPlace: address.publicPlace ? { set: address.publicPlace } : undefined,
                             add_number: address.number ? { set: address.number } : undefined,
                             add_cep: address.cep ? { set: address.cep } : undefined,
-                            add_neighborhood: address.neighborhood ?{ set: address.neighborhood } : undefined,
-                            add_city: address.city ?{ set: address.city } : undefined,
-                            add_state: address.state ?{ set: address.state } : undefined,
-                            add_compostName: address.compostName ?{ set: address.compostName } : undefined,
-                            add_typeResidence: address.typeResidence ?{ set: address.typeResidence as string} : undefined,
-                            add_isBilling: address.change ?{ set: address.change } : undefined,
-                            add_isDelivery: address.delivery ?{ set: address.delivery } : undefined
+                            add_neighborhood: address.neighborhood ? { set: address.neighborhood } : undefined,
+                            add_city: address.city ? { set: address.city } : undefined,
+                            add_state: address.state ? { set: address.state } : undefined,
+                            add_compostName: address.compostName ? { set: address.compostName } : undefined,
+                            add_typeResidence: address.typeResidence ? { set: address.typeResidence as string } : undefined,
+                            add_isBilling: address.change ? { set: address.change } : undefined,
+                            add_isDelivery: address.delivery ? { set: address.delivery } : undefined
                         }
                     }))
                 },
-                cli_creditCards: client.creditCart && client.creditCart.length !== 0? {
+                cli_creditCards: client.creditCart && client.creditCart.length !== 0 ? {
                     update: {
                         where: {
                             cre_id: client.creditCart[0].id
                         },
                         data: {
                             cre_cvv: client.creditCart ? client.creditCart[0].cvv : undefined,
-                            cre_flag: client.creditCart ?client.creditCart[0].flag as string : undefined,
-                            cre_dateMaturity: client.creditCart ?client.creditCart[0].dateValid : undefined,
-                            cre_name: client.creditCart ?client.creditCart[0].namePrinted : undefined,
-                            cre_number_cart: client.creditCart ?client.creditCart[0].number : undefined,
+                            cre_flag: client.creditCart ? client.creditCart[0].flag as string : undefined,
+                            cre_dateMaturity: client.creditCart ? client.creditCart[0].dateValid : undefined,
+                            cre_name: client.creditCart ? client.creditCart[0].namePrinted : undefined,
+                            cre_number_cart: client.creditCart ? client.creditCart[0].number : undefined,
                         }
                     }
-                }: undefined
+                } : undefined,
+                updated_at: new Date().toISOString()
             },
             where: {
                 cli_id: client.id

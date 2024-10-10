@@ -1,12 +1,12 @@
 
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { ClientDTO } from "../../Model/DTO/ClientDTO"
 import { FactoryClient } from "../../Model/domain/Client";
 import { Facade } from "../Facade/Facade";
 import { StatusClient } from "../../Model/domain/types/StatusClient";
 
 export class CreateClientController {
-    async handle(req: Request, res: Response) {
+    async handle(req: Request, res: Response, next: NextFunction) {
         try {
             const clientDTO = req.body as ClientDTO
             clientDTO.statusClient = StatusClient.ACTIVATE
@@ -18,16 +18,15 @@ export class CreateClientController {
             const client = FactoryClient.createClient(clientDTO)
             const facade = new Facade(client)
 
-            const clientCreated = await facade.create() as number | {"error": string}
+            const clientCreated = await facade.create() as object
 
-            if (typeof(clientCreated) !== "number") {
+            if ("error" in clientCreated) {
                 return res.json({
-                    error: clientCreated.error
+                    error: `Error ${clientCreated.error}`
                 })
             }
-            return res.json({
-                success: "Client created !",
-            })
+            req.body.client = clientCreated
+            return next()
 
         } catch (error) {
             return res.status(403).json({

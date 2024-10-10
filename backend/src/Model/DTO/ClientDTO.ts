@@ -24,6 +24,7 @@ export interface ClientDTO {
     confirmPassword: string | "";
     addresses: AddressDTO[] | []
     creditCart: {
+        id: string;
         namePrinted: string,
         number: string,
         cvv: string,

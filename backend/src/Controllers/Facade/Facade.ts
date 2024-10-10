@@ -58,7 +58,6 @@ export class Facade implements IFacade{
             const entityResearched = await dao.update(this.entity)
             return entityResearched
         } catch(e){
-            console.log(e)
             return {
                 error: e
             }
@@ -113,7 +112,6 @@ export class Facade implements IFacade{
             "UCLIENT",
             [
                 new ValidDataToUpdate(),
-                new ValidAddresses()
             ]
         )
         this.businessRoles.set(
