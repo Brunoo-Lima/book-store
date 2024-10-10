@@ -20,18 +20,17 @@ export const getProfile = (req: ICustomRequest, res: Response, next: NextFunctio
         const user = jwt.verify(token, secret) as ICustomJwt;
 
         // Verifying if the expected properties exist in the payload
-        if (!user || !user.user_email || !user.user_password) return {
+        if (!user || !user.user_email || !user.user_password || !user.user_id) return res.json({
             error: 'Invalid token payload'
-        }
+        })
 
         if (!user) {
             return res.status(401).json({
                 error: 'That user does not exist!',
             });
         }
-
         req.body.user = user;
-
+        
         return next();
     } catch (e) {
         return res.status(401).json({

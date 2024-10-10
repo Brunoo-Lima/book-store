@@ -9,6 +9,7 @@ import { ValidPassword } from "../../Model/Business/ValidPassword";
 import { ValidAddresses } from "../../Model/Business/ValidAddresses";
 import { ValidDataClient } from "../../Model/Business/ValidDataClient";
 import { ValidDataToUpdate } from "../../Model/Business/ValidDataToUpdate";
+import { ValidCreditCard } from "../../Model/Business/ValidCreditCard";
 
 export class Facade implements IFacade{
     private businessRoles:  Map<string, IStrategy[]>
@@ -104,6 +105,7 @@ export class Facade implements IFacade{
             [
                 new EntityExistInDB(),
                 new ValidPassword(),
+                new ValidCreditCard(),
                 new ValidAddresses(),
                 new ValidDataClient()
             ]

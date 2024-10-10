@@ -25,6 +25,7 @@ export class UserController{
 
             const secret = process.env.TOKEN_SECRET as string
             const token = jwt.sign({
+                user_id: userDatabase.use_id,
                 user_email: userDatabase.use_email,
                 user_password: userDatabase.use_password
             }, secret, {expiresIn: '1d'})

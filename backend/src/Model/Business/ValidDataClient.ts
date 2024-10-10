@@ -1,6 +1,5 @@
 import { IStrategy } from "../../interfaces/IStrategy";
 import { Client } from "../domain/Client";
-import { Flags } from "../domain/types/Flags";
 import { StatusClient } from "../domain/types/StatusClient";
 
 export class ValidDataClient implements IStrategy {
@@ -48,7 +47,7 @@ export class ValidDataClient implements IStrategy {
         const creditCart = client.creditCart;
         if (creditCart && creditCart.length > 0) {
             for (const card of creditCart) {
-                if (!card.namePrinted || !card.number || !card.cvv || !card.dateValid || card.flag === Flags.NULL) {
+                if (!card.namePrinted || !card.number || !card.cvv || !card.dateValid) {
                     return {
                         error: "Credit card fields cannot be empty or null!"
                     };

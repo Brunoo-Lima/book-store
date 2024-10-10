@@ -1,6 +1,7 @@
 import { IStrategy } from "../../interfaces/IStrategy";
 import { Client } from "../domain/Client";
 import { ValidAddressToUpdate } from "./ValidAddressToUpdate";
+import { ValidCreditCard } from "./ValidCreditCard";
 import { ValidPassword } from "./ValidPassword";
 export class ValidDataToUpdate implements IStrategy {
     async process(client: Client): Promise<string | object | undefined>{
@@ -16,6 +17,12 @@ export class ValidDataToUpdate implements IStrategy {
 
                 if (verifyAddress.error) {
                     return verifyAddress
+                }
+            }
+            if(client.creditCart && client.creditCart.length > 0){
+                const verifyCreditCard = new ValidCreditCard().process(client)
+                if("error" in verifyCreditCard){
+                    return verifyCreditCard
                 }
             }
             return {

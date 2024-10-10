@@ -11,7 +11,7 @@ import { StatusClient } from "./types/StatusClient";
 import { ClientDTO } from "../DTO/ClientDTO";
 import { TypePhone } from "./types/TypePhone";
 import { TypeResidence } from "./types/TypeResidence";
-import { Flags } from "./types/Flags";
+import { getProfilePurchase } from "../../utils/getProfilePurchase";
 
 export class Client extends EntityDomain {
     constructor(
@@ -188,13 +188,14 @@ export abstract class FactoryClient {
                     _number: card.number,
                     _cvv: card.cvv,
                     _dateValid: card.dateValid,
-                    _flag: card.flag as Flags,
+                    _flag: card.flag.toUpperCase(),
                     _preference: card.preference
                 });
             })
             : [];
 
         // Criando o objeto Client com os dados mapeados
+        const profile = getProfilePurchase(0, 0)
         return new Client(
             phones,
             clientDTO.profilePurchase as ProfilePurchase,
@@ -206,8 +207,8 @@ export abstract class FactoryClient {
             new CPF(clientDTO.cpf), // Assumindo que CPF tem uma classe própria
             clientDTO.statusClient, // Você pode ajustar isso conforme sua lógica
             clientDTO.gender as Gender,
-            0, // Aqui você pode calcular ou ajustar a pontuação RFM (NÃO PODE SER 0)
-            0,
+            profile.score, // Aqui você pode calcular ou ajustar a pontuação RFM (NÃO PODE SER 0)
+            profile.ranking,
             addresses,
             creditCart
         );

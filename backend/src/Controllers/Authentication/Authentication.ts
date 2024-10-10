@@ -24,7 +24,7 @@ export class Authentication {
             if(!userExist) return res.json({
                 error: 'User not found in database !'
             })
-            
+
             const comparePassword = compareSync(password, userExist.use_password)
 
             if(!comparePassword){
@@ -34,7 +34,9 @@ export class Authentication {
             }
 
             const secret = process.env.TOKEN_SECRET as string
+            
             const token = jwt.sign({
+                user_id: userExist.use_id,
                 user_email: userExist.use_email,
                 user_password: userExist.use_password
             }, secret, {expiresIn: '1d'})
