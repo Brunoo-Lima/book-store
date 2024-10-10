@@ -55,7 +55,7 @@ export const clientsList = [
     creditCard: [
       {
         id: 1,
-        number: 77777777777,
+        numberCard: 77777777777,
         cvv: 125,
         nameCreditCard: 'Teste cartao',
         dateExpired: '12/32',
@@ -119,7 +119,7 @@ export const clientsList = [
     creditCard: [
       {
         id: 1,
-        number: 5555555555,
+        numberCard: 5555555555,
         cvv: 241,
         nameCreditCard: 'Teste cartao 1',
         dateExpired: '12/27',

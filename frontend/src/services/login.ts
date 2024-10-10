@@ -2,14 +2,8 @@ import { IUser } from '@/@types/user';
 import api from './api';
 import axios from 'axios';
 
-interface IUserData {
-  id: string;
-  email: string;
-}
-
 interface ILogin {
   token: string;
-  user: IUserData;
 }
 
 export const loginService = async ({
