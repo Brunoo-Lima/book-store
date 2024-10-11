@@ -62,8 +62,8 @@ export class ClientDao extends DAO {
                 },
 
                 // Inserir cartões de crédito relacionados (se existirem)
-                cli_creditCards: client.creditCart ? {
-                    create: client.creditCart.map(card => ({
+                cli_creditCards: client.creditCard ? {
+                    create: client.creditCard.map(card => ({
                         cre_id: card.id,
                         cre_cvv: card.cvv,
                         cre_dateMaturity: card.dateValid,
@@ -122,17 +122,17 @@ export class ClientDao extends DAO {
                         }
                     }))
                 },
-                cli_creditCards: client.creditCart && client.creditCart.length !== 0 ? {
+                cli_creditCards: client.creditCard && client.creditCard.length !== 0 ? {
                     update: {
                         where: {
-                            cre_id: client.creditCart[0].id
+                            cre_id: client.creditCard[0].id
                         },
                         data: {
-                            cre_cvv: client.creditCart ? client.creditCart[0].cvv : undefined,
-                            cre_flag: client.creditCart ? client.creditCart[0].flag as string : undefined,
-                            cre_dateMaturity: client.creditCart ? client.creditCart[0].dateValid : undefined,
-                            cre_name: client.creditCart ? client.creditCart[0].namePrinted : undefined,
-                            cre_number_cart: client.creditCart ? client.creditCart[0].number : undefined,
+                            cre_cvv: client.creditCard ? client.creditCard[0].cvv : undefined,
+                            cre_flag: client.creditCard ? client.creditCard[0].flag as string : undefined,
+                            cre_dateMaturity: client.creditCard ? client.creditCard[0].dateValid : undefined,
+                            cre_name: client.creditCard ? client.creditCard[0].namePrinted : undefined,
+                            cre_number_cart: client.creditCard ? client.creditCard[0].number : undefined,
                         }
                     }
                 } : undefined,
@@ -238,9 +238,9 @@ export class ClientDao extends DAO {
         }
 
         // Se o cliente tiver cartões de crédito, adiciona filtro para cartões
-        if (client.creditCart && client.creditCart.length > 0) {
+        if (client.creditCard && client.creditCard.length > 0) {
             filter.cli_creditCards = {
-                some: client.creditCart.map(card => ({
+                some: client.creditCard.map(card => ({
                     cre_number_cart: { contains: card.number }
                 }))
             };

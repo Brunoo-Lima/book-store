@@ -1,5 +1,5 @@
-export enum StatusPayment {
-    "PROCESSING" = "EM_PROCESSAMENTO",
+export enum Status{
+    "PROCESSING" = "EM PROCESSAMENTO",
     "DENY" = "APROVADO",
     "RECUSED" = "RECUSADO",
     "NULL" = -1

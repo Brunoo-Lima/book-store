@@ -9,7 +9,7 @@ export interface CreditCartProps {
     _preference: boolean
 }
 
-export class CreditCart extends EntityDomain{
+export class CreditCard extends EntityDomain{
     constructor(
         private creditCartProps: CreditCartProps
 

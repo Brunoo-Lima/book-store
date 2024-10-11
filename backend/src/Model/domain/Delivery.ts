@@ -1,27 +1,37 @@
-import { Client } from "./Client";
 import { EntityDomain } from "./EntityDomain";
+import { Status } from "./types/Status";
 
 export class Delivery extends EntityDomain{
     constructor(
-        private _client: Client,
-        private _date: Date
+        private _dateInitial: Date,
+        private _status: Status,
+        private _dateFinal: Date
 
     ){
         super()
     }
-    public get_client(): Client {
-        return this._client;
+    public get dateInitial(): Date {
+        return this._dateInitial;
     }
 
-    public set_client(_client: Client): void {
-        this._client = _client;
+    public set dateInitial(dateInitial: Date) {
+        this._dateInitial = dateInitial;
     }
 
-    public get_date(): Date {
-        return this._date;
+    public get status(): Status {
+        return this._status;
     }
 
-    public set_date(_date: Date): void {
-        this._date = _date;
+    public set status(status: Status) {
+        this._status = status;
     }
+
+    public get dateFinal(): Date {
+        return this._dateFinal;
+    }
+
+    public set dateFinal(dateFinal: Date) {
+        this._dateFinal = dateFinal;
+    }
+
 }

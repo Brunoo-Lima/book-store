@@ -123,6 +123,12 @@ export class Facade implements IFacade{
                 new ValidPassword()
             ]
         )
+        this.businessRoles.set(
+            "SALES",
+            [
+                new EntityExistInDB()
+            ]
+        )
 
     }
     private async getStrategies(key: string) {

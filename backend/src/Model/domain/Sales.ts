@@ -1,37 +1,56 @@
 import { Client } from "./Client";
+import { Delivery } from "./Delivery";
 import { EntityDomain } from "./EntityDomain";
 import { Item } from "./Item";
+import { Status } from "./types/Status";
 
 export class Sales extends EntityDomain {
     constructor(
         private _dateSale: Date,
         private _client: Client,
-        private _item: Item[]
+        private _status: Status,
+        private _item: Item[],
+        private _delivery: Delivery
 
     ){
         super()
     }
-    public get_dateSale(): Date {
+    public get dateSale(): Date {
         return this._dateSale;
     }
 
-    public set_dateSale(_dateSale: Date): void {
-        this._dateSale = _dateSale;
+    public set dateSale(dateSale: Date) {
+        this._dateSale = dateSale;
     }
 
-    public get_client(): Client {
+    public get client(): Client {
         return this._client;
     }
 
-    public set_client(_client: Client): void {
-        this._client = _client;
+    public set client(client: Client) {
+        this._client = client;
     }
 
-    public get_item(): Item[] {
+    public get item(): Item[] {
         return this._item;
     }
 
-    public set_item(_item: Item[]): void {
-        this._item = _item;
+    public set item(item: Item[]) {
+        this._item = item;
+    }
+
+    public get delivery(): Delivery {
+        return this._delivery;
+    }
+
+    public set delivery(delivery: Delivery) {
+        this._delivery = delivery;
+    }
+    public get status(): Status {
+        return this._status;
+    }
+
+    public set status(status: Status) {
+        this._status = status;
     }
 }

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/adjacent-overload-signatures */
 /* eslint-disable @typescript-eslint/no-extraneous-class */
 import { Address } from "./Address";
-import { CreditCart } from "./CreditCard";
+import { CreditCard } from "./CreditCard";
 import { CPF } from "./CPF";
 import { EntityDomain } from "./EntityDomain";
 import { Phone } from "./Phone";
@@ -28,7 +28,7 @@ export class Client extends EntityDomain {
         private _rfmScore: number, // Pontuação que atrela o perfil ao cliente
         private _ranking: number,
         private _addresses: Address[],
-        private _creditCart: CreditCart[] | null,
+        private _creditCard: CreditCard[] | null,
     ) {
         super();
     }
@@ -78,8 +78,8 @@ export class Client extends EntityDomain {
         return this._addresses;
     }
 
-    public get creditCart(): CreditCart[] | null {
-        return this._creditCart;
+    public get creditCard(): CreditCard[] | null {
+        return this._creditCard;
     }
 
     public get password(): string {
@@ -134,8 +134,8 @@ export class Client extends EntityDomain {
         this._addresses = addresses;
     }
 
-    public set creditCart(creditCart: CreditCart[] | null) {
-        this._creditCart = creditCart;
+    public set creditCard(creditCart: CreditCard[] | null) {
+        this._creditCard = creditCart;
     }
 
     public set password(password: string) {
@@ -181,9 +181,9 @@ export abstract class FactoryClient {
 
 
         // Mapeamento do cartão de crédito (se houver)
-        const creditCart = clientDTO.creditCart
-            ? clientDTO.creditCart.map(card => {
-                return new CreditCart({
+        const creditCard = clientDTO.creditCard
+            ? clientDTO.creditCard.map(card => {
+                return new CreditCard({
                     _namePrinted: card.namePrinted,
                     _number: card.number,
                     _cvv: card.cvv,
@@ -195,7 +195,7 @@ export abstract class FactoryClient {
             : [];
 
         // Criando o objeto Client com os dados mapeados
-        const profile = getProfilePurchase(0, 0)
+        const profile = getProfilePurchase(0, 0, 0)
         return new Client(
             phones,
             clientDTO.profilePurchase as ProfilePurchase,
@@ -210,7 +210,7 @@ export abstract class FactoryClient {
             profile.score, // Aqui você pode calcular ou ajustar a pontuação RFM (NÃO PODE SER 0)
             profile.ranking,
             addresses,
-            creditCart
+            creditCard
         );
     }
 }

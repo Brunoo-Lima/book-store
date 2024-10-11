@@ -22,7 +22,7 @@ export interface ClientDTO {
     password: string | "";
     confirmPassword: string | "";
     addresses: AddressDTO[] | []
-    creditCart: {
+    creditCard: {
         id: string;
         namePrinted: string,
         number: string,

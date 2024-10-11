@@ -10,7 +10,7 @@ import { Phone } from "../Model/domain/Phone";
 import { CPF } from "../Model/domain/CPF";
 // import { ValidDataClient } from "../Model/Business/ValidDataClient";
 import { CreditCart } from "../Model/domain/CreditCard";
-import { StatusPayment } from "../Model/domain/types/StatusPayment";
+import { StatusPayment } from "../Model/domain/types/Status";
 import { Flags } from "../Model/domain/types/Flags";
 import { ValidPassword } from "../Model/Business/ValidPassword";
 

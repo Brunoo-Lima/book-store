@@ -19,7 +19,7 @@ export class ValidDataToUpdate implements IStrategy {
                     return verifyAddress
                 }
             }
-            if(client.creditCart && client.creditCart.length > 0){
+            if(client.creditCard && client.creditCard.length > 0){
                 const verifyCreditCard = new ValidCreditCard().process(client)
                 if("error" in verifyCreditCard){
                     return verifyCreditCard

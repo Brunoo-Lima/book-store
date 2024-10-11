@@ -36,23 +36,26 @@ model Client {
     cli_ranking         Int
     cli_creditCards     CreditCard[] // Relação 1:N com cartões de crédito
     cli_log             Log[]
+    cli_sales           Sale[]
     created_at          DateTime     @default(now())
     updated_at          DateTime     @updatedAt
 }
 
 model Phone {
-    pho_id            String @id @default(uuid())
-    pho_ddd           String @db.VarChar(3) // DDD do telefone
+    pho_id            String   @id @default(uuid())
+    pho_ddd           String   @db.VarChar(3) // DDD do telefone
     pho_number        String // Número do telefone
-    pho_numberCombine String @unique
+    pho_numberCombine String   @unique
     pho_type_phone    String // Tipo (celular, fixo, etc.)
-    pho_client        Client @relation(fields: [fk_pho_cli_id], references: [cli_id])
+    pho_client        Client   @relation(fields: [fk_pho_cli_id], references: [cli_id])
     fk_pho_cli_id     String
+    created_at        DateTime @default(now())
+    updated_at        DateTime @updatedAt
 }
 
 model Address {
-    add_id            String  @id @default(uuid())
-    add_name          String  @unique
+    add_id            String   @id @default(uuid())
+    add_name          String   @unique
     add_streetName    String // Nome da rua
     add_publicPlace   String // Logradouro
     add_number        String // Número
@@ -64,23 +67,26 @@ model Address {
     add_state         String
     add_isBilling     Boolean // Se é endereço de cobrança (RN0021)
     add_isDelivery    Boolean // Se é endereço de entrega (RN0022)
-    add_client        Client  @relation(fields: [fk_add_cli_id], references: [cli_id])
-
-    fk_add_cli_id String
+    add_client        Client   @relation(fields: [fk_add_cli_id], references: [cli_id])
+    fk_add_cli_id     String
+    created_at        DateTime @default(now())
+    updated_at        DateTime @updatedAt
 
     @@unique([add_cep, add_name, add_number, add_streetName])
 }
 
 model CreditCard {
-    cre_id           String  @id @default(uuid())
+    cre_id           String   @id @default(uuid())
     cre_name         String // Nome no cartão
     cre_number_cart  String // Número do cartão
-    cre_cvv          String  @db.VarChar(3) // Código de segurança
+    cre_cvv          String   @db.VarChar(3) // Código de segurança
     cre_dateMaturity String // Data de validade
     cre_preference   Boolean // Preferencial (RF0027)
     cre_flag         String
-    cre_client       Client? @relation(fields: [fk_cre_cli_id], references: [cli_id])
+    cre_client       Client?  @relation(fields: [fk_cre_cli_id], references: [cli_id])
     fk_cre_cli_id    String
+    created_at       DateTime @default(now())
+    updated_at       DateTime @updatedAt
 
     @@unique([cre_number_cart, cre_cvv, cre_name])
 }
@@ -94,4 +100,46 @@ model Log {
     updated_at    DateTime @updatedAt
     fk_log_cli_id String
     fk_log_use_id String
+}
+
+model Product {
+    pro_id       String   @id @default(uuid())
+    pro_name     String
+    pro_price    String
+    pro_quantity Int
+    pro_item     Item[]
+    created_at   DateTime @default(now())
+    updated_at   DateTime @updatedAt
+}
+
+model Item {
+    ite_id            String   @id @default(uuid())
+    ite_quantity      Int // Quantidade de itens
+    ite_product_price Float
+    ite_product       Product  @relation(fields: [fk_ite_pro_id], references: [pro_id])
+    ite_sale          Sale     @relation(fields: [fk_ite_sal_id], references: [sal_id])
+    fk_ite_pro_id     String
+    fk_ite_sal_id     String
+    created_at        DateTime @default(now())
+    updated_at        DateTime @updatedAt
+}
+model Sale {
+    sal_id          String   @id @default(uuid())
+    sal_date_sale   DateTime
+    sal_date_update DateTime
+    sal_status      String // Vai validar o status do processamento do cartão de crédito, caso aprovado o status muda de: EM PROCESSAMENTO para APROVADO
+    sal_client      Client   @relation(fields: [fk_sal_cli_id], references: [cli_id])
+    sal_item        Item[]
+    sal_delivery    Delivery? // Alterado para opcional
+    fk_sal_cli_id   String
+}
+
+
+model Delivery {
+    del_id           String   @id @default(uuid())
+    del_status       String
+    del_sale         Sale     @relation(fields: [fk_del_sal_id], references: [sal_id]) // Alterado para ter uma relação direta com Sale
+    fk_del_sal_id    String   @unique// Chave estrangeira que referencia a tabela Sale
+    del_date_initial DateTime
+    del_date_final   DateTime
 }

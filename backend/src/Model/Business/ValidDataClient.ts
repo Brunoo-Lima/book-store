@@ -12,8 +12,8 @@ export class ValidDataClient implements IStrategy {
         }
         for(const cli in client){
             const keyClient = cli as keyof Client
-            if(client[keyClient] === client.creditCart){
-                if(client.creditCart === null) continue;
+            if(client[keyClient] === client.creditCard){
+                if(client.creditCard === null) continue;
             }
 
             if(!client[keyClient] && client[keyClient] !== 0){
@@ -44,7 +44,7 @@ export class ValidDataClient implements IStrategy {
                 }
             }
         }
-        const creditCart = client.creditCart;
+        const creditCart = client.creditCard;
         if (creditCart && creditCart.length > 0) {
             for (const card of creditCart) {
                 if (!card.namePrinted || !card.number || !card.cvv || !card.dateValid) {
