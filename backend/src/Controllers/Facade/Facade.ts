@@ -10,6 +10,7 @@ import { ValidAddresses } from "../../Model/Business/ValidAddresses";
 import { ValidDataClient } from "../../Model/Business/ValidDataClient";
 import { ValidDataToUpdate } from "../../Model/Business/ValidDataToUpdate";
 import { ValidCreditCard } from "../../Model/Business/ValidCreditCard";
+import { ValidProductsInStock } from "../../Model/Business/ValidProductsInStock";
 
 export class Facade implements IFacade{
     private businessRoles:  Map<string, IStrategy[]>
@@ -126,7 +127,8 @@ export class Facade implements IFacade{
         this.businessRoles.set(
             "SALES",
             [
-                new EntityExistInDB()
+                new EntityExistInDB(),
+                new ValidProductsInStock()
             ]
         )
         this.businessRoles.set(

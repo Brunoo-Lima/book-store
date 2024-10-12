@@ -10,6 +10,8 @@ import { Status } from '../../Model/domain/types/Status'
 import { StatusDelivery } from '../../Model/domain/types/StatusDelivery'
 import { Item } from '../../Model/domain/Item'
 import { Product } from '../../Model/domain/Product'
+import axios from 'axios'
+import { Sale } from '@prisma/client'
 
 export class CreateSaleController {
     public async handle(req: Request, res: Response){
@@ -18,7 +20,7 @@ export class CreateSaleController {
             const client = dataSale.client as ClientDTO
             const clientDomain = FactoryClient.createClient(client)
             clientDomain.id = dataSale.client.id as UUID
-            
+
             const [dayI, monthI, yearI] = dataSale.delivery.dateInitial.split('/').map(Number); // Divide a string e converte para números
             const [day, month, year] = dataSale.delivery.dateFinal.split('/').map(Number); // Divide a string e converte para números
 
@@ -45,13 +47,17 @@ export class CreateSaleController {
                 delivery
             )
             const facade = new Facade(sale)
-            const addSale = await facade.create()
+            const addSale = await facade.create() as Sale
 
-            if(!addSale) {
+            if("error" in addSale) {
                 return res.json({
-                    error: "Sale cannot be processed !"
+                    error: addSale.error
                 })
             }
+            dataSale.id_sales = addSale.sal_id
+            axios.put("http://localhost:3005/sale/complete", {
+                data: dataSale
+            })
             return res.json({
                 success: true,
                 sale: addSale

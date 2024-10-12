@@ -60,7 +60,6 @@ export class SalesDao extends DAO {
     }
     public async findMany(sales: Sales): Promise<unknown> {
         // Caso seja necessário aplicar filtro, usamos a entidade de dominio
-        const filter = {}
         return await prisma.sale.findMany({
             select: {
                 sal_item: true,

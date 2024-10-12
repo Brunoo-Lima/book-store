@@ -19,6 +19,9 @@ export function getProfilePurchase(oldRanking: number, frequency: number, totalS
     } else if (score > 30) {
         ranking =+ oldRanking + 2; // Médio
         profile = ProfilePurchase.SIlVER
+    }else{
+        ranking =+ oldRanking + 1; // Médio
+        profile = ProfilePurchase.BRONZE
     }
 
     return {
