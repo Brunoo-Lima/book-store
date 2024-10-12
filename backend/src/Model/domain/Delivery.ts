@@ -1,10 +1,10 @@
 import { EntityDomain } from "./EntityDomain";
-import { Status } from "./types/Status";
+import { StatusDelivery } from "./types/StatusDelivery";
 
 export class Delivery extends EntityDomain{
     constructor(
         private _dateInitial: Date,
-        private _status: Status,
+        private _status: StatusDelivery,
         private _dateFinal: Date
 
     ){
@@ -18,11 +18,11 @@ export class Delivery extends EntityDomain{
         this._dateInitial = dateInitial;
     }
 
-    public get status(): Status {
+    public get status(): StatusDelivery {
         return this._status;
     }
 
-    public set status(status: Status) {
+    public set status(status: StatusDelivery) {
         this._status = status;
     }
 

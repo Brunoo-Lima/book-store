@@ -1,16 +1,19 @@
+import { ProductDTO } from "./ProductDTO";
 
 export interface SalesDTO {
     id_sales: string | ""
     dateSale: Date;
-    client_id: string;
+    client: {
+        id: string,
+        cpf: string
+    };
     status: string;
     items: [
         {
             item: {
                 id: string | "" // Se o id for enviado quer dizer que é para atualizar
-                product_id: string
-                quantity: number;
-                product_price: number; // Preço do produto no momento da venda
+                price_product_sale: number; // Preço do produto no momento da venda
+                product: ProductDTO
             }
         }
     ];

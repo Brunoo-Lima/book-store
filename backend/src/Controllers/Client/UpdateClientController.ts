@@ -21,8 +21,8 @@ export class UpdateClientController {
             if(client.addresses && client.addresses.length> 0){
                 client.addresses[0].id = clientDto.addresses[0].id
             }
-            if(client.creditCart && client.creditCart.length> 0){
-                client.creditCart[0].id = clientDto.creditCart[0].id
+            if(client.creditCard && client.creditCard.length> 0){
+                client.creditCard[0].id = clientDto.creditCard[0].id
             }
 
             const facade = new Facade(client)
@@ -38,7 +38,7 @@ export class UpdateClientController {
                 })
             }
             req.body.client = clientUpdated
-            
+
             return next()
         } catch (e) {
             return res.status(400).json({

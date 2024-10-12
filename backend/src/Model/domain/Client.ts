@@ -198,7 +198,7 @@ export abstract class FactoryClient {
         const profile = getProfilePurchase(0, 0, 0)
         return new Client(
             phones,
-            clientDTO.profilePurchase as ProfilePurchase,
+            profile.profile,
             clientDTO.name,
             clientDTO.dateOfBirth,
             clientDTO.email,

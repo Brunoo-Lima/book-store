@@ -4,7 +4,9 @@ import errorHandler from "./error/errorHandler";
 import routeClient from "./routes/client";
 import routeUser from './routes/user'
 import routeLogin from './routes/login'
+import routeSale from './routes/sales'
 import cors from 'cors';
+import routesProduct from "./routes/product";
 class App {
     readonly app;
     constructor() {
@@ -23,6 +25,8 @@ class App {
         this.app.use('/client', routeClient)
         this.app.use('/user', routeUser)
         this.app.use('/login', routeLogin)
+        this.app.use('/sale', routeSale)
+        this.app.use('/product', routesProduct)
     }
 }
 

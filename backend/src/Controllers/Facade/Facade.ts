@@ -129,6 +129,12 @@ export class Facade implements IFacade{
                 new EntityExistInDB()
             ]
         )
+        this.businessRoles.set(
+            "PRODUCT",
+            [
+                new EntityExistInDB()
+            ]
+        )
 
     }
     private async getStrategies(key: string) {

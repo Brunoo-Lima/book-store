@@ -1,5 +1,8 @@
+import { ProfilePurchase } from "../Model/domain/types/ProfilePurchase";
+
 export function getProfilePurchase(oldRanking: number, frequency: number, totalSpent: number){
     let score = 0;
+    let profile = ProfilePurchase.BRONZE
 
   // Cálculo de ranking com base nos critérios
     score += frequency * 0.4;      // Peso 40%
@@ -9,14 +12,18 @@ export function getProfilePurchase(oldRanking: number, frequency: number, totalS
     let ranking = 1;
     if (score > 70) {
         ranking = oldRanking + 4; // VIP
+        profile = ProfilePurchase.DIAMANTE
     } else if (score > 50) {
         ranking =+ oldRanking + 3; // Alto
+        profile = ProfilePurchase.GOLD
     } else if (score > 30) {
         ranking =+ oldRanking + 2; // Médio
+        profile = ProfilePurchase.SIlVER
     }
 
     return {
         ranking,
-        score
+        score,
+        profile
     }
 }
