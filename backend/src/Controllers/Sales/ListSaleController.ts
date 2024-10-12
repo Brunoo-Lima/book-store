@@ -14,8 +14,8 @@ export class ListSaleController{
             const salesDto = req.body as SalesDTO
             const client = (salesDto.client) ? salesDto.client : {}
             const clientDomain = FactoryClient.createClient(client as ClientDTO)
-            clientDomain.id = salesDto.client.id
-            
+            clientDomain.cpf.code = salesDto.client.cpf
+
             const delivery = new Delivery(new Date(), StatusDelivery.PREPARING, new Date())
             const sale = new Sales(
                 new Date(),

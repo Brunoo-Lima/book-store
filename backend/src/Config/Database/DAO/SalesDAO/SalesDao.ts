@@ -70,7 +70,7 @@ export class SalesDao extends DAO {
             },
             where: {
                 sal_client:{
-                    cli_id: sales.client.id
+                    cli_cpf: sales.client.cpf.code
                 }
             }
         })

@@ -8,5 +8,8 @@ export class CPF extends EntityDomain{
     public get code() : string {
         return this._code;
     }
+    public set code(code: string){
+        this._code = code
+    }
 }
 
