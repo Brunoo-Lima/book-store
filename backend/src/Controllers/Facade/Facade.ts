@@ -11,6 +11,7 @@ import { ValidDataClient } from "../../Model/Business/ValidDataClient";
 import { ValidDataToUpdate } from "../../Model/Business/ValidDataToUpdate";
 import { ValidCreditCard } from "../../Model/Business/ValidCreditCard";
 import { ValidProductsInStock } from "../../Model/Business/ValidProductsInStock";
+import { ValidCPF } from "../../Model/Business/ValidCPF";
 
 export class Facade implements IFacade{
     private businessRoles:  Map<string, IStrategy[]>
@@ -108,7 +109,8 @@ export class Facade implements IFacade{
                 new ValidPassword(),
                 new ValidCreditCard(),
                 new ValidAddresses(),
-                new ValidDataClient()
+                new ValidDataClient(),
+                new ValidCPF()
             ]
         )
         this.businessRoles.set(

@@ -1,130 +1,32 @@
 import { expect, it } from "vitest";
-import { Address } from "../Model/domain/Address";
-import { Client } from "../Model/domain/Client";
-import { StatusClient } from "../Model/domain/types/StatusClient";
-import { TypeResidence } from "../Model/domain/types/TypeResidence";
-import { ProfilePurchase } from "../Model/domain/types/ProfilePurchase";
-import { Gender } from "../Model/domain/types/Gender";
-import { TypePhone } from "../Model/domain/types/TypePhone";
-import { Phone } from "../Model/domain/Phone";
 import { CPF } from "../Model/domain/CPF";
+// import { ValidCPF } from "../Model/Business/ValidCPF";
 // import { ValidDataClient } from "../Model/Business/ValidDataClient";
-import { CreditCart } from "../Model/domain/CreditCard";
-import { StatusPayment } from "../Model/domain/types/Status";
-import { Flags } from "../Model/domain/types/Flags";
-import { ValidPassword } from "../Model/Business/ValidPassword";
 
-const clientDTO = {
-    "phones": [
-        {
-            "ddd": "11",
-            "number": "11111",
-            "typePhone": "111"
-        }
-    ],
-    "profilePurchase": "BRONZE",
-    "name": "teste",
-    "dateOfBirth": "17/03/2004",
-    "email": "teste21@gmail.com",
-    "cpf": "12345678932",
-    "gender": "MEN",
-    "rfmScore": 0,
-    "password": "12245678Aa#",
-    "confirmPassword": "12245678Aa#",
-    "addresses": [
-        {
-            "streetName": "123",
-            "publicPlace": "Rua", // Logradouro
-            "nameAddress": "testes2",
-            "number": "43",
-            "cep": "08130290",
-            "neighborhood": "Cidade Kemel",
-            "city": "São Paulo",
-            "state": "São Paulo",
-            "country": "",
-            "compostName": "Rua de teste",
-            "typeResidence": "HOME",
-            "change": true,
-            "delivery": false
-        },
-        {
-            "streetName": "teste",
-            "publicPlace": "Rua", // Logradouro
-            "nameAddress": "testes2",
-            "number": "43",
-            "cep": "08130290",
-            "neighborhood": "Cidade Kemel",
-            "city": "São Paulo",
-            "state": "São Paulo",
-            "country": "Brasil",
-            "compostName": "Rua de teste",
-            "typeResidence": "HOME",
-            "change": false,
-            "delivery": true
-        }
-    ],
-    "creditCart": {
+const cpf = new CPF('53302901801')
 
+it("Should create domain entity", async () => {
+    const cpfReplaced = cpf.code.replace('.', "").replace("-", "")
+    let sum = 0
+    let digit1 = 0
+    let digit2 = 0
+    let cpfIsValid = false
+
+    for(let i = 1; i <= cpfReplaced.length; i++){
+        sum += Number(cpfReplaced[i-1]) * i
+
+        if(i == cpfReplaced.length) {
+            digit1 = (sum % 11 == 10) ? 0 : sum % 11
+            sum = 0
+        }
     }
-}
+    for(let i = 0; i < cpfReplaced.length; i++){
+        sum += (i !== 10) ? Number(cpfReplaced[i]) * i : Number(cpfReplaced[i]) * 0
+    }
+    digit2 = (sum % 11 == 10) ? 0 : sum % 11
+    const digits =`${digit1}${digit2}`
 
-it("Should create domain entity", () => {
-    // const validDataRequired = new ValidDataClient()
-    const validPassword = new ValidPassword()
+    if(cpfReplaced.slice(cpfReplaced.length-2, cpfReplaced.length) === digits) cpfIsValid = true
 
-    const phones: Phone[] = clientDTO.phones.map(phoneDTO => {
-        return new Phone({
-            _ddd: phoneDTO.ddd,
-            _number: phoneDTO.number,
-            _typePhone: phoneDTO.typePhone as TypePhone
-        });
-    });
-    // Mapeamento dos endereços
-    const addresses: Address[] = clientDTO.addresses.map(addressDTO => {
-        return new Address({
-            streetName: addressDTO.streetName,
-            nameAddress: addressDTO.nameAddress,
-            publicPlace: addressDTO.publicPlace,
-            number: addressDTO.number,
-            cep: addressDTO.cep,
-            neighborhood: addressDTO.neighborhood,
-            city: addressDTO.city,
-            state: addressDTO.state,
-            compostName: addressDTO.compostName,
-            typeResidence: addressDTO.typeResidence as TypeResidence,
-            change: addressDTO.change,
-            delivery: addressDTO.delivery,
-        });
-    });
-
-
-    const client = new Client(
-        phones,
-        clientDTO.profilePurchase as ProfilePurchase,
-        clientDTO.name,
-        clientDTO.dateOfBirth,
-        clientDTO.email,
-        clientDTO.password,
-        clientDTO.confirmPassword,
-        new CPF(clientDTO.cpf), // Assumindo que CPF tem uma classe própria
-        StatusClient.ACTIVATE, // Você pode ajustar isso de acordo com sua lógica
-        clientDTO.gender as Gender,
-        1,
-        1, // Aqui você pode calcular ou ajustar a pontuação RFM
-        addresses,
-        [new CreditCart({
-            _namePrinted:"qwew",
-            _number: "qwe",
-            _cvv:"qwe",
-            _dateValid: "qwe",
-            _flag: Flags.MASTERCARD,
-            _status: StatusPayment.DENY,
-            _preference: false,
-        })]
-    )
-    // const object = validDataRequired.process(client)
-    const objectPassword = validPassword.process(client)
-
-    console.log(objectPassword)
-    expect(objectPassword).haveOwnProperty('success')
+    expect(cpfIsValid).equals(true)
 })
