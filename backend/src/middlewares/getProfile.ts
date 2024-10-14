@@ -1,40 +1,44 @@
 /* eslint-disable @typescript-eslint/consistent-indexed-object-style */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-import { ICustomRequest } from '../interfaces/ICustomRequest';
-import { ICustomJwt } from '../interfaces/ICustomJWT';
+import { Response, NextFunction } from "express";
+import jwt from "jsonwebtoken";
+import { ICustomRequest } from "../interfaces/ICustomRequest";
+import { ICustomJwt } from "../interfaces/ICustomJWT";
 
-
-export const getProfile = (req: ICustomRequest, res: Response, next: NextFunction) => {
+export const getProfile = (
+    req: ICustomRequest,
+    res: Response,
+    next: NextFunction
+) => {
     try {
         const { authorization } = req.headers;
         if (!authorization) {
             return res.status(401).json({
-                errors: 'Login Required !',
+                errors: "Login Required !",
             });
         }
         // Get the user
-        const [, token] = authorization.split(' ');
+        const [, token] = authorization.split(" ");
         const secret = process.env.TOKEN_SECRET as string;
         const user = jwt.verify(token, secret) as ICustomJwt;
 
         // Verifying if the expected properties exist in the payload
-        if (!user || !user.user_email || !user.user_password || !user.user_id) return res.json({
-            error: 'Invalid token payload'
-        })
+        if (!user || !user.user_email || !user.user_password || !user.user_id)
+            return res.json({
+                error: "Invalid token payload",
+            });
 
         if (!user) {
             return res.status(401).json({
-                error: 'That user does not exist!',
+                error: "That user does not exist!",
             });
         }
         req.body.user = user;
-        
+
         return next();
     } catch (e) {
         return res.status(401).json({
             errors: `Token expired or invalid.${e}`,
         });
     }
-}
+};

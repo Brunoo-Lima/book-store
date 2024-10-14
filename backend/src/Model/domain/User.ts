@@ -1,13 +1,12 @@
 import { EntityDomain } from "./EntityDomain";
 
-export class User extends EntityDomain{
+export class User extends EntityDomain {
     constructor(
         private email: string,
         private password: string,
-        private confirmPassword: string,
-
-    ){
-        super()
+        private confirmPassword: string
+    ) {
+        super();
     }
     public getEmail(): string {
         return this.email;
