@@ -73,6 +73,9 @@ export class ClientDao extends DAO {
                         cre_preference: card.preference
                     }))
                 } : undefined
+            },
+            include: {
+                cli_sales: true
             }
         });
 
