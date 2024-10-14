@@ -1,6 +1,7 @@
 import { IStrategy } from "../../interfaces/IStrategy";
 import { Client } from "../domain/Client";
 import { ValidAddressToUpdate } from "./ValidAddressToUpdate";
+import { ValidCPF } from "./ValidCPF";
 import { ValidCreditCard } from "./ValidCreditCard";
 import { ValidPassword } from "./ValidPassword";
 export class ValidDataToUpdate implements IStrategy {
@@ -27,7 +28,12 @@ export class ValidDataToUpdate implements IStrategy {
                     return verifyCreditCard;
                 }
             }
-
+            if(client.cpf.code){
+                const verifyCpf = await new ValidCPF().process(client)
+                if("error" in verifyCpf){
+                    return verifyCpf.error
+                }
+            }
             return {
                 success: "Update is valid !",
             };
