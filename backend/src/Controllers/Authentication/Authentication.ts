@@ -10,14 +10,14 @@ import { compareSync } from "bcrypt";
 export class Authentication {
     async login(req: Request, res: Response) {
         try {
-            const { email, password, confirmPassword } = req.body;
+            const { email, password } = req.body;
             if (!email || !password) {
                 return res.status(401).json({
                     error: "E-mail and Password should be sent or password do not equals !",
                 });
             }
 
-            const user = new User(email, password, confirmPassword);
+            const user = new User(email, password, password);
             const facade = new Facade(user);
             const userExist = (await facade.find()) as PrismaUser;
 
