@@ -1,11 +1,13 @@
 'use client';
 
-import { clientsList } from '@/mocks/clientsList';
 import Table from './table';
 import { useFilter } from '@/hooks/useFilter';
 import InputSearch from '@/components/ui/Input-search';
 import { selectCities, selectStatesUf, selectStatus } from '@/mocks/select';
 import SelectSearch from '@/components/ui/select-search';
+import { useEffect, useState } from 'react';
+import { IClient } from '@/@types/client';
+import { findUsers } from '@/services/find-users';
 
 export default function Clients() {
   const {
@@ -18,28 +20,48 @@ export default function Clients() {
     setIsSearching,
     setSearchName,
     searchName,
-    filteredData,
-    setFilteredData,
     selectedCity,
     setSelectedCity,
   } = useFilter();
 
+  const [filteredData, setFilteredData] = useState<IClient[]>([]);
+
+  const fetchClients = async () => {
+    try {
+      const clientsData = await findUsers();
+
+      const validClients = clientsData.filter(
+        (client): client is IClient => client !== undefined
+      );
+
+      setFilteredData(validClients);
+    } catch (error) {
+      console.error('Erro ao buscar clientes', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchClients();
+  }, []);
+
   const applyFilters = () => {
-    const filtered = clientsList.filter((client) => {
+    const filtered = filteredData.filter((client) => {
       const matchesName = client.name
         .toLowerCase()
         .includes(searchName.toLowerCase());
 
-      const matchesStatus =
-        !selectedStatus || client.status === selectedStatus.value;
+      // const matchesStatus =
+      //   !selectedStatus || client.status === selectedStatus.value;
 
-      const matchesState =
-        !selectedState || client.address.state === selectedState.value;
+      // const matchesState =
+      //   !selectedState || client.address.state === selectedState.value;
 
-      const matchesCity =
-        !selectedCity || client.address.city === selectedCity.value;
+      // const matchesCity =
+      //   !selectedCity || client.address.city === selectedCity.value;
 
-      return matchesName && matchesStatus && matchesState && matchesCity;
+      // return matchesName && matchesStatus && matchesState && matchesCity;
+
+      return matchesName;
     });
 
     setFilteredData(filtered);

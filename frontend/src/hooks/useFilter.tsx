@@ -16,8 +16,8 @@ interface IFilterContextProps {
   setSelectedCity: React.Dispatch<React.SetStateAction<ISelect | null>>;
   searchName: string;
   setSearchName: React.Dispatch<React.SetStateAction<string>>;
-  filteredData: IClient[];
-  setFilteredData: React.Dispatch<React.SetStateAction<IClient[]>>;
+  // filteredData: IClient[];
+  // setFilteredData: React.Dispatch<React.SetStateAction<IClient[]>>;
   clearFilters: () => void;
 }
 
@@ -35,7 +35,7 @@ export const FilterProvider = ({ children }: FilterProviderProps) => {
   const [selectedState, setSelectedState] = useState<ISelect | null>(null);
   const [selectedCity, setSelectedCity] = useState<ISelect | null>(null);
   const [searchName, setSearchName] = useState<string>('');
-  const [filteredData, setFilteredData] = useState<IClient[]>(clientsList);
+  // const [filteredData, setFilteredData] = useState<IClient[]>(clientsList);
 
   const clearFilters = () => {
     setSelectedState(null);
@@ -44,7 +44,7 @@ export const FilterProvider = ({ children }: FilterProviderProps) => {
     setSearchName('');
     setSelectedCity(null);
 
-    setFilteredData(clientsList);
+    // setFilteredData(clientsList);
   };
 
   const contextValue = useMemo(
@@ -58,8 +58,8 @@ export const FilterProvider = ({ children }: FilterProviderProps) => {
       clearFilters,
       searchName,
       setSearchName,
-      filteredData,
-      setFilteredData,
+      // filteredData,
+      // setFilteredData,
       selectedCity,
       setSelectedCity,
     }),
@@ -72,8 +72,8 @@ export const FilterProvider = ({ children }: FilterProviderProps) => {
       setSelectedState,
       searchName,
       setSearchName,
-      filteredData,
-      setFilteredData,
+      // filteredData,
+      // setFilteredData,
       selectedCity,
       setSelectedCity,
     ]
