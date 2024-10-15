@@ -24,11 +24,11 @@ export const findUsers = async (filters: Partial<IClient> = {}) => {
       profilePurchase: client.cli_profilePurchase,
       name: client.cli_name,
       dateOfBirth: client.cli_dateOfBirth,
-      email: '', // Defina como necessário, se houver
+      email: '',
       cpf: client.cli_cpf,
       gender: client.cli_gender,
-      password: '', // Defina como necessário, se houver
-      confirmPassword: '', // Defina como necessário, se houver
+      password: '',
+      confirmPassword: '',
       addresses: client.cli_address.map((address) => ({
         streetName: address.add_streetName,
         publicPlace: address.add_publicPlace,
@@ -38,19 +38,19 @@ export const findUsers = async (filters: Partial<IClient> = {}) => {
         neighborhood: address.add_neighborhood,
         city: address.add_city,
         state: address.add_state,
-        country: '', // Defina como necessário, se houver
+        country: '',
         compostName: address.add_compostName,
         typeResidence: address.add_typeResidence,
-        change: address.add_isBilling, // Ou outra lógica se necessário
+        change: address.add_isBilling,
         delivery: address.add_isDelivery,
       })),
       creditCart: client.cli_creditCards.map((card) => ({
-        namePrinted: '', // Defina como necessário, se houver
-        number: '', // Defina como necessário, se houver
-        cvv: 0, // Defina como necessário, se houver
-        dateValid: '', // Defina como necessário, se houver
-        flag: '', // Defina como necessário, se houver
-        preference: false, // Defina como necessário, se houver
+        namePrinted: '',
+        number: '',
+        cvv: 0,
+        dateValid: '',
+        flag: '',
+        preference: false,
       })),
     }));
 

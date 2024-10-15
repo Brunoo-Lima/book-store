@@ -40,23 +40,25 @@ export default function Table({ clients }: ITableProps) {
         {clients &&
           clients.map((client) => (
             <tr key={client.id} className="text-center border-b-[1px]">
-              <td className="p-2">{client.id}</td>
+              <td className="p-2 w-1/4 text-ellipsis overflow-hidden whitespace-nowrap">
+                {client.id}
+              </td>
               <td className="p-2">{client.name}</td>
               {/* <td className="p-2">
               {client.phones.map((phone) => phone.ddd + phone.number)}
             </td> */}
               {/* <td className="p-2">#{client.ranking}</td> */}
 
-              <td className="p-2">
+              {/* <td className="p-2">
                 <p
                   className="rounded-sm w-[90%] mx-auto p-1"
-                  // style={{
-                  //   background: `${client.status === 'Ativo' ? 'green' : 'red'} `,
-                  // }}
+                   style={{
+                   background: `${client.status === 'Ativo' ? 'green' : 'red'} `,
+                  }}
                 >
-                  {/* {client.status === 'Ativo' ? 'Ativo' : 'Inativo'} */}
+                  { {client.status === 'Ativo' ? 'Ativo' : 'Inativo'} }
                 </p>
-              </td>
+              </td> */}
               <td className="p-2">
                 <button onClick={() => handleAlterClient(client.id)}>
                   <UserRoundPenIcon size={24} />
