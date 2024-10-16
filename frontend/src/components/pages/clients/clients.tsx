@@ -7,7 +7,7 @@ import { selectCities, selectStatesUf, selectStatus } from '@/mocks/select';
 import SelectSearch from '@/components/ui/select-search';
 import { useEffect, useState } from 'react';
 import { IClient } from '@/@types/client';
-import { findUsers } from '@/services/find-users';
+import { findClients } from '@/services/clients';
 
 export default function Clients() {
   const {
@@ -28,7 +28,7 @@ export default function Clients() {
 
   const fetchClients = async () => {
     try {
-      const clientsData = await findUsers();
+      const clientsData = await findClients();
 
       const validClients = clientsData.filter(
         (client): client is IClient => client !== undefined

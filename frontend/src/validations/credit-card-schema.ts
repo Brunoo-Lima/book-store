@@ -3,7 +3,7 @@ import * as yup from 'yup';
 export type ICreditCardFormSchema = yup.InferType<typeof CreditCardFormSchema>;
 
 export const CreditCardFormSchema = yup.object().shape({
-  numberCard: yup
+  number: yup
     .number()
     .typeError('Número do cartão deve ser um número.')
     .positive('Número do cartão deve ser positivo.')
@@ -16,14 +16,11 @@ export const CreditCardFormSchema = yup.object().shape({
     .integer('CVV deve ser um número inteiro.')
     .min(100, 'CVV deve ter no mínimo 3 dígitos.')
     .required('CVV é obrigatório.'),
-  nameCreditCard: yup
+  namePrinted: yup
     .string()
     .required('Nome no cartão de crédito é obrigatório.'),
-  dateExpired: yup.string().required('Data de validade é obrigatória.'),
-  //   .required('Data de validade é obrigatória.')
-  // dateExpired: yup
-  //   .string()
-  //   .required('Data de validade é obrigatória.')
-  //   .matches(/^\d{2}\/\d{2}$/, 'Data de validade deve estar no formato MM/AA.'),
+
+  dateValid: yup.string().required('Data de validade é obrigatória.'),
   flag: yup.string().required('Escolha da bandeira é obrigatória.'),
+  preference: yup.boolean(),
 });

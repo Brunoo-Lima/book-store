@@ -42,30 +42,53 @@ export default function ClientPersonalInfoForm() {
           <p className="block text-sm font-medium text-white">
             Tipo do telefone:{' '}
           </p>
-          <Radio label="Celular" value="Celular" {...register('typePhone')} />
-          <Radio label="Fixo" value="Fixo" {...register('typePhone')} />
-          {errors?.typePhone && (
+          <Radio
+            label="Celular"
+            value="CELULAR"
+            {...register('phones.0.typePhone')}
+          />
+          <Radio
+            label="Fixo"
+            value="FIXO"
+            {...register('phones.0.typePhone')}
+          />
+          {errors?.phones?.[0]?.typePhone && (
             <span className="text-sm text-red-600">
-              {errors.typePhone.message}
+              {errors.phones[0].typePhone.message}
             </span>
           )}
         </div>
-        <Input
-          type="tel"
-          label="Telefone"
-          placeholder="(00) 0000-0000"
-          {...register('phone')}
-          error={errors?.phone}
-          onInput={(event: React.ChangeEvent<HTMLInputElement>) => {
-            const input = event.target;
-            input.value = input.value.replace(/[^0-9]/g, '');
-          }}
-        />
 
+        <div className="grid md:grid-cols-2 md:gap-4 items-start">
+          <div className="w-7/12">
+            <Input
+              type="text"
+              label="DDD"
+              placeholder="DDD"
+              {...register('phones.0.ddd')}
+              error={errors?.phones?.[0]?.ddd}
+            />
+          </div>
+
+          <Input
+            type="tel"
+            label="Telefone"
+            placeholder="00000-0000"
+            {...register('phones.0.number')}
+            error={errors?.phones?.[0]?.number}
+            onInput={(event: React.ChangeEvent<HTMLInputElement>) => {
+              const input = event.target;
+              input.value = input.value.replace(/[^0-9]/g, '');
+            }}
+          />
+        </div>
+      </div>
+
+      <div className="grid md:grid-cols-2 md:gap-4 items-start">
         <div className="flex flex-col">
           <p className="block text-sm font-medium text-white">Gênero</p>
-          <Radio label="Masculino" value="Masculino" {...register('gender')} />
-          <Radio label="Feminino" value="Feminino" {...register('gender')} />
+          <Radio label="Masculino" value="MALE" {...register('gender')} />
+          <Radio label="Feminino" value="FEMALE" {...register('gender')} />
 
           {errors?.gender && (
             <span className="text-red-600 text-sm">

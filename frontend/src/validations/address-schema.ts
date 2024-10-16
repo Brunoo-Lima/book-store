@@ -3,18 +3,25 @@ import * as yup from 'yup';
 export type IAddressFormSchema = yup.InferType<typeof AddressFormSchema>;
 
 export const AddressFormSchema = yup.object({
-  neighborhood: yup.string().required('Bairro é obrigatório'),
+  streetName: yup.string().required('Nome da rua é obrigatório'),
   publicPlace: yup.string().required('Logradouro é obrigatório'),
-  street: yup.string().required('Rua é obrigatório'),
-  number: yup
+  nameAddress: yup.string().required('Nome do endereço é obrigatório'),
+  number: yup.string().required('Número é obrigatório'),
+  cep: yup
     .string()
-    .required('Número é obrigatório')
-    .min(2, 'Número não pode ser vazio'),
-  zipCode: yup.string().required('CEP é obrigatório'),
-  city: yup.string().required('Cidade é obrigatório'),
+    .matches(/^\d{8}$/, 'CEP inválido')
+    .required('CEP é obrigatório'),
+  neighborhood: yup.string().required('Bairro é obrigatório'),
+  city: yup.string().required('Cidade é obrigatória'),
   state: yup.string().required('Estado é obrigatório'),
   country: yup.string().required('País é obrigatório'),
-  observation: yup.string().optional(),
+  compostName: yup.string(),
+  typeResidence: yup
+    .string()
+    .oneOf(['HOME', 'APARTMENT'])
+    .required('Tipo de residência é obrigatório'),
+  change: yup.boolean(),
+  delivery: yup.boolean(),
 });
 
 export type IAddressDeliveryFormSchema = yup.InferType<
@@ -24,3 +31,19 @@ export type IAddressDeliveryFormSchema = yup.InferType<
 export const AddressDeliveryFormSchema = AddressFormSchema.shape({
   identifier: yup.string().required('Nome é obrigatório'),
 });
+
+export const emptyAddress = {
+  streetName: '',
+  publicPlace: '',
+  nameAddress: '',
+  number: '',
+  cep: '',
+  neighborhood: '',
+  city: '',
+  state: '',
+  country: '',
+  compostName: '',
+  typeResidence: 'APARTMENT',
+  change: false,
+  delivery: false,
+};

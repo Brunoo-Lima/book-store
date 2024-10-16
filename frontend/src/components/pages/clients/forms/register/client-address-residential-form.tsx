@@ -1,11 +1,26 @@
+import { IClient } from '@/@types/client';
+import { IError } from '@/@types/error';
 import Input from '@/components/ui/input';
 import Textarea from '@/components/ui/textarea';
 import { getCep } from '@/services/cep';
+import { IAddressFormSchema } from '@/validations/address-schema';
 import { IClientFormSchema } from '@/validations/register-client-schema';
 import { FocusEvent } from 'react';
-import { useFormContext } from 'react-hook-form';
+import { FieldError, useFormContext } from 'react-hook-form';
 
-export default function ClientAddressResidentialForm() {
+interface IClientAddressResidentialFormProps {
+  value: IAddressFormSchema | null;
+  onChange: (value: IAddressFormSchema) => void;
+  index: number;
+  error?: IError<IAddressFormSchema>;
+}
+
+export default function ClientAddressResidentialForm({
+  index,
+  onChange,
+  error,
+  value,
+}: IClientAddressResidentialFormProps) {
   const {
     setValue,
     register,
@@ -18,13 +33,38 @@ export default function ClientAddressResidentialForm() {
     try {
       const data = await getCep(cep);
 
-      setValue('residentialAddress.city', data.logradouro);
-      setValue('residentialAddress.neighborhood', data.bairro);
-      setValue('residentialAddress.publicPlace', data.complemento);
-      setValue('residentialAddress.city', data.localidade);
-      setValue('residentialAddress.state', data.uf);
+      // setValue('residentialAddress.city', data.logradouro);
+      // setValue('residentialAddress.neighborhood', data.bairro);
+      // setValue('residentialAddress.publicPlace', data.complemento);
+      // setValue('residentialAddress.city', data.localidade);
+      // setValue('residentialAddress.state', data.uf);
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const handleChange = (name: keyof IAddressFormSchema, curValue: string) => {
+    if (value) {
+      onChange({ ...value, [name]: curValue });
+    } else {
+      onChange({
+        ...{
+          cep: '',
+          city: '',
+          neighborhood: '',
+          publicPlace: '',
+          state: '',
+          number: '',
+          streetName: '',
+          nameAddress: '',
+          compostName: '',
+          typeResidence: 'HOME',
+          country: '',
+          change: false,
+          delivery: false,
+        },
+        [name]: curValue,
+      });
     }
   };
 
@@ -36,20 +76,57 @@ export default function ClientAddressResidentialForm() {
 
       <div className="grid md:grid-cols-2 md:gap-6">
         <Input
-          type="string"
-          label="CEP"
-          placeholder="00000-000"
-          {...register('residentialAddress.zipCode', {
-            onBlur: handleAddCep,
-          })}
-          error={errors?.residentialAddress?.zipCode}
+          type="text"
+          label="País"
+          placeholder="Digite o nome"
+          value={value?.compostName}
+          onChange={(e) => handleChange('compostName', e.target.value)}
+          error={errors?.addresses?.[index]?.compostName}
         />
+
         <Input
           type="text"
-          label="Cidade"
-          placeholder="Digite a cidade"
-          {...register('residentialAddress.city')}
-          error={errors?.residentialAddress?.city}
+          label="País"
+          placeholder="Digite o tipo de residência"
+          value={value?.typeResidence}
+          onChange={(e) => handleChange('typeResidence', e.target.value)}
+          error={errors?.addresses?.[index]?.typeResidence}
+        />
+
+        <Input
+          type="text"
+          label="CEP"
+          placeholder="00000-000"
+          value={value?.cep}
+          onChange={(e) => handleChange('cep', e.target.value)}
+          error={errors?.addresses?.[index]?.cep}
+        />
+
+        <Input
+          type="text"
+          label="Rua"
+          placeholder="Digite o nome da rua"
+          value={value?.streetName}
+          onChange={(e) => handleChange('streetName', e.target.value)}
+          error={errors?.addresses?.[index]?.streetName} //
+        />
+
+        <Input
+          type="text"
+          label="Logradouro"
+          placeholder="Digite o logradouro"
+          value={value?.publicPlace}
+          onChange={(e) => handleChange('publicPlace', e.target.value)}
+          error={errors?.addresses?.[index]?.publicPlace}
+        />
+
+        <Input
+          type="number"
+          label="Número"
+          placeholder="Digite o número"
+          value={value?.number}
+          onChange={(e) => handleChange('number', e.target.value)}
+          error={errors?.addresses?.[index]?.number}
         />
       </div>
 
@@ -57,59 +134,55 @@ export default function ClientAddressResidentialForm() {
         type="text"
         label="Bairro"
         placeholder="Digite o nome do bairro"
-        {...register('residentialAddress.neighborhood')}
-        error={errors?.residentialAddress?.neighborhood}
+        value={value?.neighborhood}
+        onChange={(e) => handleChange('neighborhood', e.target.value)}
+        error={errors?.addresses?.[index]?.neighborhood}
       />
-
-      <Input
-        type="text"
-        label="Rua"
-        placeholder="Digite o nome da rua"
-        {...register('residentialAddress.street')}
-        error={errors?.residentialAddress?.street}
-      />
-
-      <div className="grid md:grid-cols-2 md:gap-6">
-        <Input
-          type="text"
-          label="Logradouro"
-          placeholder="Digite o logradouro"
-          {...register('residentialAddress.publicPlace')}
-          error={errors?.residentialAddress?.publicPlace}
-        />
-        <Input
-          type="number"
-          label="Número"
-          placeholder="Digite o número"
-          {...register('residentialAddress.number')}
-          error={errors?.residentialAddress?.number}
-        />
-      </div>
 
       <div className="grid md:grid-cols-2 md:gap-6">
         <Input
           type="text"
           label="Estado"
           placeholder="Digite o estado"
-          {...register('residentialAddress.state')}
-          error={errors?.residentialAddress?.state}
+          value={value?.state}
+          onChange={(e) => handleChange('state', e.target.value)}
+          error={errors?.addresses?.[index]?.state}
         />
         <Input
           type="text"
           label="País"
           placeholder="Digite o país"
-          {...register('residentialAddress.country')}
-          error={errors?.residentialAddress?.country}
+          value={value?.country}
+          onChange={(e) => handleChange('country', e.target.value)}
+          error={errors?.addresses?.[index]?.country}
         />
-      </div>
 
-      <div>
-        <Textarea
-          label="Observações"
-          placeholder="Digite sua observação (opcional)"
-          {...register('residentialAddress.observation')}
-          error={errors?.residentialAddress?.observation}
+        <Input
+          type="text"
+          label="País"
+          placeholder="Digite o cidade"
+          value={value?.city}
+          onChange={(e) => handleChange('city', e.target.value)}
+          error={errors?.addresses?.[index]?.city}
         />
+
+        <div>
+          <label htmlFor="">entrega</label>
+          <input
+            type="checkbox"
+            value={value?.delivery ? 'true' : 'false'}
+            onChange={(e) => handleChange('delivery', e.target.value)}
+          />
+        </div>
+
+        <div>
+          <label htmlFor="">Cobrança</label>
+          <input
+            type="checkbox"
+            value={value?.change ? 'true' : 'false'}
+            onChange={(e) => handleChange('change', e.target.value)}
+          />
+        </div>
       </div>
     </div>
   );

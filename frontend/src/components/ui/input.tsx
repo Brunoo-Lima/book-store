@@ -12,7 +12,7 @@ interface IInputProps extends InputHTMLAttributes<HTMLInputElement> {
 const Input = forwardRef<HTMLInputElement, IInputProps>(
   ({ type, placeholder, label, error, ...rest }, ref) => {
     return (
-      <div className="">
+      <div className="w-full">
         <label
           htmlFor={label}
           className="block mb-2 text-sm font-medium text-white"
