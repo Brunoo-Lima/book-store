@@ -4,7 +4,7 @@ import { StatusClient } from "../domain/types/StatusClient";
 
 export class ValidDataClient implements IStrategy {
     process(client: Client): object {
-        // Validar status do cliente
+
         if (client.statusClient === StatusClient.NULL) {
             return {
                 error: "Type expect is: ACTIVATE or INACTIVATE"

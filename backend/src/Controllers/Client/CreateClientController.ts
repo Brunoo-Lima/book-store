@@ -4,6 +4,7 @@ import { ClientDTO } from "../../Model/DTO/ClientDTO"
 import { FactoryClient } from "../../Model/domain/Client";
 import { Facade } from "../Facade/Facade";
 import { StatusClient } from "../../Model/domain/types/StatusClient";
+import { Client } from "@prisma/client";
 
 export class CreateClientController {
     async handle(req: Request, res: Response, next: NextFunction) {
@@ -18,8 +19,8 @@ export class CreateClientController {
             const client = FactoryClient.createClient(clientDTO)
             const facade = new Facade()
 
-            const clientCreated = await facade.create(client) as object
-            console.log(clientCreated)
+            const clientCreated = await facade.create(client) as Client
+            client.id = clientCreated.cli_id
             if ("error" in clientCreated) {
                 return res.json({
                     error: `Error ${clientCreated.error}`
