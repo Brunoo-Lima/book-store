@@ -30,8 +30,8 @@ export class ListSaleController {
                 [],
                 delivery
             );
-            const facade = new Facade(sale);
-            const listSale = await facade.findMany();
+            const facade = new Facade();
+            const listSale = await facade.findMany(sale);
 
             if (!listSale) {
                 return res.json({

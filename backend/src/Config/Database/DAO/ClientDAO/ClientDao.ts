@@ -4,81 +4,85 @@
 
 import { Client } from "../../../../Model/domain/Client";
 import { EntityDomain } from "../../../../Model/domain/EntityDomain";
-import { DAO } from "../DAO";
 import { prisma } from "../../prisma/prismaClient";
 import { hashSync } from "bcrypt";
 import { Gender } from "../../../../Model/domain/types/Gender";
 import { StatusClient } from "../../../../Model/domain/types/StatusClient";
-export class ClientDao extends DAO {
+import { IDao } from "../../../../interfaces/IDao";
+
+export class ClientDao implements IDao {
     public async create(client: Client) {
-        return await prisma.client.create({
-            data: {
-                cli_id: client.id,
-                cli_name: client.name,
-                cli_dateOfBirth: client.dateOfBirth,
-                cli_cpf: client.cpf.code,
-                cli_status: client.statusClient as string,
-                cli_gender: client.gender as string,
-                cli_password: hashSync(client.password, 3),
-                cli_email: client.email,
-                cli_score: 0,
-                cli_profilePurchase: client.profilePurchase as string,
-                cli_ranking: client.ranking,
-                created_at: new Date(client.createdAt),
-                updated_at: new Date(client.updatedAt),
-
-                // Inserir telefones relacionados
-                cli_phone: {
-                    createMany: {
-                        data: client.phone.map(phon => ({
-                            pho_id: phon.id,
-                            pho_ddd: phon.ddd,
-                            pho_number: phon.number,
-                            pho_numberCombine: `(${phon.ddd}) ${phon.number}`,
-                            pho_type_phone: phon.typePhone as string
-                        }))
-                    }
+        return await prisma.$transaction(async (prisma) => {
+            const clientInserted = await prisma.client.create({
+                data: {
+                    cli_name: client.name,
+                    cli_dateOfBirth: client.dateOfBirth,
+                    cli_cpf: client.cpf.code,
+                    cli_status: client.statusClient as string,
+                    cli_gender: client.gender as string,
+                    cli_password: hashSync(client.password, 3),
+                    cli_email: client.email,
+                    cli_score: 0,
+                    cli_profilePurchase: client.profilePurchase as string,
+                    cli_ranking: client.ranking,
+                    created_at: new Date(client.createdAt),
+                    updated_at: new Date(client.updatedAt),
                 },
+                include: {
+                    cli_sales: true
+                }
+            })
 
-                // Inserir endereços relacionados
-                cli_address: {
-                    createMany: {
-                        data: client.addresses.map(address => ({
-                            add_id: address.id,
-                            add_name: address.nameAddress,
-                            add_streetName: address.streetName,
-                            add_publicPlace: address.publicPlace,
-                            add_number: address.number,
-                            add_cep: address.cep,
-                            add_neighborhood: address.neighborhood,
-                            add_compostName: address.compostName,
-                            add_typeResidence: address.typeResidence as string,
-                            add_city: address.city,
-                            add_state: address.state,
-                            add_isBilling: address.change as boolean,
-                            add_isDelivery: address.delivery as boolean
-                        }))
-                    }
-                },
+            await prisma.address.createMany({
+                data: client.addresses.map((address) => ({
 
-                // Inserir cartões de crédito relacionados (se existirem)
-                cli_creditCards: client.creditCard ? {
-                    create: client.creditCard.map(card => ({
-                        cre_id: card.id,
-                        cre_cvv: card.cvv,
-                        cre_dateMaturity: card.dateValid,
-                        cre_name: card.namePrinted,
-                        cre_number_cart: card.number,
-                        cre_flag: card.flag as string,
-                        cre_preference: card.preference
-                    }))
-                } : undefined
-            },
-            include: {
-                cli_sales: true
+                    add_name: address.nameAddress,
+                    add_streetName: address.streetName,
+                    add_publicPlace: address.publicPlace,
+                    add_number: address.number,
+                    add_cep: address.cep,
+                    add_neighborhood: address.neighborhood,
+                    add_city: address.city,
+                    add_state: address.state,
+                    add_compostName: address.compostName,
+                    add_typeResidence: address.typeResidence as string,
+                    add_isBilling: address.change as boolean,
+                    add_isDelivery: address.delivery as boolean,
+                    fk_add_cli_id: clientInserted.cli_id
+
+                }))
+            })
+            if (client.creditCard) {
+                await prisma.creditCard.createMany({
+
+                    data: client.creditCard.map((card) => {
+                        return {
+
+                            cre_cvv: card.cvv,
+                            cre_flag: card.flag as string,
+                            cre_dateMaturity: card.dateValid,
+                            cre_name: card.namePrinted,
+                            cre_number_cart: card.number,
+                            cre_preference: card.preference,
+                            fk_cre_cli_id: clientInserted.cli_id
+                        }
+                    })
+
+                })
             }
-        });
-
+            await prisma.phone.createMany({
+                data: client.phones.map((phone) => {
+                    return {
+                        pho_ddd: phone.ddd,
+                        pho_number: phone.number,
+                        pho_numberCombine: `(${phone.ddd})  ${phone.number}`,
+                        pho_type_phone: phone.typePhone as string,
+                        fk_pho_cli_id: clientInserted.cli_id
+                    }
+                })
+            })
+            return clientInserted;
+        })
     }
 
 
@@ -92,51 +96,97 @@ export class ClientDao extends DAO {
                 cli_email: client.email ? { set: client.email } : undefined,
                 cli_gender: client.gender ? { set: client.gender as string } : undefined,
                 cli_name: client.name ? { set: client.name } : undefined,
-                cli_phone: client.phone ? {
-                    updateMany: client.phone.map((phon) => ({ // Relacionamentos many to many, tem que ser updateMany, mesmo atualizando 1 dado só
-                        where: { pho_id: phon.id }, // Certifique-se de passar o ID do telefone correto
-                        data: {
-                            pho_ddd: phon.ddd,
-                            pho_number: phon.number,
-                            pho_numberCombine: `(${phon.ddd} ${phon.number})`
-                        }
-                    }))
+                cli_phone: client.phones ? {
+                    updateMany: client.phones
+                        .filter(phone => phone.id) // Atualiza apenas os telefones que têm ID (existentes)
+                        .map((phone) => ({
+                            where: { pho_id: phone.id },
+                            data: {
+                                pho_ddd: phone.ddd,
+                                pho_number: phone.number,
+                                pho_numberCombine: `(${phone.ddd} ${phone.number})`,
+                                pho_type_phone: phone.typePhone as string
+                            }
+                        })),
+                    createMany: {
+                        data: client.phones
+                            .filter(phone => !phone.id) // Cria novos telefones que não têm ID
+                            .map((phone) => ({
+                                pho_ddd: phone.ddd,
+                                pho_number: phone.number,
+                                pho_numberCombine: `(${phone.ddd} ${phone.number})`,
+                                pho_type_phone: phone.typePhone as string
+                            }))
+                    }
                 } : undefined,
                 cli_profilePurchase: client.profilePurchase ? { set: client.profilePurchase as string } : undefined,
                 cli_ranking: client.ranking ? { set: client.ranking } : undefined,
                 cli_score: client.rfmScore ? { set: client.rfmScore } : undefined,
                 cli_status: client.statusClient ? { set: client.statusClient as string } : undefined,
                 cli_address: {
-                    updateMany: client.addresses.map((address) => ({
-                        where: { add_id: address.id }, // Certifique-se de que o `add_id` está correto
-                        data: {
-                            add_name: address.nameAddress ? { set: address.nameAddress } : undefined,
-                            add_streetName: address.streetName ? { set: address.streetName } : undefined,
-                            add_publicPlace: address.publicPlace ? { set: address.publicPlace } : undefined,
-                            add_number: address.number ? { set: address.number } : undefined,
-                            add_cep: address.cep ? { set: address.cep } : undefined,
-                            add_neighborhood: address.neighborhood ? { set: address.neighborhood } : undefined,
-                            add_city: address.city ? { set: address.city } : undefined,
-                            add_state: address.state ? { set: address.state } : undefined,
-                            add_compostName: address.compostName ? { set: address.compostName } : undefined,
-                            add_typeResidence: address.typeResidence ? { set: address.typeResidence as string } : undefined,
-                            add_isBilling: address.change ? { set: address.change } : undefined,
-                            add_isDelivery: address.delivery ? { set: address.delivery } : undefined
-                        }
-                    }))
+                    updateMany: client.addresses
+                        .filter(address => address.id) // Atualiza apenas endereços que têm ID (existentes)
+                        .map((address) => ({
+                            where: { add_id: address.id },
+                            data: {
+                                add_name: address.nameAddress ? { set: address.nameAddress } : undefined,
+                                add_streetName: address.streetName ? { set: address.streetName } : undefined,
+                                add_publicPlace: address.publicPlace ? { set: address.publicPlace } : undefined,
+                                add_number: address.number ? { set: address.number } : undefined,
+                                add_cep: address.cep ? { set: address.cep } : undefined,
+                                add_neighborhood: address.neighborhood ? { set: address.neighborhood } : undefined,
+                                add_city: address.city ? { set: address.city } : undefined,
+                                add_state: address.state ? { set: address.state } : undefined,
+                                add_compostName: address.compostName ? { set: address.compostName } : undefined,
+                                add_typeResidence: address.typeResidence ? { set: address.typeResidence as string } : undefined,
+                                add_isBilling: address.change ? { set: address.change } : undefined,
+                                add_isDelivery: address.delivery ? { set: address.delivery } : undefined
+                            }
+                        })),
+                    createMany: {
+                        data: client.addresses
+                            .filter(address => !address.id) // Cria novos endereços que não têm ID
+                            .map((address) => ({
+                                add_name: address.nameAddress,
+                                add_streetName: address.streetName,
+                                add_publicPlace: address.publicPlace,
+                                add_number: address.number,
+                                add_cep: address.cep,
+                                add_neighborhood: address.neighborhood,
+                                add_city: address.city,
+                                add_state: address.state,
+                                add_compostName: address.compostName,
+                                add_typeResidence: address.typeResidence as string,
+                                add_isBilling: address.change as boolean,
+                                add_isDelivery: address.delivery as boolean
+                            }))
+                    }
                 },
                 cli_creditCards: client.creditCard && client.creditCard.length !== 0 ? {
-                    update: {
-                        where: {
-                            cre_id: client.creditCard[0].id
-                        },
-                        data: {
-                            cre_cvv: client.creditCard ? client.creditCard[0].cvv : undefined,
-                            cre_flag: client.creditCard ? client.creditCard[0].flag as string : undefined,
-                            cre_dateMaturity: client.creditCard ? client.creditCard[0].dateValid : undefined,
-                            cre_name: client.creditCard ? client.creditCard[0].namePrinted : undefined,
-                            cre_number_cart: client.creditCard ? client.creditCard[0].number : undefined,
-                        }
+                    updateMany: client.creditCard
+                        .filter(card => card.id) // Atualiza apenas os cartões que têm ID (existentes)
+                        .map((card) => ({
+                            where: { cre_id: card.id },
+                            data: {
+                                cre_cvv: card.cvv,
+                                cre_flag: card.flag as string,
+                                cre_dateMaturity: card.dateValid,
+                                cre_name: card.namePrinted,
+                                cre_number_cart: card.number,
+                                cre_preference: card.preference
+                            }
+                        })),
+                    createMany: {
+                        data: client.creditCard
+                            .filter(card => !card.id) // Cria novos cartões que não têm ID
+                            .map((card) => ({
+                                cre_cvv: card.cvv,
+                                cre_flag: card.flag as string,
+                                cre_dateMaturity: card.dateValid,
+                                cre_name: card.namePrinted,
+                                cre_number_cart: card.number,
+                                cre_preference: card.preference
+                            }))
                     }
                 } : undefined,
                 updated_at: new Date().toISOString()
@@ -146,6 +196,7 @@ export class ClientDao extends DAO {
             }
         });
     }
+
 
     public delete(entity: EntityDomain): Promise<void> {
         throw new Error("Method not implemented.");
@@ -211,11 +262,11 @@ export class ClientDao extends DAO {
         };
 
         // Se o cliente tiver telefones, adiciona filtro para telefones
-        if (client.phone && client.phone.length > 0) {
+        if (client.phones && client.phones.length > 0) {
             filter.cli_phone = {
                 some: {
-                    pho_number: { in: client.phone.map(phone => phone.number) },
-                    pho_ddd: { in: client.phone.map(phone => phone.ddd) },
+                    pho_number: { in: client.phones.map(phone => phone.number) },
+                    pho_ddd: { in: client.phones.map(phone => phone.ddd) },
                 },
             };
         }

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { CreateSaleController } from "../Controllers/Sales/CreateSaleController";
 import { ListSaleController } from "../Controllers/Sales/ListSaleController";
-import updateProfilePurchase from "../utils/updateProfilePurchase";
+import updateProfilePurchase from "../Config/WebHook/updateProfilePurchase";
 
 const routes = Router()
 

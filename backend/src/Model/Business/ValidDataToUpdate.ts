@@ -17,7 +17,7 @@ export class ValidDataToUpdate implements IStrategy {
                 const verifyAddress = await new ValidAddressToUpdate().process(
                     client
                 );
-
+        
                 if (verifyAddress.error) {
                     return verifyAddress;
                 }

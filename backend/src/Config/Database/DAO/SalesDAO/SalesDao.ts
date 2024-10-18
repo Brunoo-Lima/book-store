@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { IDao } from "../../../../interfaces/IDao";
 import { Sales } from "../../../../Model/domain/Sales";
 import { prisma } from "../../prisma/prismaClient";
-import { DAO } from "../DAO";
 
-export class SalesDao extends DAO {
+export class SalesDao implements IDao {
     public async create(sales: Sales): Promise<unknown> { // Criar uma transação para dar baixa no estoque, assim só irá funcionar ambos juntos
         return await prisma.sale.create({
             data: {

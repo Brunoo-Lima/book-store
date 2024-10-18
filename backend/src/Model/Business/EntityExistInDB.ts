@@ -5,8 +5,8 @@ import { IStrategy } from "../../interfaces/IStrategy";
 export class EntityExistInDB implements IStrategy{
     async process(entity:EntityDomain): Promise<object> {
         try {
-            const facade = new Facade(entity)
-            const entityExist = await facade.find()
+            const facade = new Facade()
+            const entityExist = await facade.find(entity)
             if(entityExist){
                 return  {
                     error: `${entity.constructor.name} Exists in DataBase !`

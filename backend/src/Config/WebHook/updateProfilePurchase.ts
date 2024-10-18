@@ -1,7 +1,7 @@
-import { prisma } from "../Config/Database/prisma/prismaClient";
-import { saleCompletedWebhook } from "../Config/WebHook/salesWebHook";
-import { Status } from "../Model/domain/types/Status";
-import { SalesDTO } from "../Model/DTO/SalesDTO";
+import { prisma } from "../Database/prisma/prismaClient";
+import { saleCompletedWebhook } from "./salesWebHook";
+import { Status } from "../../Model/domain/types/Status";
+import { SalesDTO } from "../../Model/DTO/SalesDTO";
 import { Request, Response } from "express";
 
 export default async function updateProfilePurchase(req: Request, res: Response){

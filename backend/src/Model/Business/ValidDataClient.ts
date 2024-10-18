@@ -22,7 +22,7 @@ export class ValidDataClient implements IStrategy {
                 };
             }
         }
-        const phones = client.phone;
+        const phones = client.phones;
         if (phones && phones.length > 0) {
             for (const phone of phones) {
                 if (!phone.ddd || !phone.number) {

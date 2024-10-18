@@ -25,13 +25,13 @@ export class UpdateClientController {
                 client.creditCard[0].id = clientDto.creditCard[0].id
             }
 
-            const facade = new Facade(client)
-            const clientExist = await facade.find() as Client
+            const facade = new Facade()
+            const clientExist = await facade.find(client) as Client
 
             if(!clientExist) return res.json({
                 error: 'Client do not exist ! :('
             })
-            const clientUpdated = await facade.update() as Client
+            const clientUpdated = await facade.update(client) as Client
             if('error' in clientUpdated) {
                 return res.json({
                     error: `This ${clientUpdated.error}`

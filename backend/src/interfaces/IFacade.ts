@@ -1,8 +1,9 @@
+import { EntityDomain } from "../Model/domain/EntityDomain"
 
 export interface IFacade {
-    create(): Promise<unknown>
-    update(): Promise<unknown>
-    delete(): Promise<unknown>
-    find(): Promise<unknown>
-    findMany(): Promise<unknown>
+    create(entity: EntityDomain): Promise<unknown>
+    update(entity: EntityDomain): Promise<unknown>
+    delete(entity: EntityDomain): Promise<unknown>
+    find(entity: EntityDomain): Promise<unknown>
+    findMany(entity: EntityDomain): Promise<unknown>
 }

@@ -16,10 +16,10 @@ export class CreateClientController {
                 }
             )
             const client = FactoryClient.createClient(clientDTO)
-            const facade = new Facade(client)
+            const facade = new Facade()
 
-            const clientCreated = await facade.create() as object
-
+            const clientCreated = await facade.create(client) as object
+            console.log(clientCreated)
             if ("error" in clientCreated) {
                 return res.json({
                     error: `Error ${clientCreated.error}`

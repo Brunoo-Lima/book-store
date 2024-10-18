@@ -8,8 +8,8 @@ export class ListProductController {
         try {
             const product = req.body as ProductDTO
             const productDomain = new Product(product.name, product.product_price, product.quantity)
-            const facade = new Facade(productDomain)
-            const productsList = await facade.findMany()
+            const facade = new Facade()
+            const productsList = await facade.findMany(productDomain)
 
             if(!productsList){
                 return res.json({

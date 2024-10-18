@@ -54,7 +54,7 @@ export class Client extends EntityDomain {
         return this._cpf;
     }
 
-    public get phone(): Phone[] {
+    public get phones(): Phone[] {
         return this._phones;
     }
 
@@ -110,7 +110,7 @@ export class Client extends EntityDomain {
         this._cpf = cpf;
     }
 
-    public set phone(phones: Phone[]) {
+    public set phones(phones: Phone[]) {
         this._phones = phones;
     }
 

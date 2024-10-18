@@ -6,26 +6,35 @@ import { IStrategy } from "../../interfaces/IStrategy";
 export class ValidAddressToUpdate implements IStrategy {
     async process(client: Client) {
         try {
-            const facade = new Facade(client);
-            const clientExist = await facade.find() as PrismaClient;
+            const facade = new Facade();
+            const clientExist = await facade.find(client) as PrismaClient;
 
             if (clientExist && "cli_address" in clientExist && clientExist.cli_address instanceof Array) {
                 // Contadores para verificar quantos endereços de cobrança e entrega existirão após as alterações
                 let billingCount = 0;
                 let deliveryCount = 0;
 
+
                 // Primeiro, contamos os endereços do banco de dados
                 for (const address of clientExist.cli_address) {
                     if (address.add_isBilling) billingCount++;
                     if (address.add_isDelivery) deliveryCount++;
                 }
-
                 // Agora, aplicamos as mudanças que o cliente está tentando fazer
                 for (const newAddress of client.addresses) {
                     const existingAddress = clientExist.cli_address.find(addr => addr.id === newAddress.id);
 
                     if (existingAddress) {
-                        
+                        if(newAddress.change && clientExist.cli_address.some((address) => address.add_isBilling === true)){
+                            return {
+                                error: "You have an address of 'billing', alter the other address to continue !"
+                            }
+                        }
+                        if(!newAddress.delivery && !clientExist.cli_address.some((address) => address.add_isDelivery === true)){
+                            return {
+                                error: 'You have an address with delivery true !'
+                            }
+                        }
                         // Verificar mudanças no campo 'isBilling'
                         if (existingAddress.add_isBilling && newAddress.change === false) {
                             billingCount--; // Se ele mudar um endereço de cobrança para 'false', removemos um da contage
@@ -61,7 +70,9 @@ export class ValidAddressToUpdate implements IStrategy {
                         error: 'The client must have at least one delivery address after the update.'
                     };
                 }
+
             }
+
 
             return { success: 'Address update is valid!' };
         } catch (error) {

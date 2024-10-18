@@ -8,8 +8,8 @@ export class ListClientController {
         try{
             const clientDTO = req.body as ClientDTO
             const client = FactoryClient.createClient(clientDTO)
-            const facade = new Facade(client);
-            const clients = await facade.findMany()
+            const facade = new Facade();
+            const clients = await facade.findMany(client)
 
             if(!clients) {
                 return {

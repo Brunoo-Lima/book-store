@@ -10,8 +10,8 @@ export class CreateProductController {
             const productDto = req.body as ProductDTO
             const productDomain = new Product(productDto.name, productDto.product_price, productDto.quantity)
 
-            const facade = new Facade(productDomain)
-            const productCreated = await facade.create() as ProductPrisma
+            const facade = new Facade()
+            const productCreated = await facade.create(productDomain) as ProductPrisma
 
             if("error" in productCreated){
                 return res.json({

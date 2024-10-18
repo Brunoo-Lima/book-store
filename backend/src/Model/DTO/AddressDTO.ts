@@ -2,6 +2,7 @@ import { TypeResidence } from "../domain/types/TypeResidence"
 
 export interface AddressDTO {
     id: string;
+    clientID: string;
     streetName: string,
     nameAddress: string,
     publicPlace: string,

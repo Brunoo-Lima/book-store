@@ -50,8 +50,8 @@ export class CreateSaleController {
                 items,
                 delivery
             );
-            const facade = new Facade(sale);
-            const addSale = (await facade.create()) as Sale;
+            const facade = new Facade();
+            const addSale = (await facade.create(sale)) as Sale;
 
             if ("error" in addSale) {
                 return res.json({
@@ -59,7 +59,7 @@ export class CreateSaleController {
                 });
             }
             dataSale.id_sales = addSale.sal_id;
-            axios.put("http://localhost:3005/sale/complete", {
+            axios.put("http://localhost:3005/sale/complete", { // Aciona o WebHook
                 data: dataSale,
             });
             return res.json({

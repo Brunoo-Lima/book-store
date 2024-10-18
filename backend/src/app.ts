@@ -7,6 +7,7 @@ import routeLogin from './routes/login'
 import routeSale from './routes/sales'
 import cors from 'cors';
 import routesProduct from "./routes/product";
+
 class App {
     readonly app;
     constructor() {

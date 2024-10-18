@@ -17,8 +17,8 @@ export class UserController {
             const hashPassword = hashSync(password, 2);
             const userDomain = new User(email, hashPassword, hashPassword);
 
-            const facade = new Facade(userDomain);
-            const userDatabase = (await facade.create()) as PrismaUser;
+            const facade = new Facade();
+            const userDatabase = (await facade.create(userDomain)) as PrismaUser;
 
             if (!userDatabase || "error" in userDatabase)
                 return res.json({

@@ -18,8 +18,8 @@ export class Authentication {
             }
 
             const user = new User(email, password, password);
-            const facade = new Facade(user);
-            const userExist = (await facade.find()) as PrismaUser;
+            const facade = new Facade();
+            const userExist = (await facade.find(user)) as PrismaUser;
 
             if (!userExist)
                 return res.json({

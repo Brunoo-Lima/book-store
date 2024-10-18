@@ -1,12 +1,11 @@
 import { IStrategy } from '../../interfaces/IStrategy';
 import { Client } from '../domain/Client';
 
-export class ValidAddresses implements IStrategy {
+export class ValidAddressesToCreate implements IStrategy {
     async process(client: Client) {
         try {
             let hasBilling = false;
             let hasDelivery = false;
-
             for (const address of client.addresses) {
                 // Verifica se o endereço tem delivery ou change como false
                 if (!address.delivery && !address.change) {

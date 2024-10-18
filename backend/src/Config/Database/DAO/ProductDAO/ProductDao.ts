@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { IDao } from "../../../../interfaces/IDao";
 import { Product } from "../../../../Model/domain/Product";
 import { prisma } from "../../prisma/prismaClient";
-import { DAO } from "../DAO";
 
-export class ProductDao extends DAO{
+export class ProductDao implements IDao{
     public async create(product: Product): Promise<unknown> {
         return await prisma.product.create({
             data: {
