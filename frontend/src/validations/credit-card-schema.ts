@@ -4,17 +4,13 @@ export type ICreditCardFormSchema = yup.InferType<typeof CreditCardFormSchema>;
 
 export const CreditCardFormSchema = yup.object().shape({
   number: yup
-    .number()
+    .string()
     .typeError('Número do cartão deve ser um número.')
-    .positive('Número do cartão deve ser positivo.')
-    .integer('Número do cartão deve ser um número inteiro.')
     .required('Número do cartão de crédito é obrigatório.'),
   cvv: yup
-    .number()
+    .string()
     .typeError('CVV deve ser um número.')
-    .positive('CVV deve ser positivo.')
-    .integer('CVV deve ser um número inteiro.')
-    .min(100, 'CVV deve ter no mínimo 3 dígitos.')
+    .min(3, 'CVV deve ter no mínimo 3 dígitos.')
     .required('CVV é obrigatório.'),
   namePrinted: yup
     .string()

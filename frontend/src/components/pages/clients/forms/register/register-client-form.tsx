@@ -1,263 +1,382 @@
 'use client';
 
-import {
-  IClientFormSchema,
-  ClientSchema,
-} from '@/validations/register-client-schema';
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
   Controller,
-  FormProvider,
-  SubmitHandler,
   useFieldArray,
   useForm,
+  SubmitHandler,
 } from 'react-hook-form';
-import ClientPersonalInfoForm from './client-personal-info-form';
 import Button from '@/components/ui/button';
-import ClientAddressResidentialForm from './client-address-residential-form';
-import { useCreateClient } from '@/services/clients';
 import Radio from '@/components/ui/radio';
 import Input from '@/components/ui/input';
-import Textarea from '@/components/ui/textarea';
-import { emptyAddress, IAddressFormSchema } from '@/validations/address-schema';
-import { IError } from '@/@types/error';
+import {
+  ClientSchema,
+  IClientFormSchema,
+} from '@/validations/register-client-schema';
+import { emptyAddress } from '@/validations/address-schema';
+import { IClient } from '@/@types/client';
+import { useRouter } from 'next/navigation';
+
+//TODO: NAO TA ADICIONANDO, VERIFICAR PQ, SE È O YUP OU NAO FAZENDO ISSO
 
 export default function RegisterClientForm() {
-  const methods = useForm({
-    resolver: yupResolver(ClientSchema),
-    defaultValues: {
-      addresses: [],
-    },
-  });
-
   const {
     register,
     reset,
     handleSubmit,
     control,
     formState: { errors },
-  } = methods;
+  } = useForm<IClientFormSchema>({
+    resolver: yupResolver(ClientSchema),
+  });
+  const router = useRouter();
 
-  const residencial = useFieldArray({
+  const addressesFieldArray = useFieldArray({
     control,
     name: 'addresses',
   });
 
-  const { mutateAsync: createClient, isLoading } = useCreateClient();
+  const phonesFieldArray = useFieldArray({
+    control,
+    name: 'phones',
+  });
 
-  const onSubmit = async (data: Partial<IClientFormSchema>) => {
-    console.log('Dados enviados para o onSubmit:', data); // Log para verificar os dados antes do envio
-
-    createClient(data, {
-      onSuccess: (response) => {
-        console.log('Cliente criado com sucesso:', response);
-      },
-      onError: (error) => {
-        console.error('Erro ao criar cliente:', error);
-      },
-    });
-  };
+  const creditCardFieldArray = useFieldArray({
+    control,
+    name: 'creditCart',
+  });
 
   const clearFormFields = () => {
-    reset();
+    // reset();
   };
 
-  const handleAddAddress = () => {
-    residencial.append(emptyAddress);
+  console.log(addressesFieldArray, 'addressesFieldArray');
+  console.log(creditCardFieldArray, 'credit');
+  console.log(phonesFieldArray, 'phones');
+
+  const onSubmit: SubmitHandler<IClientFormSchema> = async (
+    data: IClientFormSchema
+  ) => {
+    console.log('chegando aqui antes do erro');
+    try {
+      console.log('Dados do cliente:', data);
+      router.push('/clientes');
+      // Aqui você pode adicionar a lógica de envio do formulário.
+    } catch (err) {
+      console.error('Erro ao submeter o formulário', err);
+    }
   };
 
   return (
-    <FormProvider {...methods}>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="w-full flex flex-col justify-center gap-8 my-8"
-      >
-        <div className="grid grid-cols-2 gap-6">
-          <div className="space-y-4">
-            {/* <ClientPersonalInfoForm />
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="w-[800px] flex flex-col justify-center gap-8 my-8"
+    >
+      {/* Dados pessoais */}
+      <Input
+        type="text"
+        label="Nome completo"
+        placeholder="Digite o nome completo"
+        error={errors?.name}
+        {...register('name')}
+      />
+      <div className="grid grid-cols-2 gap-3 items-center">
+        <Input
+          type="text"
+          label="CPF"
+          placeholder="000.000.000-00"
+          {...register('cpf')}
+          error={errors?.cpf}
+        />
 
-            <ClientAddressResidentialForm /> */}
+        <Input
+          type="date"
+          label="Data de nascimento"
+          placeholder="dd/MM/aaaa"
+          {...register('dateOfBirth')}
+          error={errors?.dateOfBirth}
+        />
+      </div>
+
+      <div className="flex flex-col">
+        <p className="block text-sm font-medium text-white">Gênero</p>
+        <Radio label="Masculino" value="MALE" {...register('gender')} />
+        <Radio label="Feminino" value="FEMALE" {...register('gender')} />
+        {errors.gender && (
+          <span className="text-red-600 text-sm">{errors.gender.message}</span>
+        )}
+      </div>
+
+      <div className="space-y-4">
+        <Input
+          type="email"
+          label="E-mail"
+          placeholder="Digite seu email"
+          {...register('email')}
+          error={errors?.email}
+        />
+
+        <Input
+          type="password"
+          label="Senha"
+          placeholder="Digite sua senha"
+          {...register('password')}
+          error={errors?.password}
+        />
+
+        <Input
+          type="password"
+          label="Confirme sua senha"
+          placeholder="Digite sua senha novamente"
+          {...register('confirmPassword')}
+          error={errors?.confirmPassword}
+        />
+
+        <Input
+          type="password"
+          label="Nível de compra"
+          placeholder="Digite o nível de compra"
+          {...register('profilePurchase')}
+          error={errors?.profilePurchase}
+        />
+      </div>
+
+      {/* Telefones */}
+      <div className="flex flex-col space-y-2">
+        <p className="text-lg font-semibold">Telefones</p>
+        {phonesFieldArray.fields.map((item, index) => (
+          <div key={item.id} className="flex gap-2">
+            <Input
+              type="text"
+              label="DDD"
+              placeholder="00"
+              {...register(`phones.${index}.ddd`)}
+              error={errors?.phones?.[index]?.ddd}
+            />
+            <Input
+              type="text"
+              label="Número"
+              placeholder="00000-0000"
+              {...register(`phones.${index}.number`)}
+              error={errors?.phones?.[index]?.number}
+            />
+            <Radio
+              label="Fixo"
+              value="FIXO"
+              {...register(`phones.${index}.typePhone`)}
+            />
+            <Radio
+              label="Celular"
+              value="CELULAR"
+              {...register(`phones.${index}.typePhone`)}
+            />
+          </div>
+        ))}
+        <Button
+          type="button"
+          onClick={() =>
+            phonesFieldArray.append({
+              ddd: '',
+              number: '',
+              typePhone: 'CELULAR',
+            })
+          }
+        >
+          Adicionar telefone
+        </Button>
+      </div>
+
+      {/* Endereços */}
+      <div className="flex flex-col space-y-2">
+        <p className="text-lg font-semibold">Endereços</p>
+        {addressesFieldArray.fields.map((item, index) => (
+          <div
+            key={item.id}
+            className="flex flex-col gap-4 border p-4 rounded-md"
+          >
+            <h3 className="text-lg font-medium">Endereço {index + 1}</h3>
+            <Input
+              label="Rua"
+              type="text"
+              placeholder="Digite o nome da rua"
+              {...register(`addresses.${index}.streetName`)}
+              error={errors?.addresses?.[index]?.streetName}
+            />
+
+            <Input
+              label="Cep"
+              type="text"
+              placeholder="Digite o cep"
+              {...register(`addresses.${index}.cep`)}
+              error={errors?.addresses?.[index]?.cep}
+            />
+            <Input
+              label="Número"
+              type="text"
+              placeholder="Digite o número"
+              {...register(`addresses.${index}.number`)}
+              error={errors?.addresses?.[index]?.number}
+            />
 
             <Input
               type="text"
-              label="Nome completo"
-              placeholder="Digite o nome completo"
-              error={errors?.name}
-              {...register('name')}
-            />
-
-            <div className="grid grid-cols-2 gap-3 items-center">
-              <Input
-                type="text"
-                label="CPF"
-                placeholder="000.000.000-00"
-                {...register('cpf')}
-                error={errors?.cpf}
-              />
-
-              <Input
-                type="date"
-                label="Data de nascimento"
-                placeholder="dd/MM/aaaa"
-                {...register('dateOfBirth')}
-                error={errors?.dateOfBirth}
-              />
-            </div>
-
-            <div className="grid md:grid-cols-2 md:gap-4 items-start">
-              <div>
-                <p className="block text-sm font-medium text-white">
-                  Tipo do telefone:{' '}
-                </p>
-                <Radio
-                  label="Celular"
-                  value="CELULAR"
-                  {...register('phones.0.typePhone')}
-                />
-                <Radio
-                  label="Fixo"
-                  value="FIXO"
-                  {...register('phones.0.typePhone')}
-                />
-                {errors?.phones?.[0]?.typePhone && (
-                  <span className="text-sm text-red-600">
-                    {errors.phones[0].typePhone.message}
-                  </span>
-                )}
-              </div>
-
-              {/* // <div key={field.id} className="w-7/12">
-                  //   <Input
-                  //     type="text"
-                  //     label="Cidade"
-                  //     placeholder="Cidade"
-                  //     {...register(`addresses.${index}.city`)}
-                  //     error={errors?.addresses?.[index]?.city}
-                  //   />
-                  // </div> */}
-
-              <div className="w-7/12">
-                <Input
-                  type="text"
-                  label="DDD"
-                  placeholder="DDD"
-                  {...register('phones.0.ddd')}
-                  error={errors?.phones?.[0]?.ddd}
-                />
-              </div>
-
-              <Input
-                type="tel"
-                label="Telefone"
-                placeholder="00000-0000"
-                {...register('phones.0.number')}
-                error={errors?.phones?.[0]?.number}
-                onInput={(event: React.ChangeEvent<HTMLInputElement>) => {
-                  const input = event.target;
-                  input.value = input.value.replace(/[^0-9]/g, '');
-                }}
-              />
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-2 md:gap-4 items-start">
-            <div className="flex flex-col">
-              <p className="block text-sm font-medium text-white">Gênero</p>
-              <Radio label="Masculino" value="MALE" {...register('gender')} />
-              <Radio label="Feminino" value="FEMALE" {...register('gender')} />
-
-              {errors?.gender && (
-                <span className="text-red-600 text-sm">
-                  {errors.gender.message}
-                </span>
-              )}
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <Input
-              type="email"
-              label="E-mail"
-              placeholder="Digite seu email"
-              {...register('email')}
-              error={errors?.email}
+              label="Nome do endereço"
+              placeholder="Digite o nome do endereço"
+              {...register(`addresses.${index}.compostName`)}
+              error={errors?.addresses?.[index]?.compostName}
             />
 
             <Input
-              type="password"
-              label="Senha"
-              placeholder="Digite sua senha"
-              {...register('password')}
-              error={errors?.password}
+              type="text"
+              label="Tipo de Residência"
+              placeholder="Digite o tipo de residência"
+              {...register(`addresses.${index}.typeResidence`)}
+              error={errors?.addresses?.[index]?.typeResidence}
             />
 
             <Input
-              type="password"
-              label="Confirme sua senha"
-              placeholder="Digite sua senha novamente"
-              {...register('confirmPassword')}
-              error={errors?.confirmPassword}
+              type="text"
+              label="Logradouro"
+              placeholder="Digite o logradouro"
+              {...register(`addresses.${index}.publicPlace`)}
+              error={errors?.addresses?.[index]?.publicPlace}
             />
-          </div>
-        </div>
-        <div className="space-y-4">
-          <Input
-            type="text"
-            label="Nível de compra"
-            placeholder="Digite o nivel de compra"
-            {...register('profilePurchase')}
-            error={errors?.profilePurchase}
-          />
-          <div>
-            {/* <Textarea
-          label="Observações"
-          placeholder="Digite sua observação (opcional)"
-          {...register('addresses.0.observation')}
-          error={errors?.addresses?.[0]?.observation}
-        /> */}
-          </div>
-        </div>
-        {/* <ClientAddressDeliveryBilling />
-            <ClientCreditCard /> */}
 
-        {/* <div className="flex justify-center gap-4"> */}
-
-        {/* </div> */}
-
-        <button onClick={handleAddAddress}>Adicionar endereço</button>
-
-        <div className="grid md:grid-cols-2 md:gap-4 items-start">
-          {residencial.fields.map((field, index) => (
-            <Controller
-              key={field.id}
-              control={control}
-              name={`addresses.${index}`}
-              render={({ field: { value, onChange } }) => (
-                <ClientAddressResidentialForm
-                  value={value}
-                  onChange={onChange}
-                  index={index}
-                  error={errors.addresses?.[index]}
-                />
-              )}
+            <Input
+              type="text"
+              label="Bairro"
+              placeholder="Digite o nome do bairro"
+              {...register(`addresses.${index}.neighborhood`)}
+              error={errors?.addresses?.[index]?.neighborhood}
             />
-          ))}
-        </div>
 
-        <Button type="submit" size="default" color="primary">
-          Adicionar cliente
-        </Button>
+            <Input
+              type="text"
+              label="País"
+              placeholder="Digite o país"
+              {...register(`addresses.${index}.country`)}
+              error={errors?.addresses?.[index]?.country}
+            />
 
+            <Input
+              label="Cidade"
+              type="text"
+              placeholder="Digite a cidade"
+              {...register(`addresses.${index}.city`)}
+              error={errors?.addresses?.[index]?.city}
+            />
+            <Input
+              label="Estado"
+              type="text"
+              placeholder="Digite o estado"
+              {...register(`addresses.${index}.state`)}
+              error={errors?.addresses?.[index]?.state}
+            />
+
+            <div>
+              <label htmlFor="">Entrega</label>
+              <input
+                type="checkbox"
+                {...register(`addresses.${index}.delivery`)}
+              />
+            </div>
+
+            <div>
+              <label htmlFor="">Cobrança</label>
+              <input
+                type="checkbox"
+                {...register(`addresses.${index}.change`)}
+              />
+            </div>
+            <Button
+              type="button"
+              onClick={() => addressesFieldArray.remove(index)}
+            >
+              Remover endereço
+            </Button>
+          </div>
+        ))}
         <Button
           type="button"
-          size="default"
-          onClick={clearFormFields}
-          color="empty"
-          className="border-[1px] border-blue-700"
+          onClick={() => addressesFieldArray.append(emptyAddress)}
         >
-          Limpar campos
+          Adicionar endereço
         </Button>
-      </form>
-    </FormProvider>
+      </div>
+
+      {/* Cartões de crédito */}
+      <div className="flex flex-col space-y-2">
+        <p className="text-lg font-semibold">Cartões de Crédito</p>
+        {creditCardFieldArray.fields.map((item, index) => (
+          <div
+            key={item.id}
+            className="flex flex-col gap-4 border p-4 rounded-md"
+          >
+            <h3 className="text-lg font-medium">Cartão {index + 1}</h3>
+            <Input
+              label="Número do Cartão"
+              type="text"
+              placeholder="0000 0000 0000 0000"
+              {...register(`creditCart.${index}.number`)}
+              error={errors?.creditCart?.[index]?.number}
+            />
+            <Input
+              label="Nome Impresso"
+              type="text"
+              placeholder="Nome no cartão"
+              {...register(`creditCart.${index}.namePrinted`)}
+              error={errors?.creditCart?.[index]?.namePrinted}
+            />
+            <Input
+              label="Validade"
+              placeholder="MM/AA"
+              type="text"
+              {...register(`creditCart.${index}.dateValid`)}
+              error={errors?.creditCart?.[index]?.dateValid}
+            />
+            <Input
+              label="CVV"
+              type="text"
+              placeholder="Código de segurança"
+              {...register(`creditCart.${index}.cvv`)}
+              error={errors?.creditCart?.[index]?.cvv}
+            />
+            <Button
+              type="button"
+              onClick={() => creditCardFieldArray.remove(index)}
+            >
+              Remover cartão
+            </Button>
+          </div>
+        ))}
+        <Button
+          type="button"
+          onClick={() =>
+            creditCardFieldArray.append({
+              number: '',
+              dateValid: '',
+              cvv: '',
+              flag: '',
+              preference: false,
+              namePrinted: '',
+            })
+          }
+        >
+          Adicionar cartão de crédito
+        </Button>
+      </div>
+
+      <button type="submit" className="bg-blue-500 rounded-lg p-2">
+        Adicionar cliente
+      </button>
+      <button
+        type="button"
+        onClick={clearFormFields}
+        className="border-emerald-50 border-[1.5px] rounded-lg p-2"
+      >
+        Limpar campos
+      </button>
+    </form>
   );
 }

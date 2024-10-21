@@ -16,10 +16,7 @@ export const AddressFormSchema = yup.object({
   state: yup.string().required('Estado é obrigatório'),
   country: yup.string().required('País é obrigatório'),
   compostName: yup.string(),
-  typeResidence: yup
-    .string()
-    .oneOf(['HOME', 'APARTMENT'])
-    .required('Tipo de residência é obrigatório'),
+  typeResidence: yup.string().required('Tipo de residência é obrigatório'),
   change: yup.boolean(),
   delivery: yup.boolean(),
 });
@@ -43,7 +40,7 @@ export const emptyAddress = {
   state: '',
   country: '',
   compostName: '',
-  typeResidence: 'APARTMENT',
+  typeResidence: '',
   change: false,
   delivery: false,
 };

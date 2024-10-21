@@ -1,7 +1,7 @@
 export interface ICreditCard {
-  id: number;
-  numberCard: number;
-  cvv: number;
+  id: string;
+  number: string;
+  cvv: string;
   nameCreditCard: string;
   dateExpired: string;
   flag: string;

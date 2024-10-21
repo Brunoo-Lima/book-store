@@ -1,87 +1,82 @@
-import { ICreditCard } from '@/@types/credit-card';
-import { XIcon } from 'lucide-react';
-import { useState } from 'react';
-import CreditCard from './credit-card-form';
+import { Control, Controller, UseFormReturn } from 'react-hook-form';
+import Input from '@/components/ui/input';
 import Button from '@/components/ui/button';
 
-export default function ClientCreditCard() {
-  const [isAddCreditCard, setIsAddCreditCard] = useState(false);
-  const [creditCardList, setCreditCardList] = useState<ICreditCard[]>([]);
-  const [activeCreditCard, setActiveCreditCard] = useState<number | null>(null);
+// Define os tipos esperados para as props
+interface ClientCreditCardFormProps {
+  index: number;
+  remove: () => void;
+  control: Control<any>; // Tipar de acordo com seu schema, ex: Control<IClientFormSchema>
+}
 
-  const handleCreditCardClick = (index: number) => {
-    setActiveCreditCard(activeCreditCard === index ? null : index);
-  };
-
-  const handleDeleteCreditCard = (id: number) => {
-    setCreditCardList(creditCardList.filter((item) => item.id !== id));
-  };
-
+export function ClientCreditCardForm({
+  index,
+  remove,
+  control,
+}: ClientCreditCardFormProps) {
   return (
-    <div>
-      <h3 className="text-xl font-semibold my-2">Cartão de Crédito</h3>
+    <div className="flex flex-col gap-4 border p-4 rounded-md">
+      <h3 className="text-lg font-medium">Cartão de Crédito {index + 1}</h3>
 
-      <div>
-        {creditCardList.map((credit, index) => (
-          <li key={index} className="mb-2 list-none">
-            <label
-              className={`p-2 w-full text-left rounded-md cursor-pointer flex justify-between items-center relative transition duration-75 ${
-                activeCreditCard === index ? 'bg-green-600' : 'bg-blue-600'
-              }`}
-            >
-              <input
-                type="radio"
-                name="creditCard"
-                value={index}
-                checked={activeCreditCard === index}
-                onChange={() => handleCreditCardClick(index)}
-                className="mr-2"
-              />
-
-              {activeCreditCard === index && (
-                <span className="text-white text-xs absolute left-4">
-                  Principal
-                </span>
-              )}
-
-              {`Cartão ${index + 1}`}
-
-              <button
-                className="z-10"
-                type="button"
-                onClick={() => handleDeleteCreditCard(credit.id)}
-              >
-                <XIcon size={18} color="#fff" />
-              </button>
-            </label>
-            {activeCreditCard === index && (
-              <div className="bg-zinc-800 border-[1px] rounded-md border-gray-500 p-2 grid grid-cols-2 my-2">
-                <p>Bandeira do cartão: {credit.flag}</p>
-                <p>N° do cartão: {credit.numberCard}</p>
-                <p>CVV: {credit.cvv}</p>
-                <p>Nome: {credit.nameCreditCard}</p>
-                <p>Expira: {credit.dateExpired}</p>
-              </div>
-            )}
-          </li>
-        ))}
-
-        {isAddCreditCard && (
-          <CreditCard
-            creditCardList={creditCardList}
-            setCreditCardList={setCreditCardList}
+      <Controller
+        name={`creditCart.${index}.cardNumber`} // Acessa o array de cartões de crédito
+        control={control}
+        render={({ field, fieldState: { error } }) => (
+          <Input
+            label="Número do Cartão"
+            placeholder="0000 0000 0000 0000"
+            error={error}
+            type="text"
+            {...field}
           />
         )}
+      />
 
-        <Button
-          type="button"
-          size="sm"
-          color="addFields"
-          onClick={() => setIsAddCreditCard(!isAddCreditCard)}
-        >
-          Adicionar cartão
-        </Button>
-      </div>
+      <Controller
+        name={`creditCart.${index}.cardHolderName`}
+        control={control}
+        render={({ field, fieldState: { error } }) => (
+          <Input
+            label="Nome do Titular"
+            type="text"
+            placeholder="Nome no cartão"
+            error={error}
+            {...field}
+          />
+        )}
+      />
+
+      <Controller
+        name={`creditCart.${index}.expiryDate`}
+        control={control}
+        render={({ field, fieldState: { error } }) => (
+          <Input
+            type="text"
+            label="Validade"
+            placeholder="MM/AA"
+            error={error}
+            {...field}
+          />
+        )}
+      />
+
+      <Controller
+        name={`creditCart.${index}.cvv`}
+        control={control}
+        render={({ field, fieldState: { error } }) => (
+          <Input
+            type="text"
+            label="CVV"
+            placeholder="Código de segurança"
+            error={error}
+            {...field}
+          />
+        )}
+      />
+
+      <Button type="button" onClick={remove}>
+        Remover cartão
+      </Button>
     </div>
   );
 }

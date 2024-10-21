@@ -1,45 +1,3 @@
-// import { ICreditCard } from './credit-card';
-
-// export interface IAddress {
-//   street: string;
-//   number: string;
-//   neighborhood: string;
-//   city: string;
-//   state: string;
-//   zipCode: string;
-//   publicPlace: string;
-//   country: string;
-//   observation?: string;
-// }
-
-// export interface IAddressBilling extends IAddress {
-//   id: number;
-// }
-
-// export interface IAddressDelivery extends IAddress {
-//   id: number;
-//   identifier: string;
-// }
-
-// export interface IClient {
-//   id: number;
-//   name: string;
-//   email: string;
-//   password: string;
-//   confirmPassword: string;
-//   dateOfBirth: string;
-//   cpf: string;
-//   typePhone: string;
-//   phone: string;
-//   ranking: number;
-//   gender: string;
-//   status: 'active' | 'inactive' | string;
-//   address: IAddress;
-//   addressDelivery: IAddressDelivery[];
-//   addressBilling: IAddressBilling[];
-//   creditCard: ICreditCard[];
-// }
-
 export interface IClient {
   id: string;
   phones: Phone[];
@@ -63,8 +21,8 @@ export interface Phone {
 
 export interface Address {
   streetName: string;
-  publicPlace: string;
   nameAddress: string;
+  publicPlace: string;
   number: string;
   cep: string;
   neighborhood: string;
@@ -80,7 +38,7 @@ export interface Address {
 export interface CreditCart {
   namePrinted: string;
   number: string;
-  cvv: number;
+  cvv: string;
   dateValid: string;
   flag: string;
   preference: boolean;

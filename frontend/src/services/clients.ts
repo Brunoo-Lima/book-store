@@ -79,7 +79,7 @@ export const findClients = async (filters: Partial<IClient> = {}) => {
 //   });
 // };
 
-export const createClients = async (client: IClient) => {
+export const createClients = async (client: Partial<IClient>) => {
   try {
     console.log('Enviando dados do cliente:', client); // Log para inspecionar os dados antes da requisição
     const response = await api.put<IClient>('/client/create', client);

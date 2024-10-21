@@ -9,10 +9,7 @@ export const ClientSchema = yup.object({
   cpf: yup.string().required('CPF é obrigatório'),
   dateOfBirth: yup.string().required('Data de nascimento é obrigatória'),
   email: yup.string().email('E-mail inválido').required('E-mail é obrigatório'),
-  gender: yup
-    .string()
-    .oneOf(['MALE', 'FEMALE'])
-    .required('Gênero é obrigatório'),
+  gender: yup.string().required('Gênero é obrigatório'),
   password: yup
     .string()
     .required('Senha é obrigatória')
@@ -28,10 +25,7 @@ export const ClientSchema = yup.object({
     .string()
     .oneOf([yup.ref('password')], 'Senhas não são iguais')
     .required('Confirmação de senha é obrigatória'),
-  profilePurchase: yup
-    .string()
-    .oneOf(['BRONZE', 'SILVER', 'GOLD']) // Adapte conforme necessário
-    .required('Perfil de compra é obrigatório'),
+  profilePurchase: yup.string().required('Perfil de compra é obrigatório'),
 
   phones: yup
     .array()
@@ -45,10 +39,7 @@ export const ClientSchema = yup.object({
           .string()
           .matches(/^\d{8,9}$/, 'Número inválido')
           .required('Número de telefone é obrigatório'),
-        typePhone: yup
-          .string()
-          .oneOf(['FIXO', 'CELULAR'], 'Tipo de telefone inválido')
-          .required('Tipo de telefone é obrigatório'),
+        typePhone: yup.string().required('Tipo de telefone é obrigatório'),
       })
     )
     .min(1, 'É necessário ao menos um telefone'),

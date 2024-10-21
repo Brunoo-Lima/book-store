@@ -37,7 +37,7 @@ export default function ClientPersonalInfoForm() {
         />
       </div>
 
-      <div className="grid md:grid-cols-2 md:gap-4 items-start">
+      {/* <div className="grid md:grid-cols-2 md:gap-4 items-start">
         <div>
           <p className="block text-sm font-medium text-white">
             Tipo do telefone:{' '}
@@ -57,9 +57,9 @@ export default function ClientPersonalInfoForm() {
               {errors.phones[0].typePhone.message}
             </span>
           )}
-        </div>
+        </div> */}
 
-        <div className="grid md:grid-cols-2 md:gap-4 items-start">
+      {/* <div className="grid md:grid-cols-2 md:gap-4 items-start">
           <div className="w-7/12">
             <Input
               type="text"
@@ -82,7 +82,7 @@ export default function ClientPersonalInfoForm() {
             }}
           />
         </div>
-      </div>
+      </div> */}
 
       <div className="grid md:grid-cols-2 md:gap-4 items-start">
         <div className="flex flex-col">
