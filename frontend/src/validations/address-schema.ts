@@ -9,7 +9,7 @@ export const AddressFormSchema = yup.object({
   number: yup.string().required('Número é obrigatório'),
   cep: yup
     .string()
-    .matches(/^\d{8}$/, 'CEP inválido')
+    .matches(/^\d{5}-\d{3}$/, 'CEP inválido')
     .required('CEP é obrigatório'),
   neighborhood: yup.string().required('Bairro é obrigatório'),
   city: yup.string().required('Cidade é obrigatória'),
