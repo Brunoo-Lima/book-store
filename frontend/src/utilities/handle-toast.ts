@@ -21,7 +21,7 @@ const isStrapiError = (
   return false;
 };
 
-const notifyError = (message: string) =>
+export const notifyError = (message: string) =>
   toast.error(message, {
     position: 'top-right',
     autoClose: 5000,
@@ -29,7 +29,7 @@ const notifyError = (message: string) =>
       zIndex: 99999999,
     },
   });
-const notifySuccess = (message: string) =>
+export const notifySuccess = (message: string) =>
   toast.success(message, {
     position: 'top-right',
     autoClose: 5000,

@@ -38,7 +38,7 @@ export const emptyAddress = {
   neighborhood: '',
   city: '',
   state: '',
-  country: '',
+  country: 'Brasil',
   compostName: '',
   typeResidence: '',
   change: false,

@@ -46,12 +46,12 @@ export const findClients = async (filters: Partial<IClient> = {}) => {
         delivery: address.add_isDelivery,
       })),
       creditCart: client.cli_creditCards.map((card) => ({
-        namePrinted: '',
-        number: '',
-        cvv: 0,
-        dateValid: '',
-        flag: '',
-        preference: false,
+        namePrinted: card.namePrinted,
+        number: card.number,
+        cvv: card.cvv,
+        dateValid: card.dateValid,
+        flag: card.flag,
+        preference: card.preference,
       })),
     }));
 
@@ -62,32 +62,20 @@ export const findClients = async (filters: Partial<IClient> = {}) => {
   }
 };
 
-// export const createClients = async (client: IClient) => {
-//   try {
-//     const response = await api.put<IClient>('/client/create', client);
-//     return response.data;
-//   } catch (err) {
-//     handleError(err);
-//     throw err;
-//   }
-// };
-
-// export const useCreateClient = async (client: IClient) => {
-//   return useQuery({
-//     queryKey: ['clients'],
-//     queryFn: () => createClients(client),
-//   });
-// };
-
-export const createClients = async (client: Partial<IClient>) => {
+export const createClients = async (client: Omit<IClient, 'id'>) => {
   try {
     console.log('Enviando dados do cliente:', client); // Log para inspecionar os dados antes da requisição
     const response = await api.put<IClient>('/client/create', client);
 
     console.log('Resposta da API:', response.data); // Log para verificar a resposta da API
+
+    if (response.status !== 200 || !response.data) {
+      handleError(response.status);
+      return null;
+    }
+
     return response.data;
   } catch (err) {
-    console.error('Erro na requisição:', err); // Log para capturar o erro
     handleError(err);
     throw err;
   }
@@ -96,9 +84,8 @@ export const createClients = async (client: Partial<IClient>) => {
 // Hook para criar cliente usando useMutation
 export const useCreateClient = () => {
   return useMutation({
-    mutationFn: createClients,
+    mutationFn: (variables: Omit<IClient, 'id'>) => createClients(variables),
     onError: (error) => {
-      console.error('Erro na criação do cliente:', error); // Log para capturar o erro da mutação
       handleError(error);
     },
   });

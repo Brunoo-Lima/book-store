@@ -1,4 +1,4 @@
-import { IAddress } from '@/@types/client';
+import handleError from '@/utilities/handle-toast';
 import axios from 'axios';
 
 interface IAddressAPI {
@@ -12,6 +12,7 @@ interface IAddressAPI {
   logradouro: string;
   siafi: string;
   uf: string;
+  estado: string;
   unidade: string;
 }
 
@@ -22,11 +23,12 @@ export const getCep = async (cep: string) => {
     );
 
     if (!response || response.status !== 200) {
-      throw new Error('Algo deu errado!');
+      handleError('Algo deu errado!');
+      return;
     }
 
     return response.data;
   } catch (err) {
-    throw new Error('Ferrou!');
+    handleError(err);
   }
 };

@@ -2,10 +2,10 @@
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
-  Controller,
   useFieldArray,
   useForm,
   SubmitHandler,
+  Controller,
 } from 'react-hook-form';
 import Button from '@/components/ui/button';
 import Radio from '@/components/ui/radio';
@@ -17,8 +17,12 @@ import {
 import { emptyAddress } from '@/validations/address-schema';
 import { IClient } from '@/@types/client';
 import { useRouter } from 'next/navigation';
-
-//TODO: NAO TA ADICIONANDO, VERIFICAR PQ, SE È O YUP OU NAO FAZENDO ISSO
+import { createClients, useCreateClient } from '@/services/clients';
+import { selectFlagCrediCard } from '@/mocks/select';
+import SelectForm from '@/components/ui/select';
+import handleError, { notifySuccess } from '@/utilities/handle-toast';
+import { FocusEvent } from 'react';
+import { getCep } from '@/services/cep';
 
 export default function RegisterClientForm() {
   const {
@@ -26,6 +30,8 @@ export default function RegisterClientForm() {
     reset,
     handleSubmit,
     control,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<IClientFormSchema>({
     resolver: yupResolver(ClientSchema),
@@ -48,23 +54,51 @@ export default function RegisterClientForm() {
   });
 
   const clearFormFields = () => {
-    // reset();
+    reset();
   };
 
-  console.log(addressesFieldArray, 'addressesFieldArray');
-  console.log(creditCardFieldArray, 'credit');
-  console.log(phonesFieldArray, 'phones');
+  const handleAddCep = async (
+    e: FocusEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    const cep = e.target.value.replace(/\D/g, '');
+
+    try {
+      const data = await getCep(cep);
+
+      if (data) {
+        setValue(`addresses.${index}.cep`, data?.cep);
+        setValue(`addresses.${index}.state`, data?.estado);
+        setValue(`addresses.${index}.neighborhood`, data?.bairro);
+        setValue(`addresses.${index}.publicPlace`, data?.logradouro);
+        setValue(`addresses.${index}.streetName`, data?.logradouro);
+        setValue(`addresses.${index}.city`, data?.localidade);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const onSubmit: SubmitHandler<IClientFormSchema> = async (
     data: IClientFormSchema
   ) => {
-    console.log('chegando aqui antes do erro');
     try {
-      console.log('Dados do cliente:', data);
-      router.push('/clientes');
-      // Aqui você pode adicionar a lógica de envio do formulário.
+      const clientData: Omit<IClient, 'id'> = {
+        ...data,
+        phones: data.phones || [],
+        addresses: data.addresses,
+        creditCart: data.creditCart,
+      };
+      const response = await createClients(clientData);
+
+      if (response) {
+        router.push('/clientes');
+        notifySuccess('Cliente criado com sucesso');
+      } else {
+        handleError('Erro ao criar cliente');
+      }
     } catch (err) {
-      console.error('Erro ao submeter o formulário', err);
+      handleError('Erro ao submeter o formulário');
     }
   };
 
@@ -99,15 +133,6 @@ export default function RegisterClientForm() {
         />
       </div>
 
-      <div className="flex flex-col">
-        <p className="block text-sm font-medium text-white">Gênero</p>
-        <Radio label="Masculino" value="MALE" {...register('gender')} />
-        <Radio label="Feminino" value="FEMALE" {...register('gender')} />
-        {errors.gender && (
-          <span className="text-red-600 text-sm">{errors.gender.message}</span>
-        )}
-      </div>
-
       <div className="space-y-4">
         <Input
           type="email"
@@ -117,40 +142,58 @@ export default function RegisterClientForm() {
           error={errors?.email}
         />
 
-        <Input
-          type="password"
-          label="Senha"
-          placeholder="Digite sua senha"
-          {...register('password')}
-          error={errors?.password}
-        />
+        <div className="grid grid-cols-2 gap-3 items-center">
+          <Input
+            type="password"
+            label="Senha"
+            placeholder="Digite sua senha"
+            {...register('password')}
+            error={errors?.password}
+          />
 
-        <Input
-          type="password"
-          label="Confirme sua senha"
-          placeholder="Digite sua senha novamente"
-          {...register('confirmPassword')}
-          error={errors?.confirmPassword}
-        />
+          <Input
+            type="password"
+            label="Confirme sua senha"
+            placeholder="Digite sua senha novamente"
+            {...register('confirmPassword')}
+            error={errors?.confirmPassword}
+          />
+        </div>
 
-        <Input
-          type="password"
-          label="Nível de compra"
-          placeholder="Digite o nível de compra"
-          {...register('profilePurchase')}
-          error={errors?.profilePurchase}
-        />
+        <div className="grid grid-cols-2 gap-3 items-center">
+          <div className="flex flex-col">
+            <p className="block text-sm font-medium text-white">Gênero</p>
+            <Radio label="Masculino" value="MALE" {...register('gender')} />
+            <Radio label="Feminino" value="FEMALE" {...register('gender')} />
+            {errors.gender && (
+              <span className="text-red-600 text-sm">
+                {errors.gender.message}
+              </span>
+            )}
+          </div>
+
+          <Input
+            type="text"
+            label="Nível de compra"
+            placeholder="Digite o nível de compra"
+            {...register('profilePurchase')}
+            error={errors?.profilePurchase}
+          />
+        </div>
       </div>
 
       {/* Telefones */}
-      <div className="flex flex-col space-y-2">
+      <div className="flex flex-col space-y-2 ">
         <p className="text-lg font-semibold">Telefones</p>
         {phonesFieldArray.fields.map((item, index) => (
-          <div key={item.id} className="flex gap-2">
+          <div
+            key={item.id}
+            className="grid grid-cols-[100px_1fr_1fr] items-center gap-2"
+          >
             <Input
               type="text"
               label="DDD"
-              placeholder="00"
+              placeholder="(00)"
               {...register(`phones.${index}.ddd`)}
               error={errors?.phones?.[index]?.ddd}
             />
@@ -161,16 +204,19 @@ export default function RegisterClientForm() {
               {...register(`phones.${index}.number`)}
               error={errors?.phones?.[index]?.number}
             />
-            <Radio
-              label="Fixo"
-              value="FIXO"
-              {...register(`phones.${index}.typePhone`)}
-            />
-            <Radio
-              label="Celular"
-              value="CELULAR"
-              {...register(`phones.${index}.typePhone`)}
-            />
+
+            <div className="flex gap-x-2">
+              <Radio
+                label="Fixo"
+                value="FIXO"
+                {...register(`phones.${index}.typePhone`)}
+              />
+              <Radio
+                label="Celular"
+                value="CELULAR"
+                {...register(`phones.${index}.typePhone`)}
+              />
+            </div>
           </div>
         ))}
         <Button
@@ -196,13 +242,6 @@ export default function RegisterClientForm() {
             className="flex flex-col gap-4 border p-4 rounded-md"
           >
             <h3 className="text-lg font-medium">Endereço {index + 1}</h3>
-            <Input
-              label="Rua"
-              type="text"
-              placeholder="Digite o nome da rua"
-              {...register(`addresses.${index}.streetName`)}
-              error={errors?.addresses?.[index]?.streetName}
-            />
 
             <Input
               label="Cep"
@@ -210,84 +249,112 @@ export default function RegisterClientForm() {
               placeholder="Digite o cep"
               {...register(`addresses.${index}.cep`)}
               error={errors?.addresses?.[index]?.cep}
-            />
-            <Input
-              label="Número"
-              type="text"
-              placeholder="Digite o número"
-              {...register(`addresses.${index}.number`)}
-              error={errors?.addresses?.[index]?.number}
+              onBlur={(e) => handleAddCep(e, index)}
             />
 
-            <Input
-              type="text"
-              label="Nome do endereço"
-              placeholder="Digite o nome do endereço"
-              {...register(`addresses.${index}.compostName`)}
-              error={errors?.addresses?.[index]?.compostName}
-            />
+            <div className="grid grid-cols-[1fr_200px_1fr] gap-2 items-center">
+              <Input
+                label="Rua"
+                type="text"
+                placeholder="Digite o nome da rua"
+                {...register(`addresses.${index}.streetName`)}
+                error={errors?.addresses?.[index]?.streetName}
+              />
 
-            <Input
-              type="text"
-              label="Tipo de Residência"
-              placeholder="Digite o tipo de residência"
-              {...register(`addresses.${index}.typeResidence`)}
-              error={errors?.addresses?.[index]?.typeResidence}
-            />
+              <Input
+                label="Número"
+                type="text"
+                placeholder="Digite o número"
+                {...register(`addresses.${index}.number`)}
+                error={errors?.addresses?.[index]?.number}
+              />
 
-            <Input
-              type="text"
-              label="Logradouro"
-              placeholder="Digite o logradouro"
-              {...register(`addresses.${index}.publicPlace`)}
-              error={errors?.addresses?.[index]?.publicPlace}
-            />
-
-            <Input
-              type="text"
-              label="Bairro"
-              placeholder="Digite o nome do bairro"
-              {...register(`addresses.${index}.neighborhood`)}
-              error={errors?.addresses?.[index]?.neighborhood}
-            />
-
-            <Input
-              type="text"
-              label="País"
-              placeholder="Digite o país"
-              {...register(`addresses.${index}.country`)}
-              error={errors?.addresses?.[index]?.country}
-            />
-
-            <Input
-              label="Cidade"
-              type="text"
-              placeholder="Digite a cidade"
-              {...register(`addresses.${index}.city`)}
-              error={errors?.addresses?.[index]?.city}
-            />
-            <Input
-              label="Estado"
-              type="text"
-              placeholder="Digite o estado"
-              {...register(`addresses.${index}.state`)}
-              error={errors?.addresses?.[index]?.state}
-            />
-
-            <div>
-              <label htmlFor="">Entrega</label>
-              <input
-                type="checkbox"
-                {...register(`addresses.${index}.delivery`)}
+              <Input
+                type="text"
+                label="Tipo de Residência"
+                placeholder="Digite o tipo de residência"
+                {...register(`addresses.${index}.typeResidence`)}
+                error={errors?.addresses?.[index]?.typeResidence}
               />
             </div>
 
-            <div>
-              <label htmlFor="">Cobrança</label>
-              <input
-                type="checkbox"
-                {...register(`addresses.${index}.change`)}
+            <div className="grid grid-cols-2 gap-3 items-center">
+              <Input
+                type="text"
+                label="Nome do endereço"
+                placeholder="Digite o nome do endereço"
+                {...register(`addresses.${index}.nameAddress`)}
+                error={errors?.addresses?.[index]?.nameAddress}
               />
+
+              <Input
+                type="text"
+                label="Nome composto"
+                placeholder="Digite nome composto"
+                {...register(`addresses.${index}.compostName`)}
+                error={errors?.addresses?.[index]?.compostName}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 items-center">
+              <Input
+                type="text"
+                label="Logradouro"
+                placeholder="Digite o logradouro"
+                {...register(`addresses.${index}.publicPlace`)}
+                error={errors?.addresses?.[index]?.publicPlace}
+              />
+
+              <Input
+                type="text"
+                label="Bairro"
+                placeholder="Digite o nome do bairro"
+                {...register(`addresses.${index}.neighborhood`)}
+                error={errors?.addresses?.[index]?.neighborhood}
+              />
+            </div>
+
+            <div className="grid grid-cols-3 gap-3 items-center">
+              <Input
+                type="text"
+                label="País"
+                placeholder="Digite o país"
+                {...register(`addresses.${index}.country`)}
+                error={errors?.addresses?.[index]?.country}
+              />
+
+              <Input
+                label="Cidade"
+                type="text"
+                placeholder="Digite a cidade"
+                {...register(`addresses.${index}.city`)}
+                error={errors?.addresses?.[index]?.city}
+              />
+              <Input
+                label="Estado"
+                type="text"
+                placeholder="Digite o estado"
+                {...register(`addresses.${index}.state`)}
+                error={errors?.addresses?.[index]?.state}
+              />
+            </div>
+
+            <div className="flex gap-x-2">
+              <div>
+                <label htmlFor="">Entrega</label>
+                <input
+                  type="checkbox"
+                  {...register(`addresses.${index}.delivery`)}
+                />
+              </div>
+
+              <div>
+                <label htmlFor="">Cobrança</label>
+                <input
+                  type="checkbox"
+                  {...register(`addresses.${index}.change`)}
+                />
+              </div>
             </div>
             <Button
               type="button"
@@ -314,6 +381,25 @@ export default function RegisterClientForm() {
             className="flex flex-col gap-4 border p-4 rounded-md"
           >
             <h3 className="text-lg font-medium">Cartão {index + 1}</h3>
+
+            <Controller
+              name={`creditCart.${index}.flag`}
+              control={control}
+              render={({ field }) => (
+                <SelectForm
+                  label="Bandeira"
+                  options={selectFlagCrediCard}
+                  value={
+                    selectFlagCrediCard.find(
+                      (option) => option.value === field.value
+                    ) || null
+                  }
+                  onChange={(option) => field.onChange(option?.value || null)}
+                  error={errors?.creditCart?.[index]?.flag}
+                />
+              )}
+            />
+
             <Input
               label="Número do Cartão"
               type="text"
@@ -328,20 +414,31 @@ export default function RegisterClientForm() {
               {...register(`creditCart.${index}.namePrinted`)}
               error={errors?.creditCart?.[index]?.namePrinted}
             />
-            <Input
-              label="Validade"
-              placeholder="MM/AA"
-              type="text"
-              {...register(`creditCart.${index}.dateValid`)}
-              error={errors?.creditCart?.[index]?.dateValid}
-            />
-            <Input
-              label="CVV"
-              type="text"
-              placeholder="Código de segurança"
-              {...register(`creditCart.${index}.cvv`)}
-              error={errors?.creditCart?.[index]?.cvv}
-            />
+
+            <div className="grid grid-cols-2 gap-x-2 items-center">
+              <Input
+                label="Validade"
+                placeholder="MM/AA"
+                type="text"
+                {...register(`creditCart.${index}.dateValid`)}
+                error={errors?.creditCart?.[index]?.dateValid}
+              />
+              <Input
+                label="CVV"
+                type="text"
+                placeholder="Código de segurança"
+                {...register(`creditCart.${index}.cvv`)}
+                error={errors?.creditCart?.[index]?.cvv}
+              />
+            </div>
+
+            <div>
+              <label htmlFor="">Preferencial</label>
+              <input
+                type="checkbox"
+                {...register(`creditCart.${index}.preference`)}
+              />
+            </div>
             <Button
               type="button"
               onClick={() => creditCardFieldArray.remove(index)}

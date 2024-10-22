@@ -10,7 +10,7 @@ export interface IClient {
   password: string;
   confirmPassword: string;
   addresses: Address[];
-  creditCart: CreditCart[];
+  creditCart?: CreditCart[];
 }
 
 export interface Phone {
@@ -29,10 +29,10 @@ export interface Address {
   city: string;
   state: string;
   country: string;
-  compostName: string;
+  compostName?: string;
   typeResidence: string;
-  change: boolean;
-  delivery: boolean;
+  change?: boolean;
+  delivery?: boolean;
 }
 
 export interface CreditCart {
@@ -41,5 +41,5 @@ export interface CreditCart {
   cvv: string;
   dateValid: string;
   flag: string;
-  preference: boolean;
+  preference?: boolean;
 }
