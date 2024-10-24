@@ -64,10 +64,7 @@ export const findClients = async (filters: Partial<IClient> = {}) => {
 
 export const createClients = async (client: Omit<IClient, 'id'>) => {
   try {
-    console.log('Enviando dados do cliente:', client); // Log para inspecionar os dados antes da requisição
     const response = await api.put<IClient>('/client/create', client);
-
-    console.log('Resposta da API:', response.data); // Log para verificar a resposta da API
 
     if (response.status !== 200 || !response.data) {
       handleError(response.status);
@@ -89,4 +86,20 @@ export const useCreateClient = () => {
       handleError(error);
     },
   });
+};
+
+//Atualizar clientes
+export const updateClients = async (client: Partial<IClient>) => {
+  try {
+    const { data, status } = await api.put<IClient>('client/update', client);
+
+    if (status !== 200 || !data) {
+      handleError(status);
+      return null;
+    }
+
+    return data;
+  } catch (err) {
+    handleError(err);
+  }
 };

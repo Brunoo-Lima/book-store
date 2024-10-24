@@ -11,7 +11,7 @@ import { ValidDataClient } from "../../Model/Business/ValidDataClient";
 import { ValidDataToUpdate } from "../../Model/Business/ValidDataToUpdate";
 import { ValidCreditCard } from "../../Model/Business/ValidCreditCard";
 import { ValidProductsInStock } from "../../Model/Business/ValidProductsInStock";
-import { ValidCPF } from "../../Model/Business/ValidCPF";
+// import { ValidCPF } from "../../Model/Business/ValidCPF";
 
 export class Facade implements IFacade {
     private businessRoles: Map<string, IStrategy[]>;
@@ -26,7 +26,7 @@ export class Facade implements IFacade {
 
     async create(entity: EntityDomain): Promise<unknown> {
         try {
-            this.entity = entity
+            this.entity = entity;
             const strategies = await this.getStrategies(
                 this.entity.constructor.name
             );
@@ -50,7 +50,7 @@ export class Facade implements IFacade {
     }
     async update(entity: EntityDomain): Promise<unknown> {
         try {
-            this.entity = entity
+            this.entity = entity;
             const strategies = await this.getStrategies(
                 `U${this.entity.constructor.name}`
             );
@@ -76,7 +76,7 @@ export class Facade implements IFacade {
     }
     async find(entity: EntityDomain): Promise<unknown> {
         try {
-            this.entity = entity
+            this.entity = entity;
             const dao = this.fillDao(this.entity.constructor.name);
             const entityResearched = await dao.find(this.entity);
             return entityResearched;
@@ -88,7 +88,7 @@ export class Facade implements IFacade {
     }
     async findMany(entity: EntityDomain): Promise<unknown> {
         try {
-            this.entity = entity
+            this.entity = entity;
             const dao = this.fillDao(this.entity.constructor.name);
             const entities = await dao.findMany(this.entity);
             return entities;
@@ -115,7 +115,7 @@ export class Facade implements IFacade {
             new ValidCreditCard(),
             new ValidAddressesToCreate(),
             new ValidDataClient(),
-            new ValidCPF()
+            // new ValidCPF()
         ]);
         this.businessRoles.set("UCLIENT", [new ValidDataToUpdate()]);
         this.businessRoles.set("USER", [
@@ -127,9 +127,7 @@ export class Facade implements IFacade {
             new ValidProductsInStock(),
         ]);
         this.businessRoles.set("PRODUCT", [new EntityExistInDB()]);
-        this.businessRoles.set("ADDRESS", [
-            new EntityExistInDB()
-        ])
+        this.businessRoles.set("ADDRESS", [new EntityExistInDB()]);
     }
     private async getStrategies(key: string) {
         const strategies = this.businessRoles.get(key.toUpperCase());

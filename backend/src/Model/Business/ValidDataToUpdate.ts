@@ -3,7 +3,7 @@ import { Address } from "../domain/Address";
 import { Client } from "../domain/Client";
 import { CreditCard } from "../domain/CreditCard";
 import { ValidAddressToUpdate } from "./ValidAddressToUpdate";
-import { ValidCPF } from "./ValidCPF";
+// import { ValidCPF } from "./ValidCPF";
 import { ValidCreditCard } from "./ValidCreditCard";
 import { ValidPassword } from "./ValidPassword";
 export class ValidDataToUpdate implements IStrategy {
@@ -21,15 +21,18 @@ export class ValidDataToUpdate implements IStrategy {
                 );
                 for (const address of client.addresses) {
                     for (const [key, value] of Object.entries(address)) {
-                        const addressKey = key as keyof Address
+                        const addressKey = key as keyof Address;
 
-                        if (address[addressKey] !== address.compostName && address[addressKey] !== address.id && !value) {
+                        if (
+                            address[addressKey] !== address.compostName &&
+                            address[addressKey] !== address.id &&
+                            !value
+                        ) {
                             return {
-                                error: `The key ${address} has value ${address}`
-                            }
+                                error: `The key ${address} has value ${address}`,
+                            };
                         }
                     }
-
                 }
                 if (verifyAddress.error) {
                     return verifyAddress;
@@ -37,13 +40,13 @@ export class ValidDataToUpdate implements IStrategy {
             }
             if (client.creditCard && client.creditCard.length > 0) {
                 const verifyCreditCard = new ValidCreditCard().process(client);
-                for (const card of client.creditCard ) {
-                    for(const [key, value] of Object.entries(card)){
-                        const cardKey = key as keyof CreditCard
-                        if(card[cardKey] !== card.id && !value){
+                for (const card of client.creditCard) {
+                    for (const [key, value] of Object.entries(card)) {
+                        const cardKey = key as keyof CreditCard;
+                        if (card[cardKey] !== card.id && !value) {
                             return {
-                                error: `The key ${cardKey} cannot be ${value} !`
-                            }
+                                error: `The key ${cardKey} cannot be ${value} !`,
+                            };
                         }
                     }
                 }
@@ -51,12 +54,12 @@ export class ValidDataToUpdate implements IStrategy {
                     return verifyCreditCard;
                 }
             }
-            if (client.cpf.code) {
-                const verifyCpf = await new ValidCPF().process(client)
-                if ("error" in verifyCpf) {
-                    return verifyCpf.error
-                }
-            }
+            // if (client.cpf.code) {
+            //     const verifyCpf = await new ValidCPF().process(client)
+            //     if ("error" in verifyCpf) {
+            //         return verifyCpf.error
+            //     }
+            // }
             return {
                 success: "Update is valid !",
             };
