@@ -15,19 +15,12 @@ import {
   IClientFormSchema,
 } from '@/validations/register-client-schema';
 import { emptyAddress } from '@/validations/address-schema';
-// import { useParams, useRouter } from 'next/navigation';
-import {
-  createClients,
-  findClients,
-  updateClients,
-  useCreateClient,
-} from '@/services/clients';
+import { findClients, updateClients } from '@/services/clients';
 import { selectFlagCrediCard } from '@/mocks/select';
 import SelectForm from '@/components/ui/select';
 import handleError, { notifySuccess } from '@/utilities/handle-toast';
 import { FocusEvent, useEffect } from 'react';
 import { getCep } from '@/services/cep';
-import { useRouter } from 'next/router';
 import { XIcon } from 'lucide-react';
 
 interface IModalProps {
@@ -63,10 +56,6 @@ export const Modal = ({ client, onClose }: IModalProps) => {
     name: 'creditCart',
   });
 
-  const credit = watch('creditCart');
-
-  console.log('ccc', credit);
-
   useEffect(() => {
     if (client) {
       reset(client);
@@ -99,10 +88,24 @@ export const Modal = ({ client, onClose }: IModalProps) => {
     }
   };
 
-  const onSubmit = async (data: IClientFormSchema) => {
-    console.log('Dados a serem enviados:', data); // Adicione esta linha
+  //TOOD: passar partial para os dados, e talvez passar o id no forms tbm
+
+  const onSubmit: SubmitHandler<Partial<IClientFormSchema>> = async (
+    data: Partial<IClientFormSchema>
+  ) => {
+    console.log('Dados a serem enviados:', data);
     try {
-      const updatedClient = await updateClients(data);
+      const clientData: Partial<IClient> = {
+        ...client,
+        ...data,
+      };
+
+      console.log('a', clientData);
+
+      const updatedClient = await updateClients(clientData);
+
+      console.log('Cliente atualizado:', updatedClient);
+
       if (updatedClient) {
         notifySuccess('Cliente atualizado com sucesso!');
         onClose();
@@ -110,7 +113,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
         handleError('Falha ao atualizar o cliente');
       }
     } catch (err) {
-      console.error(err); // Adicione esta linha para registrar erros
+      console.error(err);
       handleError('Erro ao atualizar o cliente');
     }
   };
@@ -120,7 +123,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
   }
 
   return (
-    <div className=" w-[800px] bg-gray-600 fixed -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 z-10 py-4 overflow-hidden">
+    <div className=" w-[800px] bg-gray-900 fixed -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 z-10 py-4 overflow-hidden">
       <XIcon
         onClick={onClose}
         className="absolute top-4 right-4 cursor-pointer"

@@ -11,6 +11,7 @@ export interface IClient {
   confirmPassword: string;
   addresses: Address[];
   creditCart?: CreditCart[];
+  log?: ILog[];
 }
 
 export interface Phone {
@@ -42,4 +43,11 @@ export interface CreditCart {
   dateValid: string;
   flag: string;
   preference?: boolean;
+}
+
+export interface ILog {
+  action?: string;
+  created?: string;
+  updated?: string;
+  user?: string;
 }

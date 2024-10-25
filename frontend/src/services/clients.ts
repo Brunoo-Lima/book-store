@@ -6,16 +6,17 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 
 export const findClients = async (filters: Partial<IClient> = {}) => {
   try {
-    const response = await api.post<IClientList>('/client/find', filters);
+    const { data, status } = await api.post<IClientList>(
+      '/client/find',
+      filters
+    );
 
-    console.log(response.data, 'data');
-
-    if (!response.data || !response.data) {
-      throw new Error('Algo deu errado!');
+    if (status !== 200 || !data) {
+      handleError(status);
     }
 
     // Mapeando a resposta da API para o formato da interface IClient
-    const clients: IClient[] = response.data.clients.map((client) => ({
+    const clients: IClient[] = data.clients.map((client) => ({
       id: client.cli_id,
       phones: client.cli_phone.map((phone) => ({
         ddd: phone.pho_ddd,
@@ -28,8 +29,14 @@ export const findClients = async (filters: Partial<IClient> = {}) => {
       email: '',
       cpf: client.cli_cpf,
       gender: client.cli_gender,
-      password: '',
+      password: client.cli_password,
       confirmPassword: '',
+      log: client.cli_log.map((log) => ({
+        created: log.created_at,
+        action: log.log_action,
+        user: log.fk_log_use_id,
+        updated: log.updated_at,
+      })),
       addresses: client.cli_address.map((address) => ({
         streetName: address.add_streetName,
         publicPlace: address.add_publicPlace,

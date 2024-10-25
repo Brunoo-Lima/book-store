@@ -16,6 +16,7 @@ export interface Client {
   // cli_status: string;
   cli_address: CliAddress[];
   cli_password: string;
+  cli_log: CliLog[];
 }
 
 export interface CliPhone {

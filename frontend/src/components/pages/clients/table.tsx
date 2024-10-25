@@ -19,11 +19,23 @@ export default function Table({ clients }: ITableProps) {
 
   const handleAlterClient = (client: IClient) => {
     setData(client); // Define o cliente que você quer alterar
-    setIsOpenModal(true); // Abre o modal
+    setIsOpenModal(true);
+
+    console.log('cliente dados', client);
   };
 
-  const handleOpenInfoClient = (id: string) => {
-    router.push(`/clientes/informacoes/${id}`);
+  const handleOpenInfoClient = async (client: IClient) => {
+    try {
+      const clientData = await findClients(client);
+
+      if (clientData) {
+        router.push(`/clientes/informacoes/${client.id as string}`);
+      } else {
+        console.error('Cliente não encontrado');
+      }
+    } catch (err) {
+      console.error('Erro ao buscar dados do cliente:', err);
+    }
   };
 
   return (
@@ -39,9 +51,6 @@ export default function Table({ clients }: ITableProps) {
           <tr>
             <th>Id</th>
             <th>Nome</th>
-            {/* <th>Telefone</th> */}
-            {/* <th>Ranking</th> */}
-            {/* <th>Status</th> */}
             <th>Editar</th>
             <th>Visualizar</th>
           </tr>
@@ -55,31 +64,14 @@ export default function Table({ clients }: ITableProps) {
                   {client.id}
                 </td>
                 <td className="p-2">{client.name}</td>
-                {/* <td className="p-2">
-              {client.phones.map((phone) => phone.ddd + phone.number)}
-            </td> */}
-                {/* <td className="p-2">#{client.ranking}</td> */}
-
-                {/* <td className="p-2">
-                <p
-                  className="rounded-sm w-[90%] mx-auto p-1"
-                   style={{
-                   background: `${client.status === 'Ativo' ? 'green' : 'red'} `,
-                  }}
-                >
-                  { {client.status === 'Ativo' ? 'Ativo' : 'Inativo'} }
-                </p>
-              </td> */}
                 <td className="p-2">
                   <button onClick={() => handleAlterClient(client)}>
                     <UserRoundPenIcon size={24} />
                   </button>
                 </td>
                 <td className="p-2">
-                  <button>
-                    <Link href={`/clientes/informacoes/${client.id}`}>
-                      <EyeIcon size={24} />
-                    </Link>
+                  <button onClick={() => handleOpenInfoClient(client)}>
+                    <EyeIcon size={24} />
                   </button>
                 </td>
               </tr>

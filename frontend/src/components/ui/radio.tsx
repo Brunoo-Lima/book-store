@@ -15,7 +15,7 @@ const Radio = forwardRef<HTMLInputElement, IRadioProps>(
           type="radio"
           id={label}
           name={label}
-          className="size-4 text-gray-700 ring-offset-gray-800 bg-gray-700 border-gray-600 outline-none"
+          className="size-4 text-gray-700 ring-offset-gray-800 bg-gray-700 border-gray-600"
           ref={ref}
           {...rest}
         />
