@@ -51,6 +51,7 @@ export default function Table({ clients }: ITableProps) {
           <tr>
             <th>Id</th>
             <th>Nome</th>
+            <th>Status</th>
             <th>Editar</th>
             <th>Visualizar</th>
           </tr>
@@ -64,6 +65,17 @@ export default function Table({ clients }: ITableProps) {
                   {client.id}
                 </td>
                 <td className="p-2">{client.name}</td>
+                <td className="p-2 flex items-center justify-center">
+                  <p
+                    className={`w-20 p-1 rounded-md font-semibold uppercase ${
+                      client.status === 'Activate'
+                        ? 'bg-green-500'
+                        : 'bg-red-500'
+                    }`}
+                  >
+                    {client.status === 'Activate' ? 'Ativo' : 'Inativo'}
+                  </p>
+                </td>
                 <td className="p-2">
                   <button onClick={() => handleAlterClient(client)}>
                     <UserRoundPenIcon size={24} />

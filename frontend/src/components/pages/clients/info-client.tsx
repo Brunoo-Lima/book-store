@@ -1,7 +1,6 @@
 'use client';
 
 import { IClient } from '@/@types/client';
-import { clientsList } from '@/mocks/clientsList';
 import { findClients } from '@/services/clients';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -21,10 +20,6 @@ export default function InfoClient() {
       }
     };
 
-    // if (client) {
-    //   setClientData(client);
-    // }
-
     fetchClient();
   }, [id]);
 
@@ -32,7 +27,7 @@ export default function InfoClient() {
 
   const addresses = clientData.addresses.map((address) => {
     return (
-      <div className="border-2 border-blue-500 p-2 rounded-md">
+      <div className="border-2 border-gray-500 p-2 rounded-md w-[500px] bg-zinc-900">
         <p>
           <span className="font-bold">Identificação do endereço:</span>{' '}
           {address.nameAddress}
@@ -113,6 +108,19 @@ export default function InfoClient() {
         <p>
           <span className="font-bold">Nível Perfil de compra:</span>{' '}
           {clientData.profilePurchase}
+        </p>
+
+        <p>
+          <span className="font-bold">Status:</span>{' '}
+          {clientData.status === 'Activate' ? 'Ativo' : 'Inativo'}
+        </p>
+
+        <p>
+          <span className="font-bold">Ranking:</span> {clientData.ranking}
+        </p>
+
+        <p>
+          <span className="font-bold">Score:</span> {clientData.score}
         </p>
 
         <p>

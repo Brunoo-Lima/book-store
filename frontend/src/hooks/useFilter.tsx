@@ -1,8 +1,6 @@
 'use client';
 
-import { IClient } from '@/@types/client';
 import { ISelect } from '@/@types/select';
-import { clientsList } from '@/mocks/clientsList';
 import { createContext, ReactNode, useContext, useMemo, useState } from 'react';
 
 interface IFilterContextProps {
@@ -16,9 +14,6 @@ interface IFilterContextProps {
   setSelectedCity: React.Dispatch<React.SetStateAction<ISelect | null>>;
   searchName: string;
   setSearchName: React.Dispatch<React.SetStateAction<string>>;
-  // filteredData: IClient[];
-  // setFilteredData: React.Dispatch<React.SetStateAction<IClient[]>>;
-  clearFilters: () => void;
 }
 
 interface FilterProviderProps {
@@ -35,17 +30,6 @@ export const FilterProvider = ({ children }: FilterProviderProps) => {
   const [selectedState, setSelectedState] = useState<ISelect | null>(null);
   const [selectedCity, setSelectedCity] = useState<ISelect | null>(null);
   const [searchName, setSearchName] = useState<string>('');
-  // const [filteredData, setFilteredData] = useState<IClient[]>(clientsList);
-
-  const clearFilters = () => {
-    setSelectedState(null);
-    setSelectedStatus(null);
-    setIsSearching(false);
-    setSearchName('');
-    setSelectedCity(null);
-
-    // setFilteredData(clientsList);
-  };
 
   const contextValue = useMemo(
     () => ({
@@ -55,11 +39,8 @@ export const FilterProvider = ({ children }: FilterProviderProps) => {
       setIsSearching,
       selectedState,
       setSelectedState,
-      clearFilters,
       searchName,
       setSearchName,
-      // filteredData,
-      // setFilteredData,
       selectedCity,
       setSelectedCity,
     }),
@@ -72,8 +53,6 @@ export const FilterProvider = ({ children }: FilterProviderProps) => {
       setSelectedState,
       searchName,
       setSearchName,
-      // filteredData,
-      // setFilteredData,
       selectedCity,
       setSelectedCity,
     ]

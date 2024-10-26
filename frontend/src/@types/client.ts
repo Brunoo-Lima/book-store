@@ -12,6 +12,9 @@ export interface IClient {
   addresses: Address[];
   creditCart?: CreditCart[];
   log?: ILog[];
+  score?: number;
+  ranking?: number;
+  status?: string;
 }
 
 export interface Phone {

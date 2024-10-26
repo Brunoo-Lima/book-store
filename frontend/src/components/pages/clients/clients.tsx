@@ -2,12 +2,11 @@
 
 import Table from './table';
 import { useFilter } from '@/hooks/useFilter';
-import InputSearch from '@/components/ui/Input-search';
-import { selectCities, selectStatesUf, selectStatus } from '@/mocks/select';
-import SelectSearch from '@/components/ui/select-search';
 import { useEffect, useState } from 'react';
 import { IClient } from '@/@types/client';
 import { findClients } from '@/services/clients';
+import handleError from '@/utilities/handle-toast';
+import ModalFilter from './modal-filter';
 
 export default function Clients() {
   const {
@@ -15,9 +14,8 @@ export default function Clients() {
     setSelectedState,
     selectedStatus,
     setSelectedStatus,
-    clearFilters,
-    isSearching,
     setIsSearching,
+    isSearching,
     setSearchName,
     searchName,
     selectedCity,
@@ -25,6 +23,7 @@ export default function Clients() {
   } = useFilter();
 
   const [filteredData, setFilteredData] = useState<IClient[]>([]);
+  const [isOpenModalFilters, setIsOpenModalFilters] = useState<boolean>(false);
 
   const fetchClients = async () => {
     try {
@@ -44,91 +43,75 @@ export default function Clients() {
     fetchClients();
   }, []);
 
-  const applyFilters = () => {
-    const filtered = filteredData.filter((client) => {
-      const matchesName = client.name
-        .toLowerCase()
-        .includes(searchName.toLowerCase());
+  const applyFilters = async () => {
+    try {
+      const clientsData = await findClients();
 
-      // const matchesStatus =
-      //   !selectedStatus || client.status === selectedStatus.value;
+      const filtered = clientsData.filter((client) => {
+        const matchesName = client.name
+          .toLowerCase()
+          .includes(searchName.toLowerCase());
 
-      // const matchesState =
-      //   !selectedState || client.address.state === selectedState.value;
+        const matchesStatus =
+          !selectedStatus || client.status === selectedStatus.value;
 
-      // const matchesCity =
-      //   !selectedCity || client.address.city === selectedCity.value;
+        const matchesState =
+          !selectedState || client.addresses[0].state === selectedState.value;
 
-      // return matchesName && matchesStatus && matchesState && matchesCity;
+        const matchesCity =
+          !selectedCity || client.addresses[0].city === selectedCity.value;
 
-      return matchesName;
-    });
+        return matchesName && matchesStatus && matchesState && matchesCity;
+      });
 
-    setFilteredData(filtered);
+      setFilteredData(filtered);
+    } catch (err) {
+      handleError(err);
+    }
   };
 
   const handleSubmit = () => {
     setIsSearching(true);
     applyFilters();
+    setIsOpenModalFilters(false);
+  };
+
+  const clearFilters = async () => {
+    setSelectedState(null);
+    setSelectedStatus(null);
+    setSearchName('');
+    setSelectedCity(null);
+    setFilteredData([]);
+    await fetchClients();
+    setIsSearching(false);
   };
 
   return (
     <>
-      <div className="border-b-[1.5px] border-b-gray-600/75 py-6">
+      <div className="border-b-[1.5px] border-b-gray-600/75 py-6 relative">
         <div className="flex justify-between items-center">
-          <div className="flex gap-4 items-center">
-            <InputSearch
-              placeholder="Digite o nome do cliente"
-              value={searchName}
-              onChange={(e) => setSearchName(e.target.value)}
-            />
+          <button onClick={() => setIsOpenModalFilters(!isOpenModalFilters)}>
+            Filtros
+          </button>
 
-            <SelectSearch
-              className="w-32"
-              placeholder="Status"
-              options={selectStatus}
-              value={selectedStatus}
-              onChange={(value) => setSelectedStatus(value)}
+          {isOpenModalFilters && (
+            <ModalFilter
+              isSearching={isSearching}
+              handleSubmit={handleSubmit}
+              clearFilters={clearFilters}
             />
-
-            <SelectSearch
-              className="w-28"
-              placeholder="Estado"
-              options={selectStatesUf}
-              value={selectedState}
-              onChange={(value) => setSelectedState(value)}
-            />
-
-            <SelectSearch
-              className="w-44"
-              placeholder="Cidade"
-              options={selectCities}
-              value={selectedCity}
-              onChange={(value) => setSelectedCity(value)}
-            />
-          </div>
-          {isSearching ? (
-            <button
-              onClick={clearFilters}
-              type="button"
-              className="bg-blue-700 text-white w-24 h-9 rounded-2xl align-middle"
-            >
-              Limpar
-            </button>
-          ) : (
-            <button
-              onClick={handleSubmit}
-              type="button"
-              className="bg-blue-700 text-white w-24 h-9 rounded-2xl align-middle"
-            >
-              Buscar
-            </button>
           )}
         </div>
       </div>
 
-      <div className="overflow-x-auto mt-16 mb-4">
-        <Table clients={filteredData} />
+      <div className="overflow-x-auto mt-16 mb-4 relative">
+        {filteredData.length > 0 ? (
+          <Table clients={filteredData} />
+        ) : (
+          <p className="text-center font-bold text-md">
+            Nenhum cliente encontrado
+          </p>
+        )}
       </div>
     </>
   );
