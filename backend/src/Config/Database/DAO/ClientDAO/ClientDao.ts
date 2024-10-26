@@ -5,7 +5,6 @@
 import { Client } from "../../../../Model/domain/Client";
 import { EntityDomain } from "../../../../Model/domain/EntityDomain";
 import { prisma } from "../../prisma/prismaClient";
-import { hashSync } from "bcrypt";
 import { Gender } from "../../../../Model/domain/types/Gender";
 import { StatusClient } from "../../../../Model/domain/types/StatusClient";
 import { IDao } from "../../../../interfaces/IDao";
@@ -20,7 +19,7 @@ export class ClientDao implements IDao {
                     cli_cpf: client.cpf.code,
                     cli_status: client.statusClient as string,
                     cli_gender: client.gender as string,
-                    cli_password: hashSync(client.password, 3),
+                    cli_password: client.password,
                     cli_email: client.email,
                     cli_score: 0,
                     cli_profilePurchase: client.profilePurchase as string,
@@ -90,7 +89,7 @@ export class ClientDao implements IDao {
     public async update(client: Client): Promise<object | null> {
         return await prisma.client.update({
             data: {
-                cli_password: client.password ? { set: hashSync(client.password, 2) } : undefined,
+                cli_password: client.password ? { set: client.password } : undefined,
                 cli_cpf: client.cpf.code ? { set: client.cpf.code } : undefined,
                 cli_dateOfBirth: client.dateOfBirth ? { set: client.dateOfBirth } : undefined,
                 cli_email: client.email ? { set: client.email } : undefined,
@@ -309,6 +308,8 @@ export class ClientDao implements IDao {
                 cli_creditCards: true,
                 cli_dateOfBirth: true,
                 cli_gender: true,
+                cli_email: true,
+                cli_sales: true,
                 cli_phone: true,
                 cli_profilePurchase: true,
                 cli_ranking: true,

@@ -2,18 +2,16 @@ import { IStrategy } from "../../interfaces/IStrategy";
 import { Client } from "../domain/Client";
 import { EntityDomain } from "../domain/EntityDomain";
 import { User } from "../domain/User";
-
+import { hashSync } from "bcrypt";
 export class ValidPassword implements IStrategy {
     //Atualizar está permitindo senhas inválidas
     process(entity: EntityDomain): object {
         if (entity instanceof Client) {
-            if (
-                entity.password !== entity.confirmPassword ||
-                !this.validCharactersPassword(entity.password)
-            )
-                return {
-                    error: "Passwords isn't valid ! Verify if the password contains characters: A-Z, a-z, 0-9, special character, length > 8 or if passwords is equals",
-                };
+            if ( entity.password !== entity.confirmPassword || !this.validCharactersPassword(entity.password))return {
+                error: "Passwords isn't valid ! Verify if the password contains characters: A-Z, a-z, 0-9, special character, length > 8 or if passwords is equals",
+            };
+            entity.password = hashSync(entity.password, 2)
+            entity.confirmPassword = entity.password
         }
         if (entity instanceof User) {
             const user = entity as User;
@@ -25,6 +23,8 @@ export class ValidPassword implements IStrategy {
                     error: "Passwords isn't valid ! Verify if the password contains characters: A-Z, a-z, 0-9, special character, length > 8 or if passwords is equals",
                 };
             }
+            user.setPassword(hashSync(user.getPassword(), 2))
+            user.setConfirmPassword(user.getPassword())
         }
         return {
             success: "Password is valid !",

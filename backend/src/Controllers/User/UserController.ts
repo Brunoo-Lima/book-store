@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { Facade } from "../Facade/Facade";
 import { User } from "../../Model/domain/User"; // Importa o User do domínio
 import { User as PrismaUser } from "@prisma/client"; // Importa o User do Prisma
-import { hashSync } from "bcrypt";
 import jwt from "jsonwebtoken";
 export class UserController {
     async handle(req: Request, res: Response) {
@@ -14,8 +13,7 @@ export class UserController {
                     error: "E-mail and Password should be sent or password do not equals !",
                 });
 
-            const hashPassword = hashSync(password, 2);
-            const userDomain = new User(email, hashPassword, hashPassword);
+            const userDomain = new User(email, password, confirmPassword);
 
             const facade = new Facade();
             const userDatabase = (await facade.create(userDomain)) as PrismaUser;
