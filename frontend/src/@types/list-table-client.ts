@@ -5,10 +5,11 @@ export interface IClientList {
 export interface Client {
   cli_cpf: string;
   cli_id: string;
-  cli_creditCards: any[];
+  cli_creditCards: CliCreditCard[];
   cli_dateOfBirth: string;
   cli_gender: string;
   cli_phone: CliPhone[];
+  cli_email: string;
   cli_profilePurchase: string;
   cli_ranking: number;
   cli_name: string;
@@ -17,6 +18,7 @@ export interface Client {
   cli_address: CliAddress[];
   cli_password: string;
   cli_log: CliLog[];
+  created_at?: string;
 }
 
 export interface CliPhone {
@@ -54,6 +56,18 @@ export interface CliAddress {
   add_isBilling: boolean;
   add_isDelivery: boolean;
   fk_add_cli_id?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+interface CliCreditCard {
+  id?: string;
+  namePrinted: string;
+  number: string;
+  cvv: string;
+  dateValid: string;
+  flag: string;
+  preference?: boolean;
   created_at?: string;
   updated_at?: string;
 }

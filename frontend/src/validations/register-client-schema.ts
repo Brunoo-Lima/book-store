@@ -46,7 +46,7 @@ export const ClientSchema = yup.object({
 
   addresses: yup.array().of(AddressFormSchema).required(),
 
-  creditCart: yup
+  creditCard: yup
     .array()
     .of(CreditCardFormSchema)
     .min(1, 'É necessário ao menos um cartão de crédito'),

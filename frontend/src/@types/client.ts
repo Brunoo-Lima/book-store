@@ -10,11 +10,12 @@ export interface IClient {
   password: string;
   confirmPassword: string;
   addresses: Address[];
-  creditCart?: CreditCart[];
+  creditCard?: CreditCard[];
   log?: ILog[];
   score?: number;
   ranking?: number;
   status?: string;
+  created_at?: string;
 }
 
 export interface Phone {
@@ -39,7 +40,7 @@ export interface Address {
   delivery?: boolean;
 }
 
-export interface CreditCart {
+export interface CreditCard {
   namePrinted: string;
   number: string;
   cvv: string;

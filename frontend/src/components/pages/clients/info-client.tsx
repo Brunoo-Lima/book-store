@@ -2,6 +2,7 @@
 
 import { IClient } from '@/@types/client';
 import { findClients } from '@/services/clients';
+import { formatDateTimeToBr } from '@/utilities/formattedDate';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -79,6 +80,36 @@ export default function InfoClient() {
     );
   });
 
+  // const creditCards =
+  //   clientData.creditCard &&
+  //   clientData.creditCard.map((credit) => {
+  //     return (
+  //       <div className="border-2 border-gray-500 p-2 rounded-md w-[500px] bg-zinc-900">
+  //         <p>
+  //           <span className="font-bold">Bandeira:</span> {credit.flag}
+  //         </p>
+  //         <p>
+  //           <span className="font-bold">Nome impresso:</span>{' '}
+  //           {credit.namePrinted}
+  //         </p>
+  //         <p>
+  //           <span className="font-bold">Número:</span> {credit.number}
+  //         </p>
+  //         <p>
+  //           <span className="font-bold">CVV:</span> {credit.cvv}
+  //         </p>
+  //         <p>
+  //           <span className="font-bold">Data de validade:</span>{' '}
+  //           {credit.dateValid}
+  //         </p>
+  //         <p>
+  //           <span className="font-bold">Preferência:</span>{' '}
+  //           {credit.preference ? 'Sim' : 'Não'}
+  //         </p>
+  //       </div>
+  //     );
+  //   });
+
   return (
     <div className="grid md:grid-cols-2 gap-6">
       <div className="flex flex-col gap-y-2">
@@ -98,7 +129,7 @@ export default function InfoClient() {
 
         <p>
           <span className="font-bold">Data de nascimento:</span>{' '}
-          {clientData.dateOfBirth}
+          {formatDateTimeToBr(clientData.dateOfBirth as string)}
         </p>
 
         <p>
@@ -124,8 +155,25 @@ export default function InfoClient() {
         </p>
 
         <p>
-          <span className="font-bold">Endereço(s):</span>
+          <span className="font-bold">Criado em:</span>{' '}
+          {formatDateTimeToBr(clientData.created_at as string, true)}
         </p>
+
+        {/* <p>
+          <span className="font-bold">
+            Cartões:{' '}
+            {(clientData.creditCard && clientData.creditCard.length) || 0}
+          </span>
+        </p>
+
+        <p>{creditCards}</p> */}
+
+        <p>
+          <span className="font-bold">
+            Endereço(s): {clientData.addresses.length || 0}
+          </span>
+        </p>
+
         <p>{addresses}</p>
       </div>
 

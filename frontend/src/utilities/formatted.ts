@@ -1,5 +1,5 @@
-import { IClient } from './@types/client';
-import { IClientFormSchema } from './validations/register-client-schema';
+import { IClient } from '../@types/client';
+import { IClientFormSchema } from '../validations/register-client-schema';
 
 export const mapFormDataToClient = (
   formData: Partial<IClientFormSchema>

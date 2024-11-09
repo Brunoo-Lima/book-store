@@ -26,7 +26,7 @@ export const findClients = async (filters: Partial<IClient> = {}) => {
       profilePurchase: client.cli_profilePurchase,
       name: client.cli_name,
       dateOfBirth: client.cli_dateOfBirth,
-      email: '',
+      email: client.cli_email,
       cpf: client.cli_cpf,
       gender: client.cli_gender,
       password: client.cli_password,
@@ -34,6 +34,7 @@ export const findClients = async (filters: Partial<IClient> = {}) => {
       status: client.cli_status,
       score: client.cli_score,
       ranking: client.cli_ranking,
+      created_at: client.created_at,
       log: client.cli_log.map((log) => ({
         created: log.created_at,
         action: log.log_action,
@@ -49,13 +50,13 @@ export const findClients = async (filters: Partial<IClient> = {}) => {
         neighborhood: address.add_neighborhood,
         city: address.add_city,
         state: address.add_state,
-        country: '',
+        country: 'BRASIL',
         compostName: address.add_compostName,
         typeResidence: address.add_typeResidence,
         change: address.add_isBilling,
         delivery: address.add_isDelivery,
       })),
-      creditCart: client.cli_creditCards.map((card) => ({
+      creditCard: client.cli_creditCards.map((card) => ({
         namePrinted: card.namePrinted,
         number: card.number,
         cvv: card.cvv,

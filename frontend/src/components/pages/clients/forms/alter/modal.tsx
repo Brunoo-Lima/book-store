@@ -53,7 +53,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
 
   const creditCardFieldArray = useFieldArray({
     control,
-    name: 'creditCart',
+    name: 'creditCard',
   });
 
   useEffect(() => {
@@ -87,8 +87,6 @@ export const Modal = ({ client, onClose }: IModalProps) => {
       console.error(err);
     }
   };
-
-  //TOOD: passar partial para os dados, e talvez passar o id no forms tbm
 
   const onSubmit: SubmitHandler<Partial<IClientFormSchema>> = async (
     data: Partial<IClientFormSchema>
@@ -134,6 +132,14 @@ export const Modal = ({ client, onClose }: IModalProps) => {
         className="w-[600px] max-h-[750px] overflow-y-auto flex flex-col justify-start m-auto gap-8 my-2 px-4 py-4"
       >
         {/* Dados pessoais */}
+
+        <Input
+          type="text"
+          label="Id"
+          value={client.id}
+          placeholder=""
+          readOnly
+        />
         <Input
           type="text"
           label="Nome completo"
@@ -409,7 +415,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
               <h3 className="text-lg font-medium">Cartão {index + 1}</h3>
 
               <Controller
-                name={`creditCart.${index}.flag`}
+                name={`creditCard.${index}.flag`}
                 control={control}
                 render={({ field }) => (
                   <SelectForm
@@ -421,7 +427,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
                       ) || null
                     }
                     onChange={(option) => field.onChange(option?.value || null)}
-                    error={errors?.creditCart?.[index]?.flag}
+                    error={errors?.creditCard?.[index]?.flag}
                   />
                 )}
               />
@@ -430,15 +436,15 @@ export const Modal = ({ client, onClose }: IModalProps) => {
                 label="Número do Cartão"
                 type="text"
                 placeholder="0000 0000 0000 0000"
-                {...register(`creditCart.${index}.number`)}
-                error={errors?.creditCart?.[index]?.number}
+                {...register(`creditCard.${index}.number`)}
+                error={errors?.creditCard?.[index]?.number}
               />
               <Input
                 label="Nome Impresso"
                 type="text"
                 placeholder="Nome no cartão"
-                {...register(`creditCart.${index}.namePrinted`)}
-                error={errors?.creditCart?.[index]?.namePrinted}
+                {...register(`creditCard.${index}.namePrinted`)}
+                error={errors?.creditCard?.[index]?.namePrinted}
               />
 
               <div className="grid grid-cols-2 gap-x-2 items-center">
@@ -446,15 +452,15 @@ export const Modal = ({ client, onClose }: IModalProps) => {
                   label="Validade"
                   placeholder="MM/AA"
                   type="text"
-                  {...register(`creditCart.${index}.dateValid`)}
-                  error={errors?.creditCart?.[index]?.dateValid}
+                  {...register(`creditCard.${index}.dateValid`)}
+                  error={errors?.creditCard?.[index]?.dateValid}
                 />
                 <Input
                   label="CVV"
                   type="text"
                   placeholder="Código de segurança"
-                  {...register(`creditCart.${index}.cvv`)}
-                  error={errors?.creditCart?.[index]?.cvv}
+                  {...register(`creditCard.${index}.cvv`)}
+                  error={errors?.creditCard?.[index]?.cvv}
                 />
               </div>
 
@@ -462,7 +468,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
                 <label htmlFor="">Preferencial</label>
                 <input
                   type="checkbox"
-                  {...register(`creditCart.${index}.preference`)}
+                  {...register(`creditCard.${index}.preference`)}
                 />
               </div>
               <Button
