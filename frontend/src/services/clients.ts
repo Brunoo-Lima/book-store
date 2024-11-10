@@ -11,6 +11,8 @@ export const findClients = async (filters: Partial<IClient> = {}) => {
       filters
     );
 
+    console.log('findClients', data);
+
     if (status !== 200 || !data) {
       handleError(status);
     }
@@ -30,10 +32,11 @@ export const findClients = async (filters: Partial<IClient> = {}) => {
       cpf: client.cli_cpf,
       gender: client.cli_gender,
       password: client.cli_password,
-      confirmPassword: '',
+      confirmPassword: client.cli_password,
       status: client.cli_status,
       score: client.cli_score,
       ranking: client.cli_ranking,
+      sales: client.cli_sales,
       created_at: client.created_at,
       log: client.cli_log.map((log) => ({
         created: log.created_at,
@@ -57,12 +60,13 @@ export const findClients = async (filters: Partial<IClient> = {}) => {
         delivery: address.add_isDelivery,
       })),
       creditCard: client.cli_creditCards.map((card) => ({
-        namePrinted: card.namePrinted,
-        number: card.number,
-        cvv: card.cvv,
-        dateValid: card.dateValid,
-        flag: card.flag,
-        preference: card.preference,
+        id: card.cre_id,
+        namePrinted: card.cre_namePrinted,
+        number: card.cre_number_cart,
+        cvv: card.cre_cvv,
+        dateValid: card.cre_dateMaturity,
+        flag: card.cre_flag,
+        preference: card.cre_preference,
       })),
     }));
 
@@ -100,9 +104,45 @@ export const useCreateClient = () => {
 };
 
 //Atualizar clientes
-export const updateClients = async (client: Partial<IClient>) => {
+export const updateClients = async (
+  client: Partial<IClient>,
+  clientId: string,
+  existingClientData: IClient
+): Promise<IClient | null> => {
   try {
-    const { data, status } = await api.put<IClient>('client/update', client);
+    // Incluindo o ID do cliente no objeto a ser enviado
+    const clientDataToUpdate = { ...client, id: clientId };
+
+    // Objeto para armazenar os campos modificados
+    const modifiedFields: Partial<IClient> = {};
+
+    // Filtrando os campos com valores definidos
+    for (const [key, value] of Object.entries(clientDataToUpdate)) {
+      // Se o valor não for undefined e for diferente do valor existente ou se for 'creditCard'
+      if (
+        value !== undefined &&
+        (key === 'creditCard' || value !== existingClientData[key])
+      ) {
+        modifiedFields[key] = value;
+      }
+    }
+
+    // Se não houver campos modificados, não envia a requisição
+    if (Object.keys(modifiedFields).length === 0) {
+      return null; // Nenhuma alteração para enviar
+    }
+
+    // Se não houver campos modificados, não envia a requisição
+    if (Object.keys(modifiedFields).length === 0) {
+      return null;
+    }
+
+    const { data, status } = await api.put<IClient>('client/update', {
+      id: clientId,
+      ...modifiedFields,
+    });
+
+    console.log('data', data);
 
     if (status !== 200 || !data) {
       handleError(status);
@@ -112,5 +152,6 @@ export const updateClients = async (client: Partial<IClient>) => {
     return data;
   } catch (err) {
     handleError(err);
+    return null;
   }
 };

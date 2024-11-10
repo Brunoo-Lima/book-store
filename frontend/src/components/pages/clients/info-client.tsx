@@ -26,89 +26,93 @@ export default function InfoClient() {
 
   if (!clientData) return;
 
-  const addresses = clientData.addresses.map((address) => {
-    return (
-      <div className="border-2 border-gray-500 p-2 rounded-md w-[500px] bg-zinc-900">
-        <p>
-          <span className="font-bold">Identificação do endereço:</span>{' '}
-          {address.nameAddress}
-        </p>
-        <p>
-          <span className="font-bold">Bairro:</span> {address.neighborhood}
-        </p>
-        <p>
-          <span className="font-bold">Rua:</span> {address.streetName}
-        </p>
-        <p>
-          <span className="font-bold">Logradouro:</span> {address.publicPlace}
-        </p>
-        <p>
-          <span className="font-bold">Número:</span> {address.number}
-        </p>
-        <p>
-          <span className="font-bold">CEP:</span> {address.cep}
-        </p>
-        <p>
-          <span className="font-bold">Cidade:</span> {address.city}
-        </p>
-        <p>
-          <span className="font-bold">Estado:</span> {address.state}
-        </p>
-        <p>
-          <span className="font-bold">País:</span> {address.country}
-        </p>
-        <p>
-          <span className="font-bold">Entrega:</span>{' '}
-          {address.delivery ? 'Sim' : 'Não'}
-        </p>
-        <p>
-          <span className="font-bold">Cobrança:</span>{' '}
-          {address.change ? 'Sim' : 'Não'}
-        </p>
-      </div>
-    );
-  });
+  const addresses =
+    clientData.addresses.length > 0 &&
+    clientData.addresses.map((address) => {
+      return (
+        <div className="border-2 border-gray-500 p-2 rounded-md w-[500px] bg-zinc-900">
+          <p>
+            <span className="font-bold">Identificação do endereço:</span>{' '}
+            {address.nameAddress}
+          </p>
+          <p>
+            <span className="font-bold">Bairro:</span> {address.neighborhood}
+          </p>
+          <p>
+            <span className="font-bold">Rua:</span> {address.streetName}
+          </p>
+          <p>
+            <span className="font-bold">Logradouro:</span> {address.publicPlace}
+          </p>
+          <p>
+            <span className="font-bold">Número:</span> {address.number}
+          </p>
+          <p>
+            <span className="font-bold">CEP:</span> {address.cep}
+          </p>
+          <p>
+            <span className="font-bold">Cidade:</span> {address.city}
+          </p>
+          <p>
+            <span className="font-bold">Estado:</span> {address.state}
+          </p>
+          <p>
+            <span className="font-bold">País:</span> {address.country}
+          </p>
+          <p>
+            <span className="font-bold">Entrega:</span>{' '}
+            {address.delivery ? 'Sim' : 'Não'}
+          </p>
+          <p>
+            <span className="font-bold">Cobrança:</span>{' '}
+            {address.change ? 'Sim' : 'Não'}
+          </p>
+        </div>
+      );
+    });
 
-  const phones = clientData.phones.map((phone) => {
-    return (
-      <div>
-        <p>
-          <span className="font-bold"> Telefone:</span> {phone.ddd}{' '}
-          {phone.number} - {phone.typePhone}
-        </p>
-      </div>
-    );
-  });
+  const phones =
+    clientData.phones.length > 0 &&
+    clientData.phones.map((phone) => {
+      return (
+        <div>
+          <p>
+            <span className="font-bold"> Telefone:</span> {phone.ddd}{' '}
+            {phone.number} - {phone.typePhone}
+          </p>
+        </div>
+      );
+    });
 
-  // const creditCards =
-  //   clientData.creditCard &&
-  //   clientData.creditCard.map((credit) => {
-  //     return (
-  //       <div className="border-2 border-gray-500 p-2 rounded-md w-[500px] bg-zinc-900">
-  //         <p>
-  //           <span className="font-bold">Bandeira:</span> {credit.flag}
-  //         </p>
-  //         <p>
-  //           <span className="font-bold">Nome impresso:</span>{' '}
-  //           {credit.namePrinted}
-  //         </p>
-  //         <p>
-  //           <span className="font-bold">Número:</span> {credit.number}
-  //         </p>
-  //         <p>
-  //           <span className="font-bold">CVV:</span> {credit.cvv}
-  //         </p>
-  //         <p>
-  //           <span className="font-bold">Data de validade:</span>{' '}
-  //           {credit.dateValid}
-  //         </p>
-  //         <p>
-  //           <span className="font-bold">Preferência:</span>{' '}
-  //           {credit.preference ? 'Sim' : 'Não'}
-  //         </p>
-  //       </div>
-  //     );
-  //   });
+  const creditCards =
+    clientData.creditCard.length > 0 &&
+    clientData.creditCard.map((credit) => {
+      return (
+        <div className="border-2 border-gray-500 p-2 rounded-md w-[500px] bg-zinc-900">
+          <p>
+            <span className="font-bold">Bandeira:</span> {credit.flag}
+          </p>
+          <p>
+            <span className="font-bold">Nome impresso:</span>{' '}
+            {credit.namePrinted}
+          </p>
+          <p>
+            <span className="font-bold">Número:</span> {credit.number}
+          </p>
+          <p>
+            <span className="font-bold">CVV:</span> {credit.cvv}
+          </p>
+          <p>
+            <span className="font-bold">Data de validade:</span>{' '}
+            {credit.dateValid}
+          </p>
+          <p>
+            <span className="font-bold">Preferência:</span>{' '}
+            {credit.preference ? 'Sim' : 'Não'}
+          </p>
+        </div>
+      );
+    });
 
   return (
     <div className="grid md:grid-cols-2 gap-6">
@@ -155,18 +159,22 @@ export default function InfoClient() {
         </p>
 
         <p>
+          <span className="font-bold">Vendas:</span>{' '}
+          {clientData.sales.length || 0}
+        </p>
+
+        <p>
           <span className="font-bold">Criado em:</span>{' '}
           {formatDateTimeToBr(clientData.created_at as string, true)}
         </p>
 
-        {/* <p>
+        <p>
           <span className="font-bold">
-            Cartões:{' '}
-            {(clientData.creditCard && clientData.creditCard.length) || 0}
+            Cartões: {clientData.creditCard.length || 0}
           </span>
         </p>
 
-        <p>{creditCards}</p> */}
+        <p>{creditCards}</p>
 
         <p>
           <span className="font-bold">

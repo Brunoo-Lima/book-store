@@ -19,7 +19,7 @@ import { findClients, updateClients } from '@/services/clients';
 import { selectFlagCrediCard } from '@/mocks/select';
 import SelectForm from '@/components/ui/select';
 import handleError, { notifySuccess } from '@/utilities/handle-toast';
-import { FocusEvent, useEffect } from 'react';
+import { FocusEvent, useEffect, useState } from 'react';
 import { getCep } from '@/services/cep';
 import { XIcon } from 'lucide-react';
 
@@ -40,6 +40,22 @@ export const Modal = ({ client, onClose }: IModalProps) => {
   } = useForm<IClientFormSchema>({
     resolver: yupResolver(ClientSchema),
   });
+
+  if (!client) {
+    return;
+  }
+
+  const [editSection, setEditSection] = useState<
+    'dados' | 'enderecos' | 'cartoes' | null
+  >(null);
+
+  const startEditingSection = (section: typeof editSection) => {
+    setEditSection(section);
+  };
+
+  const stopEditingSection = () => {
+    setEditSection(null);
+  };
 
   const addressesFieldArray = useFieldArray({
     control,
@@ -89,22 +105,29 @@ export const Modal = ({ client, onClose }: IModalProps) => {
   };
 
   const onSubmit: SubmitHandler<Partial<IClientFormSchema>> = async (
-    data: Partial<IClientFormSchema>
+    data: Partial<IClient>
   ) => {
-    console.log('Dados a serem enviados:', data);
     try {
-      const clientData: Partial<IClient> = {
-        ...client,
-        ...data,
-      };
+      // Verifica se há dados para atualizar
+      if (!data || Object.keys(data).length === 0) {
+        handleError('Nenhuma alteração encontrada para atualizar.');
+        return;
+      }
 
-      console.log('a', clientData);
+      // Filtra os campos que têm realmente uma alteração
+      const modifiedData = Object.fromEntries(
+        Object.entries(data).filter(([key, value]) => value !== undefined)
+      );
 
-      const updatedClient = await updateClients(clientData);
+      const updatedClient = await updateClients(
+        modifiedData,
+        client.id,
+        client
+      );
 
-      console.log('Cliente atualizado:', updatedClient);
-
+      //A resposta foi bem-sucedida?
       if (updatedClient) {
+        console.log('Cliente atualizado:', updatedClient);
         notifySuccess('Cliente atualizado com sucesso!');
         onClose();
       } else {
@@ -115,10 +138,6 @@ export const Modal = ({ client, onClose }: IModalProps) => {
       handleError('Erro ao atualizar o cliente');
     }
   };
-
-  if (!client) {
-    return;
-  }
 
   return (
     <div className=" w-[800px] bg-gray-900 fixed -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 z-10 py-4 overflow-hidden">
@@ -132,6 +151,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
         className="w-[600px] max-h-[750px] overflow-y-auto flex flex-col justify-start m-auto gap-8 my-2 px-4 py-4"
       >
         {/* Dados pessoais */}
+        <h2 className="text-lg font-semibold">Dados Pessoais</h2>
 
         <Input
           type="text"
@@ -146,6 +166,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
           placeholder="Digite o nome completo"
           error={errors?.name}
           {...register('name')}
+          disabled={editSection !== 'dados'}
         />
         <div className="grid grid-cols-2 gap-3 items-center">
           <Input
@@ -154,6 +175,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
             placeholder="000.000.000-00"
             {...register('cpf')}
             error={errors?.cpf}
+            disabled={editSection !== 'dados'}
           />
 
           <Input
@@ -162,6 +184,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
             placeholder="dd/MM/aaaa"
             {...register('dateOfBirth')}
             error={errors?.dateOfBirth}
+            disabled={editSection !== 'dados'}
           />
         </div>
 
@@ -172,6 +195,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
             placeholder="Digite seu email"
             {...register('email')}
             error={errors?.email}
+            disabled={editSection !== 'dados'}
           />
 
           <div className="grid grid-cols-2 gap-3 items-center">
@@ -181,6 +205,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
               placeholder="Digite sua senha"
               {...register('password')}
               error={errors?.password}
+              disabled={editSection !== 'dados'}
             />
 
             <Input
@@ -189,14 +214,25 @@ export const Modal = ({ client, onClose }: IModalProps) => {
               placeholder="Digite sua senha novamente"
               {...register('confirmPassword')}
               error={errors?.confirmPassword}
+              disabled={editSection !== 'dados'}
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3 items-center">
             <div className="flex flex-col">
               <p className="block text-sm font-medium text-white">Gênero</p>
-              <Radio label="Masculino" value="MALE" {...register('gender')} />
-              <Radio label="Feminino" value="FEMALE" {...register('gender')} />
+              <Radio
+                label="Masculino"
+                value="MALE"
+                {...register('gender')}
+                disabled={editSection !== 'dados'}
+              />
+              <Radio
+                label="Feminino"
+                value="FEMALE"
+                {...register('gender')}
+                disabled={editSection !== 'dados'}
+              />
               {errors.gender && (
                 <span className="text-red-600 text-sm">
                   {errors.gender.message}
@@ -210,6 +246,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
               placeholder="Digite o nível de compra"
               {...register('profilePurchase')}
               error={errors?.profilePurchase}
+              disabled={editSection !== 'dados'}
             />
           </div>
         </div>
@@ -228,6 +265,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
                 placeholder="(00)"
                 {...register(`phones.${index}.ddd`)}
                 error={errors?.phones?.[index]?.ddd}
+                disabled={editSection !== 'dados'}
               />
               <Input
                 type="text"
@@ -235,6 +273,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
                 placeholder="00000-0000"
                 {...register(`phones.${index}.number`)}
                 error={errors?.phones?.[index]?.number}
+                disabled={editSection !== 'dados'}
               />
 
               <div className="flex gap-x-2">
@@ -242,11 +281,13 @@ export const Modal = ({ client, onClose }: IModalProps) => {
                   label="Fixo"
                   value="FIXO"
                   {...register(`phones.${index}.typePhone`)}
+                  disabled={editSection !== 'dados'}
                 />
                 <Radio
                   label="Celular"
                   value="CELULAR"
                   {...register(`phones.${index}.typePhone`)}
+                  disabled={editSection !== 'dados'}
                 />
               </div>
             </div>
@@ -265,6 +306,16 @@ export const Modal = ({ client, onClose }: IModalProps) => {
           </Button>
         </div>
 
+        {editSection === 'dados' ? (
+          <button type="button" onClick={stopEditingSection}>
+            Salvar Dados Pessoais
+          </button>
+        ) : (
+          <button type="button" onClick={() => startEditingSection('dados')}>
+            Editar Dados Pessoais
+          </button>
+        )}
+
         {/* Endereços */}
         <div className="flex flex-col space-y-2">
           <p className="text-lg font-semibold">Endereços</p>
@@ -282,6 +333,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
                 {...register(`addresses.${index}.cep`)}
                 error={errors?.addresses?.[index]?.cep}
                 onBlur={(e) => handleAddCep(e, index)}
+                disabled={editSection !== 'enderecos'}
               />
 
               <div className="grid grid-cols-[1fr_200px_1fr] gap-2 items-center">
@@ -291,6 +343,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
                   placeholder="Digite o nome da rua"
                   {...register(`addresses.${index}.streetName`)}
                   error={errors?.addresses?.[index]?.streetName}
+                  disabled={editSection !== 'enderecos'}
                 />
 
                 <Input
@@ -299,6 +352,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
                   placeholder="Digite o número"
                   {...register(`addresses.${index}.number`)}
                   error={errors?.addresses?.[index]?.number}
+                  disabled={editSection !== 'enderecos'}
                 />
 
                 <Input
@@ -307,6 +361,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
                   placeholder="Digite o tipo de residência"
                   {...register(`addresses.${index}.typeResidence`)}
                   error={errors?.addresses?.[index]?.typeResidence}
+                  disabled={editSection !== 'enderecos'}
                 />
               </div>
 
@@ -317,6 +372,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
                   placeholder="Digite o nome do endereço"
                   {...register(`addresses.${index}.nameAddress`)}
                   error={errors?.addresses?.[index]?.nameAddress}
+                  disabled={editSection !== 'enderecos'}
                 />
 
                 <Input
@@ -325,6 +381,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
                   placeholder="Digite nome composto"
                   {...register(`addresses.${index}.compostName`)}
                   error={errors?.addresses?.[index]?.compostName}
+                  disabled={editSection !== 'enderecos'}
                 />
               </div>
 
@@ -335,6 +392,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
                   placeholder="Digite o logradouro"
                   {...register(`addresses.${index}.publicPlace`)}
                   error={errors?.addresses?.[index]?.publicPlace}
+                  disabled={editSection !== 'enderecos'}
                 />
 
                 <Input
@@ -343,6 +401,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
                   placeholder="Digite o nome do bairro"
                   {...register(`addresses.${index}.neighborhood`)}
                   error={errors?.addresses?.[index]?.neighborhood}
+                  disabled={editSection !== 'enderecos'}
                 />
               </div>
 
@@ -353,6 +412,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
                   placeholder="Digite o país"
                   {...register(`addresses.${index}.country`)}
                   error={errors?.addresses?.[index]?.country}
+                  disabled={editSection !== 'enderecos'}
                 />
 
                 <Input
@@ -361,6 +421,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
                   placeholder="Digite a cidade"
                   {...register(`addresses.${index}.city`)}
                   error={errors?.addresses?.[index]?.city}
+                  disabled={editSection !== 'enderecos'}
                 />
                 <Input
                   label="Estado"
@@ -368,6 +429,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
                   placeholder="Digite o estado"
                   {...register(`addresses.${index}.state`)}
                   error={errors?.addresses?.[index]?.state}
+                  disabled={editSection !== 'enderecos'}
                 />
               </div>
 
@@ -377,6 +439,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
                   <input
                     type="checkbox"
                     {...register(`addresses.${index}.delivery`)}
+                    disabled={editSection !== 'enderecos'}
                   />
                 </div>
 
@@ -385,6 +448,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
                   <input
                     type="checkbox"
                     {...register(`addresses.${index}.change`)}
+                    disabled={editSection !== 'enderecos'}
                   />
                 </div>
               </div>
@@ -402,6 +466,18 @@ export const Modal = ({ client, onClose }: IModalProps) => {
           >
             Adicionar endereço
           </Button>
+          {editSection === 'enderecos' ? (
+            <button type="button" onClick={stopEditingSection}>
+              Salvar Endereços
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => startEditingSection('enderecos')}
+            >
+              Editar Endereços
+            </button>
+          )}
         </div>
 
         {/* Cartões de crédito */}
@@ -428,6 +504,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
                     }
                     onChange={(option) => field.onChange(option?.value || null)}
                     error={errors?.creditCard?.[index]?.flag}
+                    disabled={editSection !== 'cartoes'}
                   />
                 )}
               />
@@ -438,6 +515,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
                 placeholder="0000 0000 0000 0000"
                 {...register(`creditCard.${index}.number`)}
                 error={errors?.creditCard?.[index]?.number}
+                disabled={editSection !== 'cartoes'}
               />
               <Input
                 label="Nome Impresso"
@@ -445,6 +523,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
                 placeholder="Nome no cartão"
                 {...register(`creditCard.${index}.namePrinted`)}
                 error={errors?.creditCard?.[index]?.namePrinted}
+                disabled={editSection !== 'cartoes'}
               />
 
               <div className="grid grid-cols-2 gap-x-2 items-center">
@@ -454,6 +533,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
                   type="text"
                   {...register(`creditCard.${index}.dateValid`)}
                   error={errors?.creditCard?.[index]?.dateValid}
+                  disabled={editSection !== 'cartoes'}
                 />
                 <Input
                   label="CVV"
@@ -461,6 +541,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
                   placeholder="Código de segurança"
                   {...register(`creditCard.${index}.cvv`)}
                   error={errors?.creditCard?.[index]?.cvv}
+                  disabled={editSection !== 'cartoes'}
                 />
               </div>
 
@@ -469,6 +550,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
                 <input
                   type="checkbox"
                   {...register(`creditCard.${index}.preference`)}
+                  disabled={editSection !== 'cartoes'}
                 />
               </div>
               <Button
@@ -494,6 +576,19 @@ export const Modal = ({ client, onClose }: IModalProps) => {
           >
             Adicionar cartão de crédito
           </Button>
+
+          {editSection === 'cartoes' ? (
+            <button type="button" onClick={stopEditingSection}>
+              Salvar cartões
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => startEditingSection('cartoes')}
+            >
+              Editar cartões
+            </button>
+          )}
         </div>
 
         <button type="submit" className="bg-blue-500 rounded-lg p-2">

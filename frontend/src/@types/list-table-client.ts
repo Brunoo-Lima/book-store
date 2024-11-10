@@ -18,6 +18,7 @@ export interface Client {
   cli_address: CliAddress[];
   cli_password: string;
   cli_log: CliLog[];
+  cli_sales: any[];
   created_at?: string;
 }
 
@@ -61,13 +62,13 @@ export interface CliAddress {
 }
 
 interface CliCreditCard {
-  id?: string;
-  namePrinted: string;
-  number: string;
-  cvv: string;
-  dateValid: string;
-  flag: string;
-  preference?: boolean;
+  cre_id: string;
+  cre_namePrinted: string;
+  cre_number_cart: string;
+  cre_cvv: string;
+  cre_dateMaturity: string;
+  cre_flag: string;
+  cre_preference?: boolean;
   created_at?: string;
   updated_at?: string;
 }

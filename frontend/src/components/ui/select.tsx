@@ -62,10 +62,11 @@ interface ISelect {
   value: IOptions | null;
   onChange: (value: IOptions | null) => void;
   error?: FieldError | null;
+  disabled?: boolean;
 }
 
 const SelectForm = forwardRef<HTMLSelectElement, ISelect>(
-  ({ label, options, value, onChange, error }, ref) => {
+  ({ label, options, value, onChange, error, disabled }, ref) => {
     return (
       <div className="w-1/2">
         <label
@@ -80,6 +81,7 @@ const SelectForm = forwardRef<HTMLSelectElement, ISelect>(
           options={options}
           value={value}
           onChange={onChange}
+          isDisabled={disabled}
         />
 
         {error && <span className="text-sm text-red-600">{error.message}</span>}

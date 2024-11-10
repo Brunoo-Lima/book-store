@@ -10,9 +10,10 @@ export interface IClient {
   password: string;
   confirmPassword: string;
   addresses: Address[];
-  creditCard?: CreditCard[];
+  creditCard: CreditCard[];
   log?: ILog[];
   score?: number;
+  sales: any[];
   ranking?: number;
   status?: string;
   created_at?: string;
@@ -41,6 +42,7 @@ export interface Address {
 }
 
 export interface CreditCard {
+  id?: string;
   namePrinted: string;
   number: string;
   cvv: string;
