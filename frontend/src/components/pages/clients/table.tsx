@@ -21,12 +21,19 @@ export default function Table({ clients }: ITableProps) {
     setData(client); // Define o cliente que você quer alterar
     setIsOpenModal(true);
 
-    console.log('cliente dados', client);
+    console.log('cliente dados para atualizar', client);
   };
 
-  const handleOpenInfoClient = async (client: IClient) => {
+  const handleOpenInfoClient = async (client: Partial<IClient>) => {
     try {
-      const clientData = await findClients(client);
+      console.log(
+        'informacao de cliente teste quando abro informações',
+        client
+      );
+
+      const clientData = await findClients();
+
+      client = clientData.find((item) => item.id === client.id) as IClient;
 
       if (clientData) {
         router.push(`/clientes/informacoes/${client.id as string}`);

@@ -106,7 +106,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
 
   const onSubmit: SubmitHandler<Partial<IClientFormSchema>> = async (
     data: Partial<IClient>
-  ) => {
+  ): Promise<void> => {
     try {
       // Verifica se há dados para atualizar
       if (!data || Object.keys(data).length === 0) {
@@ -128,6 +128,8 @@ export const Modal = ({ client, onClose }: IModalProps) => {
       //A resposta foi bem-sucedida?
       if (updatedClient) {
         console.log('Cliente atualizado:', updatedClient);
+
+        updateClients(updatedClient as IClient, client.id, client);
         notifySuccess('Cliente atualizado com sucesso!');
         onClose();
       } else {
@@ -303,6 +305,15 @@ export const Modal = ({ client, onClose }: IModalProps) => {
             }
           >
             Adicionar telefone
+          </Button>
+
+          <Button
+            type="button"
+            onClick={() =>
+              phonesFieldArray.remove(phonesFieldArray.fields.length - 1)
+            }
+          >
+            Remover telefone
           </Button>
         </div>
 

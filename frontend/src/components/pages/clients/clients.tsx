@@ -24,8 +24,10 @@ export default function Clients() {
 
   const [filteredData, setFilteredData] = useState<IClient[]>([]);
   const [isOpenModalFilters, setIsOpenModalFilters] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const fetchClients = async () => {
+    setIsLoading(true);
     try {
       const clientsData = await findClients();
 
@@ -35,13 +37,19 @@ export default function Clients() {
 
       setFilteredData(validClients);
     } catch (error) {
-      console.error('Erro ao buscar clientes', error);
+      handleError(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
     fetchClients();
   }, []);
+
+  if (isLoading) {
+    return <p>Carregando...</p>;
+  }
 
   const applyFilters = async () => {
     try {

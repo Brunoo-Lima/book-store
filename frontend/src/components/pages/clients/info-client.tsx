@@ -3,21 +3,26 @@
 import { IClient } from '@/@types/client';
 import { findClients } from '@/services/clients';
 import { formatDateTimeToBr } from '@/utilities/formattedDate';
+import handleError from '@/utilities/handle-toast';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export default function InfoClient() {
   const { id } = useParams();
-  const [clientData, setClientData] = useState<IClient>();
+  const [clientData, setClientData] = useState<IClient | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchClient = async () => {
+      setIsLoading(true);
       try {
-        const client = await findClients(clientData);
+        const client = await findClients();
         const clientFind = client.find((item) => item.id === id);
-        setClientData(clientFind);
+        setClientData(clientFind || null);
       } catch (error) {
-        console.error('Erro ao buscar clientes:', error);
+        handleError(error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -26,11 +31,13 @@ export default function InfoClient() {
 
   if (!clientData) return;
 
+  if (isLoading) return <p>Carregando...</p>;
+
   const addresses =
     clientData.addresses.length > 0 &&
     clientData.addresses.map((address) => {
       return (
-        <div className="border-2 border-gray-500 p-2 rounded-md w-[500px] bg-zinc-900">
+        <div className="border-2 border-gray-500 p-2 rounded-md w-[500px] bg-zinc-900 mb-1">
           <p>
             <span className="font-bold">Identificação do endereço:</span>{' '}
             {address.nameAddress}
@@ -75,10 +82,10 @@ export default function InfoClient() {
     clientData.phones.length > 0 &&
     clientData.phones.map((phone) => {
       return (
-        <div>
+        <div className="border-2 border-gray-500 p-2 rounded-md w-[500px] bg-zinc-900 mb-1">
           <p>
-            <span className="font-bold"> Telefone:</span> {phone.ddd}{' '}
-            {phone.number} - {phone.typePhone}
+            <span className="font-bold"> Telefone:</span> {phone.numberCombine}{' '}
+            - {phone.typePhone}
           </p>
         </div>
       );
@@ -88,7 +95,7 @@ export default function InfoClient() {
     clientData.creditCard.length > 0 &&
     clientData.creditCard.map((credit) => {
       return (
-        <div className="border-2 border-gray-500 p-2 rounded-md w-[500px] bg-zinc-900">
+        <div className="border-2 border-gray-500 p-2 rounded-md w-[500px] bg-zinc-900 mb-1">
           <p>
             <span className="font-bold">Bandeira:</span> {credit.flag}
           </p>
@@ -115,7 +122,7 @@ export default function InfoClient() {
     });
 
   return (
-    <div className="grid md:grid-cols-2 gap-6">
+    <div className="grid md:grid-cols-2 gap-6 ">
       <div className="flex flex-col gap-y-2">
         <p>
           <span className="font-bold">Nome:</span> {clientData.name}
@@ -160,7 +167,7 @@ export default function InfoClient() {
 
         <p>
           <span className="font-bold">Vendas:</span>{' '}
-          {clientData.sales.length || 0}
+          {clientData.sales?.length || 0}
         </p>
 
         <p>
@@ -185,7 +192,7 @@ export default function InfoClient() {
         <p>{addresses}</p>
       </div>
 
-      <div>
+      <div className="h-[1000px] overflow-y-auto pb-4 no-scrollbar">
         <h2 className="text-xl font-semibold">Log de alteração de dados</h2>
 
         <div className="flex flex-col gap-y-2">

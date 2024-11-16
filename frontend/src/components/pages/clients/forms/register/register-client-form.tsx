@@ -50,7 +50,7 @@ export default function RegisterClientForm() {
 
   const creditCardFieldArray = useFieldArray({
     control,
-    name: 'creditCart',
+    name: 'creditCard',
   });
 
   const clearFormFields = () => {
@@ -87,9 +87,11 @@ export default function RegisterClientForm() {
         ...data,
         phones: data.phones || [],
         addresses: data.addresses,
-        creditCart: data.creditCart,
+        creditCard: data.creditCard || [],
       };
       const response = await createClients(clientData);
+
+      console.log('response da criação', response);
 
       if (response) {
         router.push('/clientes');
@@ -383,7 +385,7 @@ export default function RegisterClientForm() {
             <h3 className="text-lg font-medium">Cartão {index + 1}</h3>
 
             <Controller
-              name={`creditCart.${index}.flag`}
+              name={`creditCard.${index}.flag`}
               control={control}
               render={({ field }) => (
                 <SelectForm
@@ -395,7 +397,7 @@ export default function RegisterClientForm() {
                     ) || null
                   }
                   onChange={(option) => field.onChange(option?.value || null)}
-                  error={errors?.creditCart?.[index]?.flag}
+                  error={errors?.creditCard?.[index]?.flag}
                 />
               )}
             />
@@ -404,15 +406,15 @@ export default function RegisterClientForm() {
               label="Número do Cartão"
               type="text"
               placeholder="0000 0000 0000 0000"
-              {...register(`creditCart.${index}.number`)}
-              error={errors?.creditCart?.[index]?.number}
+              {...register(`creditCard.${index}.number`)}
+              error={errors?.creditCard?.[index]?.number}
             />
             <Input
               label="Nome Impresso"
               type="text"
               placeholder="Nome no cartão"
-              {...register(`creditCart.${index}.namePrinted`)}
-              error={errors?.creditCart?.[index]?.namePrinted}
+              {...register(`creditCard.${index}.namePrinted`)}
+              error={errors?.creditCard?.[index]?.namePrinted}
             />
 
             <div className="grid grid-cols-2 gap-x-2 items-center">
@@ -420,15 +422,15 @@ export default function RegisterClientForm() {
                 label="Validade"
                 placeholder="MM/AA"
                 type="text"
-                {...register(`creditCart.${index}.dateValid`)}
-                error={errors?.creditCart?.[index]?.dateValid}
+                {...register(`creditCard.${index}.dateValid`)}
+                error={errors?.creditCard?.[index]?.dateValid}
               />
               <Input
                 label="CVV"
                 type="text"
                 placeholder="Código de segurança"
-                {...register(`creditCart.${index}.cvv`)}
-                error={errors?.creditCart?.[index]?.cvv}
+                {...register(`creditCard.${index}.cvv`)}
+                error={errors?.creditCard?.[index]?.cvv}
               />
             </div>
 
@@ -436,7 +438,7 @@ export default function RegisterClientForm() {
               <label htmlFor="">Preferencial</label>
               <input
                 type="checkbox"
-                {...register(`creditCart.${index}.preference`)}
+                {...register(`creditCard.${index}.preference`)}
               />
             </div>
             <Button

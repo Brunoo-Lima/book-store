@@ -18,7 +18,7 @@ export interface Client {
   cli_address: CliAddress[];
   cli_password: string;
   cli_log: CliLog[];
-  cli_sales: any[];
+  cli_sales?: CliSales[] | [];
   created_at?: string;
 }
 
@@ -26,7 +26,7 @@ export interface CliPhone {
   pho_id: string;
   pho_ddd: string;
   pho_number: string;
-  pho_numberCombine: string;
+  pho_numberCombine?: string;
   pho_type_phone: string;
   fk_pho_cli_id?: string;
   created_at?: string;
@@ -63,7 +63,7 @@ export interface CliAddress {
 
 interface CliCreditCard {
   cre_id: string;
-  cre_namePrinted: string;
+  cre_name: string;
   cre_number_cart: string;
   cre_cvv: string;
   cre_dateMaturity: string;
@@ -71,4 +71,12 @@ interface CliCreditCard {
   cre_preference?: boolean;
   created_at?: string;
   updated_at?: string;
+}
+
+interface CliSales {
+  sal_id: string;
+  sal_date_sale: string;
+  sal_date_update: string;
+  sal_status: string;
+  fk_sal_cli_id?: string;
 }

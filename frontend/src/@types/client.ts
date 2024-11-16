@@ -13,19 +13,22 @@ export interface IClient {
   creditCard: CreditCard[];
   log?: ILog[];
   score?: number;
-  sales: any[];
+  sales?: Sales[] | [];
   ranking?: number;
   status?: string;
   created_at?: string;
 }
 
 export interface Phone {
+  id?: string;
   ddd: string;
   number: string;
   typePhone: string;
+  numberCombine?: string;
 }
 
 export interface Address {
+  id?: string;
   streetName: string;
   nameAddress: string;
   publicPlace: string;
@@ -56,4 +59,11 @@ export interface ILog {
   created?: string;
   updated?: string;
   user?: string;
+}
+
+interface Sales {
+  id?: string;
+  date_sale: string;
+  date_update: string;
+  status: string;
 }
