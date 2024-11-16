@@ -28,7 +28,7 @@ export class Client extends EntityDomain {
         private _rfmScore: number, // Pontuação que atrela o perfil ao cliente
         private _ranking: number,
         private _addresses: Address[],
-        private _creditCard: CreditCard[] | null,
+        private _creditCard: CreditCard[] | null
     ) {
         super();
     }
@@ -141,8 +141,8 @@ export class Client extends EntityDomain {
     public set password(password: string) {
         this._password = password;
     }
-    public set confirmPassword(password: string){
-        this._confirmPassword= password;
+    public set confirmPassword(password: string) {
+        this._confirmPassword = password;
     }
 }
 
@@ -150,52 +150,51 @@ export abstract class FactoryClient {
     static createClient(clientDTO: ClientDTO): Client {
         // Mapeamento dos telefones
         const phones: Phone[] = clientDTO.phones
-            ? clientDTO.phones.map(phoneDTO => {
-                return new Phone({
-                    _ddd: phoneDTO.ddd,
-                    _number: phoneDTO.number,
-                    _typePhone: phoneDTO.typePhone as TypePhone
-                });
-            })
+            ? clientDTO.phones.map((phoneDTO) => {
+                  return new Phone({
+                      _ddd: phoneDTO.ddd,
+                      _number: phoneDTO.number,
+                      _typePhone: phoneDTO.typePhone as TypePhone,
+                  });
+              })
             : [];
 
         // Mapeamento dos endereços
         const addresses: Address[] = clientDTO.addresses
-            ? clientDTO.addresses.map(addressDTO => {
-                return new Address({
-                    streetName: addressDTO.streetName,
-                    nameAddress: addressDTO.nameAddress,
-                    publicPlace: addressDTO.publicPlace,
-                    number: addressDTO.number,
-                    cep: addressDTO.cep,
-                    neighborhood: addressDTO.neighborhood,
-                    city: addressDTO.city,
-                    state: addressDTO.state,
-                    compostName: addressDTO.compostName,
-                    typeResidence: addressDTO.typeResidence as TypeResidence,
-                    change: addressDTO.change,
-                    delivery: addressDTO.delivery,
-                });
-            })
+            ? clientDTO.addresses.map((addressDTO) => {
+                  return new Address({
+                      streetName: addressDTO.streetName,
+                      nameAddress: addressDTO.nameAddress,
+                      publicPlace: addressDTO.publicPlace,
+                      number: addressDTO.number,
+                      cep: addressDTO.cep,
+                      neighborhood: addressDTO.neighborhood,
+                      city: addressDTO.city,
+                      state: addressDTO.state,
+                      compostName: addressDTO.compostName,
+                      typeResidence: addressDTO.typeResidence as TypeResidence,
+                      change: addressDTO.change,
+                      delivery: addressDTO.delivery,
+                  });
+              })
             : [];
-
 
         // Mapeamento do cartão de crédito (se houver)
         const creditCard = clientDTO.creditCard
-            ? clientDTO.creditCard.map(card => {
-                return new CreditCard({
-                    _namePrinted: card.namePrinted,
-                    _number: card.number,
-                    _cvv: card.cvv,
-                    _dateValid: card.dateValid,
-                    _flag: card.flag.toUpperCase(),
-                    _preference: card.preference
-                });
-            })
+            ? clientDTO.creditCard.map((card) => {
+                  return new CreditCard({
+                      _namePrinted: card.namePrinted,
+                      _number: card.number,
+                      _cvv: card.cvv,
+                      _dateValid: card.dateValid,
+                      _flag: card.flag.toUpperCase(),
+                      _preference: card.preference,
+                  });
+              })
             : [];
 
         // Criando o objeto Client com os dados mapeados
-        const profile = getProfilePurchase(0, 0, 0)
+        const profile = getProfilePurchase(0, 0, 0);
         return new Client(
             phones,
             profile.profile,
@@ -214,4 +213,3 @@ export abstract class FactoryClient {
         );
     }
 }
-

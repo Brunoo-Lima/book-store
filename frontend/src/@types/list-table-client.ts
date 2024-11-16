@@ -14,7 +14,7 @@ export interface Client {
   cli_ranking: number;
   cli_name: string;
   cli_score: number;
-  cli_status: string;
+  cli_status?: string;
   cli_address: CliAddress[];
   cli_password: string;
   cli_log: CliLog[];

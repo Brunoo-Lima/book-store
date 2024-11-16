@@ -75,12 +75,12 @@ export default function Table({ clients }: ITableProps) {
                 <td className="p-2 flex items-center justify-center">
                   <p
                     className={`w-20 p-1 rounded-md font-semibold uppercase ${
-                      client.status === 'Activate'
+                      client.status?.includes('Activate')
                         ? 'bg-green-500'
                         : 'bg-red-500'
                     }`}
                   >
-                    {client.status === 'Activate' ? 'Ativo' : 'Inativo'}
+                    {client.status?.includes('Activate') ? 'Ativo' : 'Inativo'}
                   </p>
                 </td>
                 <td className="p-2">

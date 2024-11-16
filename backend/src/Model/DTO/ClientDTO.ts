@@ -7,10 +7,10 @@ import { AddressDTO } from "./AddressDTO";
 
 export interface ClientDTO {
     phones: {
-        ddd: string | "",
-        number: string | "",
-        typePhone: TypePhone
-    }[]// Alterado de uma tupla para um array
+        ddd: string | "";
+        number: string | "";
+        typePhone: TypePhone;
+    }[]; // Alterado de uma tupla para um array
     id: UUID;
     profilePurchase: ProfilePurchase;
     statusClient: StatusClient;
@@ -21,14 +21,14 @@ export interface ClientDTO {
     gender: Gender;
     password: string | "";
     confirmPassword: string | "";
-    addresses: AddressDTO[] | []
+    addresses: AddressDTO[] | [];
     creditCard: {
         id: string;
-        namePrinted: string,
-        number: string,
-        cvv: string,
-        dateValid: string,
-        flag: string,
-        preference: boolean
+        namePrinted: string;
+        number: string;
+        cvv: string;
+        dateValid: string;
+        flag: string;
+        preference: boolean;
     }[]; // Alterado de uma tupla para um array ou null
 }

@@ -253,6 +253,32 @@ export const Modal = ({ client, onClose }: IModalProps) => {
           </div>
         </div>
 
+        <div className="grid grid-cols-2 gap-3 items-center">
+          <div className="flex flex-col">
+            <p className="block text-sm font-medium text-white">
+              Status do cliente
+            </p>
+
+            <Radio
+              label="Ativo"
+              value="Ativo"
+              {...register('status')}
+              disabled={editSection !== 'dados'}
+            />
+            <Radio
+              label="Inativo"
+              value="Inativo"
+              {...register('status')}
+              disabled={editSection !== 'dados'}
+            />
+            {errors.status && (
+              <span className="text-red-600 text-sm">
+                {errors.status.message}
+              </span>
+            )}
+          </div>
+        </div>
+
         {/* Telefones */}
         <div className="flex flex-col space-y-2 ">
           <p className="text-lg font-semibold">Telefones</p>
