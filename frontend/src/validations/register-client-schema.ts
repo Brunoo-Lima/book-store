@@ -1,5 +1,5 @@
 import * as yup from 'yup';
-import { AddressFormSchema, AddressDeliveryFormSchema } from './address-schema';
+import { AddressFormSchema } from './address-schema';
 import { CreditCardFormSchema } from './credit-card-schema';
 
 export type IClientFormSchema = yup.InferType<typeof ClientSchema>;
@@ -51,3 +51,10 @@ export const ClientSchema = yup.object({
     .of(CreditCardFormSchema)
     .min(1, 'É necessário ao menos um cartão de crédito'),
 });
+
+export const emptyPhones = {
+  id: Math.ceil(Math.random() * 1000).toString(),
+  ddd: '',
+  number: '',
+  typePhone: '',
+};

@@ -12,6 +12,7 @@ import Radio from '@/components/ui/radio';
 import Input from '@/components/ui/input';
 import {
   ClientSchema,
+  emptyPhones,
   IClientFormSchema,
 } from '@/validations/register-client-schema';
 import { emptyAddress } from '@/validations/address-schema';
@@ -108,6 +109,57 @@ export const Modal = ({ client, onClose }: IModalProps) => {
     data: Partial<IClient>
   ): Promise<void> => {
     try {
+      // const updatedAddresses = data.addresses?.map((address, index) => {
+      //   const original = client.addresses[index]; // Dados originais do cliente
+      //   return {
+      //     ...address,
+      //     id: original?.id, // ID é necessário apenas para os itens existentes
+      //     // Filtra apenas os campos alterados
+      //     ...(address.cep !== original.cep && { cep: address.cep }),
+      //     ...(address.city !== original.city && { city: address.city }),
+      //     ...(address.compostName !== original.compostName && {
+      //       compostName: address.compostName,
+      //     }),
+      //     ...(address.delivery !== original.delivery && {
+      //       delivery: address.delivery,
+      //     }),
+      //     ...(address.nameAddress !== original.nameAddress && {
+      //       nameAddress: address.nameAddress,
+      //     }),
+      //     ...(address.neighborhood !== original.neighborhood && {
+      //       neighborhood: address.neighborhood,
+      //     }),
+      //     ...(address.number !== original.number && { number: address.number }),
+      //     ...(address.publicPlace !== original.publicPlace && {
+      //       publicPlace: address.publicPlace,
+      //     }),
+      //     ...(address.state !== original.state && { state: address.state }),
+      //     ...(address.streetName !== original.streetName && {
+      //       streetName: address.streetName,
+      //     }),
+      //   };
+      // });
+
+      // const updatedPhones = data.phones?.map((phone, index) => {
+      //   const original = client.phones[index];
+      //   return {
+      //     ...phone,
+      //     id: original?.id,
+      //     ...(phone.ddd !== original.ddd && { ddd: phone.ddd }),
+      //     ...(phone.number !== original.number && { number: phone.number }),
+      //   };
+      // });
+
+      // const updatedCreditCards = data.creditCard?.map((card, index) => {
+      //   const original = client.creditCard[index];
+      //   return {
+      //     ...card,
+      //     id: original?.id,
+      //     ...(card.flag !== original.flag && { flag: card.flag }),
+      //     ...(card.number !== original.number && { number: card.number }),
+      //   };
+      // });
+
       // Verifica se há dados para atualizar
       if (!data || Object.keys(data).length === 0) {
         handleError('Nenhuma alteração encontrada para atualizar.');
@@ -119,9 +171,16 @@ export const Modal = ({ client, onClose }: IModalProps) => {
         Object.entries(data).filter(([key, value]) => value !== undefined)
       );
 
+      // const modifiedData = {
+      //   ...data,
+      //   addresses: updatedAddresses,
+      //   phones: updatedPhones,
+      //   creditCard: updatedCreditCards,
+      // };
+
       const updatedClient = await updateClients(
         modifiedData,
-        client.id,
+        client.id as string,
         client
       );
 
@@ -130,7 +189,6 @@ export const Modal = ({ client, onClose }: IModalProps) => {
         console.log('Cliente atualizado:', updatedClient);
         console.log('ID do cliente:', client);
 
-        updateClients(updatedClient as IClient, client.id, client);
         notifySuccess('Cliente atualizado com sucesso!');
         onClose();
       } else {
@@ -308,39 +366,31 @@ export const Modal = ({ client, onClose }: IModalProps) => {
               <div className="flex gap-x-2">
                 <Radio
                   label="Fixo"
-                  value="FIXO"
+                  value="FIXED"
                   {...register(`phones.${index}.typePhone`)}
                   disabled={editSection !== 'dados'}
                 />
                 <Radio
                   label="Celular"
-                  value="CELULAR"
+                  value="MOBILE"
                   {...register(`phones.${index}.typePhone`)}
                   disabled={editSection !== 'dados'}
                 />
               </div>
+
+              <Button
+                type="button"
+                onClick={() => phonesFieldArray.remove(index)}
+              >
+                Remover telefone
+              </Button>
             </div>
           ))}
           <Button
             type="button"
-            onClick={() =>
-              phonesFieldArray.append({
-                ddd: '',
-                number: '',
-                typePhone: 'CELULAR',
-              })
-            }
+            onClick={() => phonesFieldArray.append(emptyPhones)}
           >
             Adicionar telefone
-          </Button>
-
-          <Button
-            type="button"
-            onClick={() =>
-              phonesFieldArray.remove(phonesFieldArray.fields.length - 1)
-            }
-          >
-            Remover telefone
           </Button>
         </div>
 
@@ -444,15 +494,6 @@ export const Modal = ({ client, onClose }: IModalProps) => {
               </div>
 
               <div className="grid grid-cols-3 gap-3 items-center">
-                <Input
-                  type="text"
-                  label="País"
-                  placeholder="Digite o país"
-                  {...register(`addresses.${index}.country`)}
-                  error={errors?.addresses?.[index]?.country}
-                  disabled={editSection !== 'enderecos'}
-                />
-
                 <Input
                   label="Cidade"
                   type="text"

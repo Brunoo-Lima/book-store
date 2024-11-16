@@ -8,7 +8,6 @@ export class ValidAddressToUpdate implements IStrategy {
         try {
             const facade = new Facade();
             const clientExist = (await facade.find(client)) as PrismaClient;
-
             if (
                 clientExist &&
                 "cli_address" in clientExist &&
@@ -30,65 +29,52 @@ export class ValidAddressToUpdate implements IStrategy {
                     );
 
                     if (existingAddress) {
-                        if (
-                            newAddress.change &&
-                            clientExist.cli_address.some(
-                                (address) => address.add_isBilling === true
-                            )
-                        ) {
-                            return {
-                                error: "You have an address of 'billing', alter the other address to continue !",
-                            };
-                        }
-                        if (
-                            !newAddress.delivery &&
-                            !clientExist.cli_address.some(
-                                (address) => address.add_isDelivery === true
-                            )
-                        ) {
-                            return {
-                                error: "You have an address with delivery true !",
-                            };
-                        }
-                        // Verificar mudanças no campo 'isBilling'
+                        // Atualizar contagem de billing
                         if (
                             existingAddress.add_isBilling &&
                             newAddress.change === false
                         ) {
-                            billingCount--; // Se ele mudar um endereço de cobrança para 'false', removemos um da contage
+                            billingCount--; // Se alterar um endereço de cobrança para false
                         } else if (
                             !existingAddress.add_isBilling &&
                             newAddress.change === true
                         ) {
-                            billingCount++; // Se ele mudar um endereço que não era de cobrança para 'true', adicionamos um
+                            billingCount++; // Se alterar um endereço para cobrança
                         }
 
-                        // Verificar mudanças no campo 'isDelivery'
+                        // Atualizar contagem de delivery
                         if (
                             existingAddress.add_isDelivery &&
                             newAddress.delivery === false
                         ) {
-                            deliveryCount--; // Remover um da contagem de entrega
+                            deliveryCount--; // Remover da contagem de entrega
                         } else if (
                             !existingAddress.add_isDelivery &&
                             newAddress.delivery === true
                         ) {
-                            deliveryCount++; // Adicionar um à contagem de entrega
+                            deliveryCount++; // Adicionar à contagem de entrega
                         }
-                    } else {
-                        // Novo endereço sendo adicionado, contamos o valor informado pelo cliente
-                        if (newAddress.change === true) billingCount++;
-                        if (newAddress.delivery === true) deliveryCount++;
+                    } else if (
+                        clientExist.cli_address.some(
+                            (address) => address.add_isBilling === true
+                        ) &&
+                        client.addresses.some((address) => address.change)
+                    ) {
+                        billingCount++;
                     }
                 }
-
-                // Verificação final: o cliente precisa ter pelo menos 1 endereço de cobrança e 1 de entrega
+                // Validação final para billing
                 if (billingCount === 0) {
                     return {
                         error: "The client must have at least one billing address after the update.",
                     };
                 }
 
+                if (billingCount > 1) {
+                    return {
+                        error: "The client have more than one billing address!",
+                    };
+                }
                 if (deliveryCount === 0) {
                     return {
                         error: "The client must have at least one delivery address after the update.",

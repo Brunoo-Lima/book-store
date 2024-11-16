@@ -29,6 +29,7 @@ export interface Phone {
 
 export interface Address {
   id?: string;
+  clientID?: string;
   streetName: string;
   nameAddress: string;
   publicPlace: string;
@@ -37,8 +38,7 @@ export interface Address {
   neighborhood: string;
   city: string;
   state: string;
-  country: string;
-  compostName?: string;
+  compostName: string;
   typeResidence: string;
   change?: boolean;
   delivery?: boolean;

@@ -2,15 +2,15 @@ import { ISelect } from '@/@types/select';
 
 export const selectFlagCrediCard: ISelect[] = [
   {
-    value: 'Visa',
+    value: 'VISA',
     label: 'Visa',
   },
   {
-    value: 'Mastercard',
+    value: 'MASTERCARD',
     label: 'Mastercard',
   },
   {
-    value: 'Elo',
+    value: 'ELO',
     label: 'Elo',
   },
 ];

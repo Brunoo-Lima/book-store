@@ -48,6 +48,11 @@ export default function InfoClient() {
           <p>
             <span className="font-bold">Rua:</span> {address.streetName}
           </p>
+
+          <p>
+            <span className="font-bold">Tipo de residência:</span>{' '}
+            {address.typeResidence}
+          </p>
           <p>
             <span className="font-bold">Logradouro:</span> {address.publicPlace}
           </p>
@@ -58,20 +63,21 @@ export default function InfoClient() {
             <span className="font-bold">CEP:</span> {address.cep}
           </p>
           <p>
+            <span className="font-bold">Complemento:</span>{' '}
+            {address.compostName}
+          </p>
+          <p>
             <span className="font-bold">Cidade:</span> {address.city}
           </p>
           <p>
             <span className="font-bold">Estado:</span> {address.state}
           </p>
           <p>
-            <span className="font-bold">País:</span> {address.country}
-          </p>
-          <p>
-            <span className="font-bold">Entrega:</span>{' '}
+            <span className="font-bold">Endereço de Entrega:</span>{' '}
             {address.delivery ? 'Sim' : 'Não'}
           </p>
           <p>
-            <span className="font-bold">Cobrança:</span>{' '}
+            <span className="font-bold">Endereço de Cobrança:</span>{' '}
             {address.change ? 'Sim' : 'Não'}
           </p>
         </div>

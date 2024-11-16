@@ -318,14 +318,6 @@ export default function RegisterClientForm() {
 
             <div className="grid grid-cols-3 gap-3 items-center">
               <Input
-                type="text"
-                label="País"
-                placeholder="Digite o país"
-                {...register(`addresses.${index}.country`)}
-                error={errors?.addresses?.[index]?.country}
-              />
-
-              <Input
                 label="Cidade"
                 type="text"
                 placeholder="Digite a cidade"

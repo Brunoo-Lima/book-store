@@ -56,9 +56,9 @@ export const findClients = async (filters: Partial<IClient> = {}) => {
           neighborhood: address.add_neighborhood,
           city: address.add_city,
           state: address.add_state,
-          country: 'BRASIL',
           compostName: address.add_compostName,
           typeResidence: address.add_typeResidence,
+          clientID: address.fk_add_cli_id,
           change: address.add_isBilling,
           delivery: address.add_isDelivery,
         })) || [],
@@ -152,8 +152,6 @@ export const updateClients = async (
       id: clientId,
       ...modifiedFields,
     });
-
-    console.log('data', data);
 
     if (status !== 200 || !data) {
       handleError(status);
