@@ -26,7 +26,7 @@ export const ClientSchema = yup.object({
     .oneOf([yup.ref('password')], 'Senhas não são iguais')
     .required('Confirmação de senha é obrigatória'),
   profilePurchase: yup.string().required('Perfil de compra é obrigatório'),
-  status: yup.string().optional(),
+  statusClient: yup.string().optional(),
   phones: yup
     .array()
     .of(

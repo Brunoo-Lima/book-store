@@ -2,6 +2,7 @@ import { IStrategy } from "../../interfaces/IStrategy";
 import { Address } from "../domain/Address";
 import { Client } from "../domain/Client";
 import { CreditCard } from "../domain/CreditCard";
+import { StatusClient } from "../domain/types/StatusClient";
 import { ValidAddressToUpdate } from "./ValidAddressToUpdate";
 // import { ValidCPF } from "./ValidCPF";
 import { ValidCreditCard } from "./ValidCreditCard";
@@ -9,6 +10,17 @@ import { ValidPassword } from "./ValidPassword";
 export class ValidDataToUpdate implements IStrategy {
     async process(client: Client): Promise<string | object | undefined> {
         try {
+            if (
+                client.statusClient &&
+                !Object.values(StatusClient).includes(
+                    client.statusClient as StatusClient
+                )
+            ) {
+                return {
+                    error: "Status client is invalid !",
+                };
+            }
+
             if (client.password) {
                 const verifyPassword = new ValidPassword().process(client);
                 if ("error" in verifyPassword) {
@@ -54,6 +66,7 @@ export class ValidDataToUpdate implements IStrategy {
                     return verifyCreditCard;
                 }
             }
+
             // if (client.cpf.code) {
             //     const verifyCpf = await new ValidCPF().process(client)
             //     if ("error" in verifyCpf) {

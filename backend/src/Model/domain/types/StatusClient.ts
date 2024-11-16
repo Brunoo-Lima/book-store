@@ -1,5 +1,5 @@
 export enum StatusClient {
-    "ACTIVATE" = "Activate",
-    "INACTIVE" = "Inactive",
+    "ACTIVATE" = "ACTIVATE",
+    "INACTIVE" = "INACTIVE",
     "NULL" = -1,
 }

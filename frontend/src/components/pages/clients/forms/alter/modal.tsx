@@ -128,6 +128,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
       //A resposta foi bem-sucedida?
       if (updatedClient) {
         console.log('Cliente atualizado:', updatedClient);
+        console.log('ID do cliente:', client);
 
         updateClients(updatedClient as IClient, client.id, client);
         notifySuccess('Cliente atualizado com sucesso!');
@@ -261,19 +262,19 @@ export const Modal = ({ client, onClose }: IModalProps) => {
 
             <Radio
               label="Ativo"
-              value="Ativo"
-              {...register('status')}
+              value="ACTIVATE"
+              {...register('statusClient')}
               disabled={editSection !== 'dados'}
             />
             <Radio
               label="Inativo"
-              value="Inativo"
-              {...register('status')}
+              value="INACTIVE"
+              {...register('statusClient')}
               disabled={editSection !== 'dados'}
             />
-            {errors.status && (
+            {errors.statusClient && (
               <span className="text-red-600 text-sm">
-                {errors.status.message}
+                {errors.statusClient.message}
               </span>
             )}
           </div>

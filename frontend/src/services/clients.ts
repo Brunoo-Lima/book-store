@@ -35,7 +35,7 @@ export const findClients = async (filters: Partial<IClient> = {}) => {
       gender: client.cli_gender,
       password: client.cli_password,
       confirmPassword: client.cli_password,
-      status: client.cli_status,
+      statusClient: client.cli_status,
       score: client.cli_score,
       ranking: client.cli_ranking,
       created_at: client.created_at,

@@ -154,7 +154,9 @@ export default function InfoClient() {
 
         <p>
           <span className="font-bold">Status:</span>{' '}
-          {clientData.status === 'Activate' ? 'Ativo' : 'Inativo'}
+          {clientData.statusClient?.toLowerCase() === 'activate'
+            ? 'Ativo'
+            : 'Inativo'}
         </p>
 
         <p>

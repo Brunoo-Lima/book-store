@@ -17,11 +17,11 @@ export const selectFlagCrediCard: ISelect[] = [
 
 export const selectStatus: ISelect[] = [
   {
-    value: 'Ativo',
+    value: 'ACTIVATE',
     label: 'Ativo',
   },
   {
-    value: 'Inativo',
+    value: 'INACTIVE',
     label: 'Inativo',
   },
 ];

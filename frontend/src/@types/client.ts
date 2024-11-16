@@ -15,7 +15,7 @@ export interface IClient {
   score?: number;
   sales?: Sales[] | [];
   ranking?: number;
-  status?: string;
+  statusClient?: string;
   created_at?: string;
 }
 
