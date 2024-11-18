@@ -17,7 +17,7 @@ import {
 } from '@/validations/register-client-schema';
 import { emptyAddress } from '@/validations/address-schema';
 import { updateClients } from '@/services/clients';
-import { selectFlagCrediCard } from '@/mocks/select';
+import { selectFlagCrediCard, selectProfilePurchase } from '@/mocks/select';
 import SelectForm from '@/components/ui/select';
 import handleError, { notifySuccess } from '@/utilities/handle-toast';
 import { FocusEvent, useEffect, useState } from 'react';
@@ -278,13 +278,32 @@ export const Modal = ({ client, onClose }: IModalProps) => {
               )}
             </div>
 
-            <Input
+            {/* <Input
               type="text"
               label="Nível de compra"
               placeholder="Digite o nível de compra"
               {...register('profilePurchase')}
               error={errors?.profilePurchase}
               disabled={editSection !== 'dados'}
+            /> */}
+
+            <Controller
+              name={'profilePurchase'}
+              control={control}
+              render={({ field }) => (
+                <SelectForm
+                  label="Nível do perfil de compra"
+                  options={selectProfilePurchase}
+                  value={
+                    selectProfilePurchase.find(
+                      (option) => option.value === field.value
+                    ) || null
+                  }
+                  onChange={(option) => field.onChange(option?.value || null)}
+                  error={errors?.profilePurchase}
+                  disabled={editSection !== 'dados'}
+                />
+              )}
             />
           </div>
         </div>
