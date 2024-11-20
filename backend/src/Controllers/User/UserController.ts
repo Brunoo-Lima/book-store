@@ -16,11 +16,13 @@ export class UserController {
             const userDomain = new User(email, password, confirmPassword);
 
             const facade = new Facade();
-            const userDatabase = (await facade.create(userDomain)) as PrismaUser;
+            const userDatabase = (await facade.create(
+                userDomain
+            )) as PrismaUser;
 
             if (!userDatabase || "error" in userDatabase)
                 return res.json({
-                    error: `Error: ${userDatabase.error}`,
+                    error: ` ${userDatabase.error}`,
                 });
 
             const secret = process.env.TOKEN_SECRET as string;

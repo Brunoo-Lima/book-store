@@ -14,6 +14,5 @@ export const createUser = async (user: IUser) => {
     return data;
   } catch (err) {
     handleError(err);
-    throw err;
   }
 };

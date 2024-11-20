@@ -40,7 +40,7 @@ export default function LoginForm({ create }: ILoginProps) {
           {...register('email')}
         />
         {errors.email && (
-          <span className="text-xs text-red-500">{errors.email.message}</span>
+          <span className="text-xs text-red-400">{errors.email.message}</span>
         )}
       </div>
 
@@ -53,7 +53,7 @@ export default function LoginForm({ create }: ILoginProps) {
           {...register('password')}
         />
         {errors.password && (
-          <span className="text-xs text-red-500">
+          <span className="text-xs text-red-400">
             {errors.password.message}
           </span>
         )}
@@ -62,7 +62,7 @@ export default function LoginForm({ create }: ILoginProps) {
       <div>
         <p className="text-sm">
           Não tem acesso?
-          <span onClick={create} className="text-indigo-500 cursor-pointer">
+          <span onClick={create} className="text-indigo-400 cursor-pointer">
             {' '}
             Crie uma conta!
           </span>
@@ -72,7 +72,7 @@ export default function LoginForm({ create }: ILoginProps) {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="bg-blue-500 text-white h-10 rounded-md hover:bg-blue-700/80 transition duration-300"
+        className="bg-blue-500 text-white font-semibold h-10 rounded-md hover:bg-blue-700/80 transition duration-300"
       >
         {isSubmitting ? 'Carregando...' : 'Entrar'}
       </button>

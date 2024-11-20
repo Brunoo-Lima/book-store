@@ -22,6 +22,12 @@ interface IFilterContextProps {
   >;
   selectedDDD: string | null;
   setSelectedDDD: React.Dispatch<React.SetStateAction<string | null>>;
+  searchCEP: string;
+  setSearchCEP: React.Dispatch<React.SetStateAction<string>>;
+  selectedTypeResidence: ISelect | null;
+  setSelectedTypeResidence: React.Dispatch<
+    React.SetStateAction<ISelect | null>
+  >;
 }
 
 interface FilterProviderProps {
@@ -42,6 +48,9 @@ export const FilterProvider = ({ children }: FilterProviderProps) => {
   const [selectedProfilePurchase, setSelectedProfilePurchase] =
     useState<ISelect | null>(null);
   const [selectedDDD, setSelectedDDD] = useState<string | null>(null);
+  const [searchCEP, setSearchCEP] = useState<string>('');
+  const [selectedTypeResidence, setSelectedTypeResidence] =
+    useState<ISelect | null>(null);
 
   const contextValue = useMemo(
     () => ({
@@ -61,6 +70,10 @@ export const FilterProvider = ({ children }: FilterProviderProps) => {
       setSelectedProfilePurchase,
       selectedDDD,
       setSelectedDDD,
+      searchCEP,
+      setSearchCEP,
+      selectedTypeResidence,
+      setSelectedTypeResidence,
     }),
     [
       selectedStatus,
@@ -79,6 +92,10 @@ export const FilterProvider = ({ children }: FilterProviderProps) => {
       setSelectedProfilePurchase,
       selectedDDD,
       setSelectedDDD,
+      searchCEP,
+      setSearchCEP,
+      selectedTypeResidence,
+      setSelectedTypeResidence,
     ]
   );
 

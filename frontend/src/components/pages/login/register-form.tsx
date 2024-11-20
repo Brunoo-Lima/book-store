@@ -1,6 +1,7 @@
 import { createUser } from '@/services/create-user';
 import { IRegisterForm, RegisterSchema } from '@/validations/register-schema';
 import { yupResolver } from '@hookform/resolvers/yup';
+import Link from 'next/link';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
@@ -9,11 +10,10 @@ interface IRegisterProps {
 }
 
 export default function RegisterForm({ back }: IRegisterProps) {
-  // const { login } = useAuth();
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<IRegisterForm>({
     resolver: yupResolver(RegisterSchema),
   });
@@ -57,7 +57,7 @@ export default function RegisterForm({ back }: IRegisterProps) {
           {...register('email')}
         />
         {errors.email && (
-          <span className="text-xs text-red-500">{errors.email.message}</span>
+          <span className="text-xs text-red-400">{errors.email.message}</span>
         )}
       </div>
 
@@ -70,7 +70,7 @@ export default function RegisterForm({ back }: IRegisterProps) {
           {...register('password')}
         />
         {errors.password && (
-          <span className="text-xs text-red-500">
+          <span className="text-xs text-red-400">
             {errors.password.message}
           </span>
         )}
@@ -85,7 +85,7 @@ export default function RegisterForm({ back }: IRegisterProps) {
           {...register('confirmPassword')}
         />
         {errors.confirmPassword && (
-          <span className="text-xs text-red-500">
+          <span className="text-xs text-red-400">
             {errors.confirmPassword.message}
           </span>
         )}
@@ -93,10 +93,18 @@ export default function RegisterForm({ back }: IRegisterProps) {
 
       <button
         type="submit"
-        className="bg-blue-500 text-white h-10 rounded-md hover:bg-blue-700/80 transition duration-300"
+        className="bg-blue-500 text-white font-semibold h-10 rounded-md hover:bg-blue-700/80 transition duration-300"
       >
         Criar conta
       </button>
+
+      <Link
+        href="#"
+        onClick={back}
+        className="text-white font-semibold text-center w-max m-auto"
+      >
+        Voltar
+      </Link>
     </form>
   );
 }

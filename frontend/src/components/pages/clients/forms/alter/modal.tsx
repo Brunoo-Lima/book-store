@@ -289,15 +289,6 @@ export const ModalAlterClientForm = ({
               )}
             </div>
 
-            {/* <Input
-              type="text"
-              label="Nível de compra"
-              placeholder="Digite o nível de compra"
-              {...register('profilePurchase')}
-              error={errors?.profilePurchase}
-              disabled={editSection !== 'dados'}
-            /> */}
-
             <Controller
               name={'profilePurchase'}
               control={control}

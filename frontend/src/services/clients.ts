@@ -7,7 +7,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 export const findClients = async (filters: Partial<IClient> = {}) => {
   try {
     const { data, status } = await api.post<IClientList>(
-      '/client/find',
+      'client/find',
       filters
     );
 
@@ -88,19 +88,27 @@ export const findClients = async (filters: Partial<IClient> = {}) => {
   }
 };
 
-export const createClients = async (client: Omit<IClient, 'id'>) => {
-  try {
-    const response = await api.put<IClient>('/client/create', client);
+export const useFindClients = (filters: Partial<IClient> = {}) => {
+  return useQuery({
+    queryKey: ['clients', filters],
+    queryFn: () => findClients(filters),
+  });
+};
 
-    if (response.status !== 200 || !response.data) {
-      handleError(response.status);
-      return null;
+type APIResponse = IClient | { error: string };
+export const createClients = async (
+  client: Omit<IClient, 'id'>
+): Promise<APIResponse> => {
+  try {
+    const { data, status } = await api.put('client/create', client);
+
+    if (status !== 200 || !data) {
+      return { error: 'Erro na criação do cliente.' };
     }
 
-    return response.data;
-  } catch (err) {
-    handleError(err);
-    throw err;
+    return data;
+  } catch (err: any) {
+    return { error: err.message || 'Erro desconhecido ao criar cliente.' };
   }
 };
 

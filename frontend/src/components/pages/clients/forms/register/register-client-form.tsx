@@ -17,8 +17,12 @@ import {
 import { emptyAddress } from '@/validations/address-schema';
 import { IClient } from '@/@types/client';
 import { useRouter } from 'next/navigation';
-import { createClients, useCreateClient } from '@/services/clients';
-import { selectFlagCrediCard, selectTypeResidence } from '@/mocks/select';
+import { createClients } from '@/services/clients';
+import {
+  selectFlagCrediCard,
+  selectProfilePurchase,
+  selectTypeResidence,
+} from '@/mocks/select';
 import SelectForm from '@/components/ui/select';
 import handleError, { notifySuccess } from '@/utilities/handle-toast';
 import { FocusEvent } from 'react';
@@ -30,7 +34,6 @@ export default function RegisterClientForm() {
     reset,
     handleSubmit,
     control,
-    watch,
     setValue,
     formState: { errors },
   } = useForm<IClientFormSchema>({
@@ -38,20 +41,11 @@ export default function RegisterClientForm() {
   });
   const router = useRouter();
 
-  const addressesFieldArray = useFieldArray({
-    control,
-    name: 'addresses',
-  });
-
-  const phonesFieldArray = useFieldArray({
-    control,
-    name: 'phones',
-  });
-
-  const creditCardFieldArray = useFieldArray({
-    control,
-    name: 'creditCard',
-  });
+  const fieldArrays = {
+    addresses: useFieldArray({ control, name: 'addresses' }),
+    phones: useFieldArray({ control, name: 'phones' }),
+    creditCard: useFieldArray({ control, name: 'creditCard' }),
+  };
 
   const clearFormFields = () => {
     reset();
@@ -75,7 +69,7 @@ export default function RegisterClientForm() {
         setValue(`addresses.${index}.city`, data?.localidade);
       }
     } catch (err) {
-      console.error(err);
+      handleError(err);
     }
   };
 
@@ -91,14 +85,13 @@ export default function RegisterClientForm() {
       };
       const response = await createClients(clientData);
 
-      console.log('response da criação', response);
-
-      if (response) {
-        router.push('/clientes');
-        notifySuccess('Cliente criado com sucesso');
-      } else {
-        handleError('Erro ao criar cliente');
+      if ('error' in response) {
+        handleError(response.error);
+        return;
       }
+
+      notifySuccess('Cliente criado com sucesso');
+      router.push('/clientes');
     } catch (err) {
       handleError('Erro ao submeter o formulário');
     }
@@ -174,12 +167,22 @@ export default function RegisterClientForm() {
             )}
           </div>
 
-          <Input
-            type="text"
-            label="Nível de compra"
-            placeholder="Digite o nível de compra"
-            {...register('profilePurchase')}
-            error={errors?.profilePurchase}
+          <Controller
+            name={'profilePurchase'}
+            control={control}
+            render={({ field }) => (
+              <SelectForm
+                label="Nível do perfil de compra"
+                options={selectProfilePurchase}
+                value={
+                  selectProfilePurchase.find(
+                    (option) => option.value === field.value
+                  ) || null
+                }
+                onChange={(option) => field.onChange(option?.value || null)}
+                error={errors?.profilePurchase}
+              />
+            )}
           />
         </div>
       </div>
@@ -187,7 +190,7 @@ export default function RegisterClientForm() {
       {/* Telefones */}
       <div className="flex flex-col space-y-2 ">
         <p className="text-lg font-semibold">Telefones</p>
-        {phonesFieldArray.fields.map((item, index) => (
+        {fieldArrays.phones.fields.map((item, index) => (
           <div
             key={item.id}
             className="grid grid-cols-[100px_1fr_1fr] items-center gap-2"
@@ -219,12 +222,19 @@ export default function RegisterClientForm() {
                 {...register(`phones.${index}.typePhone`)}
               />
             </div>
+
+            <Button
+              type="button"
+              onClick={() => fieldArrays.phones.remove(index)}
+            >
+              Remover telefone
+            </Button>
           </div>
         ))}
         <Button
           type="button"
           onClick={() =>
-            phonesFieldArray.append({
+            fieldArrays.phones.append({
               ddd: '',
               number: '',
               typePhone: 'CELULAR',
@@ -238,7 +248,7 @@ export default function RegisterClientForm() {
       {/* Endereços */}
       <div className="flex flex-col space-y-2">
         <p className="text-lg font-semibold">Endereços</p>
-        {addressesFieldArray.fields.map((item, index) => (
+        {fieldArrays.addresses.fields.map((item, index) => (
           <div
             key={item.id}
             className="flex flex-col gap-4 border p-4 rounded-md"
@@ -362,7 +372,7 @@ export default function RegisterClientForm() {
             </div>
             <Button
               type="button"
-              onClick={() => addressesFieldArray.remove(index)}
+              onClick={() => fieldArrays.addresses.remove(index)}
             >
               Remover endereço
             </Button>
@@ -370,7 +380,7 @@ export default function RegisterClientForm() {
         ))}
         <Button
           type="button"
-          onClick={() => addressesFieldArray.append(emptyAddress)}
+          onClick={() => fieldArrays.addresses.append(emptyAddress)}
         >
           Adicionar endereço
         </Button>
@@ -379,7 +389,7 @@ export default function RegisterClientForm() {
       {/* Cartões de crédito */}
       <div className="flex flex-col space-y-2">
         <p className="text-lg font-semibold">Cartões de Crédito</p>
-        {creditCardFieldArray.fields.map((item, index) => (
+        {fieldArrays.creditCard.fields.map((item, index) => (
           <div
             key={item.id}
             className="flex flex-col gap-4 border p-4 rounded-md"
@@ -445,7 +455,7 @@ export default function RegisterClientForm() {
             </div>
             <Button
               type="button"
-              onClick={() => creditCardFieldArray.remove(index)}
+              onClick={() => fieldArrays.creditCard.remove(index)}
             >
               Remover cartão
             </Button>
@@ -454,7 +464,7 @@ export default function RegisterClientForm() {
         <Button
           type="button"
           onClick={() =>
-            creditCardFieldArray.append({
+            fieldArrays.creditCard.append({
               number: '',
               dateValid: '',
               cvv: '',

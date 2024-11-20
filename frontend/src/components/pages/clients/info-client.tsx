@@ -37,7 +37,10 @@ export default function InfoClient() {
     clientData.addresses.length > 0 &&
     clientData.addresses.map((address) => {
       return (
-        <div className="border-2 border-gray-500 p-2 rounded-md w-[500px] bg-zinc-900 mb-1">
+        <div
+          key={address.id}
+          className="border-2 border-gray-500 p-2 rounded-md w-[500px] bg-zinc-900 mb-1"
+        >
           <p>
             <span className="font-bold">Identificação do endereço:</span>{' '}
             {address.nameAddress}
@@ -88,7 +91,10 @@ export default function InfoClient() {
     clientData.phones.length > 0 &&
     clientData.phones.map((phone) => {
       return (
-        <div className="border-2 border-gray-500 p-2 rounded-md w-[500px] bg-zinc-900 mb-1">
+        <div
+          key={phone.id}
+          className="border-2 border-gray-500 p-2 rounded-md w-[500px] bg-zinc-900 mb-1"
+        >
           <p>
             <span className="font-bold"> Telefone:</span> {phone.numberCombine}{' '}
             - {phone.typePhone === 'MOBILE' ? 'Celular' : 'Fixo'}
@@ -101,7 +107,10 @@ export default function InfoClient() {
     clientData.creditCard.length > 0 &&
     clientData.creditCard.map((credit) => {
       return (
-        <div className="border-2 border-gray-500 p-2 rounded-md w-[500px] bg-zinc-900 mb-1">
+        <div
+          key={credit.id}
+          className="border-2 border-gray-500 p-2 rounded-md w-[500px] bg-zinc-900 mb-1"
+        >
           <p>
             <span className="font-bold">Bandeira:</span> {credit.flag}
           </p>
@@ -137,7 +146,7 @@ export default function InfoClient() {
           <span className="font-bold">CPF:</span> {clientData.cpf}
         </p>
 
-        <p>{phones}</p>
+        {phones}
 
         <p>
           <span className="font-bold"> Gênero:</span>{' '}
@@ -189,7 +198,7 @@ export default function InfoClient() {
           </span>
         </p>
 
-        <p>{creditCards}</p>
+        {creditCards}
 
         <p>
           <span className="font-bold">
@@ -197,15 +206,18 @@ export default function InfoClient() {
           </span>
         </p>
 
-        <p>{addresses}</p>
+        {addresses}
       </div>
 
       <div className="h-[1000px] overflow-y-auto pb-4 no-scrollbar">
         <h2 className="text-xl font-semibold">Log de alteração de dados</h2>
 
         <div className="flex flex-col gap-y-2">
-          {clientData.log?.map((log) => (
-            <div className="text-sm bg-zinc-800 border-[1px] border-gray-400 rounded-md mt-2 p-2  gap-y-2">
+          {clientData.log?.reverse().map((log, index) => (
+            <div
+              key={index}
+              className="text-sm bg-zinc-800 border-[1px] border-gray-400 rounded-md mt-2 p-2  gap-y-2"
+            >
               <p>
                 <span className="font-bold">Ação:</span>{' '}
                 {log.action === 'Update' ? 'Atualização' : 'Criação'}
@@ -216,11 +228,11 @@ export default function InfoClient() {
               </p>
               <p>
                 <span className="font-bold">Data da criação:</span>{' '}
-                {log.created}
+                {formatDateTimeToBr(log.created as string, true)}
               </p>
               <p>
                 <span className="font-bold">Data da alteração:</span>{' '}
-                {log.updated}
+                {formatDateTimeToBr(log.updated as string, true)}
               </p>
             </div>
           ))}

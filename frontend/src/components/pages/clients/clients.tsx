@@ -26,6 +26,10 @@ export default function Clients() {
     setSelectedProfilePurchase,
     selectedDDD,
     setSelectedDDD,
+    searchCEP,
+    setSearchCEP,
+    selectedTypeResidence,
+    setSelectedTypeResidence,
   } = useFilter();
 
   const [filteredData, setFilteredData] = useState<IClient[]>([]);
@@ -84,6 +88,12 @@ export default function Clients() {
 
         const matchesDDD = !selectedDDD || client.phones[0].ddd === selectedDDD;
 
+        const matchesCEP = !searchCEP || client.addresses[0].cep === searchCEP;
+
+        const matchesTypeResidence =
+          !selectedTypeResidence ||
+          client.addresses[0].typeResidence === selectedTypeResidence.value;
+
         return (
           matchesName &&
           matchesStatus &&
@@ -91,7 +101,9 @@ export default function Clients() {
           matchesCity &&
           matchesGender &&
           matchesProfilePurchase &&
-          matchesDDD
+          matchesDDD &&
+          matchesCEP &&
+          matchesTypeResidence
         );
       });
 
@@ -118,6 +130,8 @@ export default function Clients() {
     setSelectedGender(null);
     setSelectedProfilePurchase(null);
     setSelectedDDD('');
+    setSearchCEP('');
+    setSelectedTypeResidence(null);
   };
 
   return (
@@ -125,7 +139,7 @@ export default function Clients() {
       <div className="border-b-[1.5px] border-b-gray-600/75 py-6 relative">
         <div className="flex justify-between items-center">
           <button
-            className="w-56 h-10 bg-green-500 text-white font-semibold text-lg rounded-md border-none hover:bg-green-700 transition duration-300"
+            className="w-40 h-10 bg-green-500 text-white font-semibold text-lg rounded-md border-none hover:bg-green-700 transition duration-300"
             type="button"
             onClick={() => setIsOpenModalFilters(true)}
           >

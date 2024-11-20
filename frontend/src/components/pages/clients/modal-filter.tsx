@@ -8,6 +8,8 @@ import {
   selectStatesUf,
   selectStatus,
 } from '@/mocks/select';
+import { useFindClients } from '@/services/clients';
+import { filteringOptionsAddresses } from '@/utilities/formattedDataFilters';
 
 interface IModalFilterProps {
   isSearching: boolean;
@@ -37,7 +39,19 @@ export default function ModalFilter({
     setSelectedProfilePurchase,
     selectedDDD,
     setSelectedDDD,
+    searchCEP,
+    setSearchCEP,
+    selectedTypeResidence,
+    setSelectedTypeResidence,
   } = useFilter();
+
+  const { data } = useFindClients();
+
+  if (!data) return;
+
+  const cities = filteringOptionsAddresses(data, 'city');
+  const states = filteringOptionsAddresses(data, 'state');
+  const typeResidence = filteringOptionsAddresses(data, 'typeResidence');
 
   return (
     <div className="absolute top-1 w-96 h-auto z-10 bg-[#1f1d1d] px-3 py-6 rounded-md border border-gray-600">
@@ -49,26 +63,19 @@ export default function ModalFilter({
           value={searchName}
           onChange={(e) => setSearchName(e.target.value)}
         />
+
+        <InputSearch
+          placeholder="Digite o CEP"
+          value={searchCEP}
+          onChange={(e) => setSearchCEP(e.target.value)}
+        />
+
         <SelectSearch
           className="w-32"
           placeholder="Status"
           options={selectStatus}
           value={selectedStatus}
           onChange={(value) => setSelectedStatus(value)}
-        />
-        <SelectSearch
-          className="w-28"
-          placeholder="Estado"
-          options={selectStatesUf}
-          value={selectedState}
-          onChange={(value) => setSelectedState(value)}
-        />
-        <SelectSearch
-          className="w-44"
-          placeholder="Cidade"
-          options={selectCities}
-          value={selectedCity}
-          onChange={(value) => setSelectedCity(value)}
         />
 
         <SelectSearch
@@ -80,11 +87,35 @@ export default function ModalFilter({
         />
 
         <SelectSearch
-          className="w-56"
+          className="w-60"
           placeholder="Nível do perfil de compra"
           options={selectProfilePurchase}
           value={selectedProfilePurchase}
           onChange={(value) => setSelectedProfilePurchase(value)}
+        />
+
+        <SelectSearch
+          className="w-60"
+          placeholder="Tipo de residência"
+          options={typeResidence}
+          value={selectedTypeResidence}
+          onChange={(value) => setSelectedTypeResidence(value)}
+        />
+
+        <SelectSearch
+          className="w-28"
+          placeholder="Estado"
+          options={states}
+          value={selectedState}
+          onChange={(value) => setSelectedState(value)}
+        />
+
+        <SelectSearch
+          className="w-44"
+          placeholder="Cidade"
+          options={cities}
+          value={selectedCity}
+          onChange={(value) => setSelectedCity(value)}
         />
 
         {/* <InputSearch
