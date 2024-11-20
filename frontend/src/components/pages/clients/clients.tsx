@@ -145,7 +145,7 @@ export default function Clients() {
 
       <div className="overflow-x-auto mt-16 mb-4 relative">
         {filteredData.length > 0 ? (
-          <Table clients={filteredData} />
+          <Table clients={filteredData} fetchClients={fetchClients} />
         ) : (
           <p className="text-center font-bold text-md">
             Nenhum cliente encontrado

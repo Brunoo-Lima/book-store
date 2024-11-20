@@ -6,19 +6,19 @@ import { listProducts } from '@/services/products';
 import { useEffect, useState } from 'react';
 import Modal from './modal';
 import { formattedPrice } from '@/utilities/formattedPrice';
+import { PlusIcon } from 'lucide-react';
 
 export default function Products() {
   const [productsList, setProductsList] = useState<IProduct[] | []>([]);
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [dataModal, setDataModal] = useState<IProductDTO | null>(null);
 
+  const fetchProducts = async () => {
+    const products = await listProducts();
+    setProductsList(products?.products || []);
+  };
+
   useEffect(() => {
-    const fetchProducts = async () => {
-      const products = await listProducts();
-
-      setProductsList(products?.products || []);
-    };
-
     fetchProducts();
   }, []);
 
@@ -37,16 +37,21 @@ export default function Products() {
     setDataModal(null);
   };
 
+  const handleUpdateList = async () => {
+    await fetchProducts();
+  };
+
   return (
     <section className="flex flex-col space-y-8">
       <Header title="Produtos" />
 
       <button
         type="button"
-        className="bg-green-500 font-semibold text-lg rounded-md h-10 w-max flex items-center justify-center px-3"
+        className="bg-green-500 font-semibold text-lg rounded-md h-10 w-max flex items-center justify-center gap-x-3 px-3 hover:bg-green-700 transition duration-300"
         onClick={handleOpenModal}
       >
         Cadastrar produto
+        <PlusIcon size={20} strokeWidth={2} className="-mb-0.5" />
       </button>
 
       <div className="flex gap-4">
@@ -57,7 +62,7 @@ export default function Products() {
             {productsList.map((product) => (
               <div
                 key={product.pro_id}
-                className="flex flex-col w-52 h-60 border border-gray-800 p-3 rounded-md bg-blue-600"
+                className="flex flex-col w-52 h-72 border border-gray-800 p-3 rounded-md bg-blue-600"
               >
                 <div className="flex-1">
                   <h2 className="font-bold text-lg">{product.pro_name}</h2>
@@ -78,8 +83,12 @@ export default function Products() {
       </div>
 
       {openModal && (
-        <div className="fixed inset-0 bg-[rgba(18,18,18,0.2)] z-10 ">
-          <Modal onClose={handleCloseModal} data={dataModal} />
+        <div className="fixed inset-0 bg-[rgba(18,18,18,0.2)] z-10 w-full h-screen ">
+          <Modal
+            onClose={handleCloseModal}
+            data={dataModal}
+            onUpdateList={handleUpdateList}
+          />
         </div>
       )}
     </section>

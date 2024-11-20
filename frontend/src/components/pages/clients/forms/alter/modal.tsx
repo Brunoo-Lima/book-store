@@ -31,11 +31,16 @@ import { XIcon } from 'lucide-react';
 interface IModalProps {
   client: IClient | null;
   onClose: () => void;
+  fetchClients: () => void;
 }
 
 export type SectionType = 'dados' | 'enderecos' | 'cartoes' | null;
 
-export const ModalAlterClientForm = ({ client, onClose }: IModalProps) => {
+export const ModalAlterClientForm = ({
+  client,
+  onClose,
+  fetchClients,
+}: IModalProps) => {
   const {
     register,
     reset,
@@ -112,7 +117,7 @@ export const ModalAlterClientForm = ({ client, onClose }: IModalProps) => {
         );
         if (updatedClient) {
           notifySuccess('Dados Pessoais atualizados com sucesso!');
-          console.log('atualizado', modifiedData);
+          await fetchClients();
           onClose();
         } else {
           handleError('Falha ao atualizar Dados Pessoais');
@@ -142,6 +147,7 @@ export const ModalAlterClientForm = ({ client, onClose }: IModalProps) => {
         );
         if (updatedClient) {
           notifySuccess('Endereços atualizados com sucesso!');
+          await fetchClients();
           onClose();
         } else {
           handleError('Falha ao atualizar Endereços');
@@ -169,6 +175,7 @@ export const ModalAlterClientForm = ({ client, onClose }: IModalProps) => {
         );
         if (updatedClient) {
           notifySuccess('Cartões de Crédito atualizados com sucesso!');
+          await fetchClients();
           onClose();
         } else {
           handleError('Falha ao atualizar Cartões de Crédito');

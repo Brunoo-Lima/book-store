@@ -51,7 +51,7 @@ export default function InfoClient() {
 
           <p>
             <span className="font-bold">Tipo de residência:</span>{' '}
-            {address.typeResidence}
+            {address.typeResidence === 'HOME' ? 'Casa' : 'Apartamento'}
           </p>
           <p>
             <span className="font-bold">Logradouro:</span> {address.publicPlace}
@@ -91,7 +91,7 @@ export default function InfoClient() {
         <div className="border-2 border-gray-500 p-2 rounded-md w-[500px] bg-zinc-900 mb-1">
           <p>
             <span className="font-bold"> Telefone:</span> {phone.numberCombine}{' '}
-            - {phone.typePhone}
+            - {phone.typePhone === 'MOBILE' ? 'Celular' : 'Fixo'}
           </p>
         </div>
       );

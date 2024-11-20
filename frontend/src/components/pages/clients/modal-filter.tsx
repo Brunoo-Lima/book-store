@@ -40,10 +40,10 @@ export default function ModalFilter({
   } = useFilter();
 
   return (
-    <div className="absolute top-1 w-96 h-auto z-10 bg-slate-800 p-3 rounded-md">
-      <h1 className="text-lg font-semibold text-white">Filtragem</h1>
+    <div className="absolute top-1 w-96 h-auto z-10 bg-[#1f1d1d] px-3 py-6 rounded-md border border-gray-600">
+      <h1 className="text-2xl font-semibold text-white mb-4">Filtragem</h1>
 
-      <div className="flex flex-col space-y-2 mb-4">
+      <div className="flex flex-col space-y-2 mb-8">
         <InputSearch
           placeholder="Digite o nome do cliente"
           value={searchName}
@@ -99,7 +99,7 @@ export default function ModalFilter({
           <button
             onClick={clearFilters}
             type="button"
-            className="bg-blue-700 text-white w-24 h-9 rounded-2xl align-middle"
+            className="bg-green-500 text-white w-24 h-9 rounded-2xl align-middle hover:bg-green-700 transition duration-300"
           >
             Limpar
           </button>
@@ -107,14 +107,14 @@ export default function ModalFilter({
           <button
             onClick={handleSubmit}
             type="button"
-            className="bg-blue-700 text-white w-24 h-9 rounded-2xl align-middle"
+            className="bg-green-500 text-white w-24 h-9 rounded-2xl align-middle hover:bg-green-700 transition duration-300"
           >
             Buscar
           </button>
         )}
 
         <button
-          className="bg-red-500 text-white w-24 h-9 rounded-2xl align-middle"
+          className="bg-red-500 text-white w-24 h-9 rounded-2xl align-middle hover:bg-red-700 transition duration-300"
           type="button"
           onClick={() => setIsOpenModalFilters(false)}
         >

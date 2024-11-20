@@ -10,9 +10,10 @@ import handleError from '@/utilities/handle-toast';
 
 interface ITableProps {
   clients: IClient[];
+  fetchClients: () => Promise<void>;
 }
 
-export default function Table({ clients }: ITableProps) {
+export default function Table({ clients, fetchClients }: ITableProps) {
   const router = useRouter();
   const [data, setData] = useState<IClient | null>(null);
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
@@ -45,6 +46,7 @@ export default function Table({ clients }: ITableProps) {
           <ModalAlterClientForm
             client={data}
             onClose={() => setIsOpenModal(false)}
+            fetchClients={fetchClients}
           />
         </div>
       )}

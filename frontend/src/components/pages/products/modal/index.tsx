@@ -7,9 +7,10 @@ import { useState } from 'react';
 interface IModalProps {
   onClose: () => void;
   data: IProductDTO | null;
+  onUpdateList: () => Promise<void>;
 }
 
-export default function Modal({ onClose, data }: IModalProps) {
+export default function Modal({ onClose, data, onUpdateList }: IModalProps) {
   const [formData, setFormData] = useState<IProductDTO>({
     product_id: data?.product_id || '',
     name: data?.name || '',
@@ -26,14 +27,43 @@ export default function Modal({ onClose, data }: IModalProps) {
     }));
   };
 
+  const handleCloseModal = () => {
+    setFormData({
+      product_id: '',
+      name: '',
+      product_price: 0,
+      quantity: 0,
+    });
+    onClose();
+  };
+
+  const isFormValid = () => {
+    if (!formData.name.trim()) {
+      handleError('O nome do produto é obrigatório.');
+      return false;
+    }
+    if (formData.quantity <= 0 || isNaN(formData.quantity)) {
+      handleError('A quantidade deve ser um número positivo.');
+      return false;
+    }
+    if (formData.product_price <= 0 || isNaN(formData.product_price)) {
+      handleError('O preço deve ser um número positivo.');
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!isFormValid()) return;
 
     try {
       const product = await createProduct(formData);
 
       if (product) {
         notifySuccess('Produto criado com sucesso!');
+        await onUpdateList();
         onClose();
       } else {
         handleError('Falha ao criar o Produto');
@@ -44,8 +74,8 @@ export default function Modal({ onClose, data }: IModalProps) {
   };
 
   return (
-    <div className="fixed -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 w-96 h-96 z-10 bg-zinc-700 p-3 rounded-md flex flex-col">
-      <form onSubmit={handleSubmit}>
+    <div className="fixed -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 w-96 h-[400px] z-10 bg-[#1f1d1d] p-4 rounded-md flex flex-col border border-gray-600">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-y-3 mt-6">
         <Input
           type="text"
           placeholder="Digite o nome do produto"
@@ -72,10 +102,21 @@ export default function Modal({ onClose, data }: IModalProps) {
           }
         />
 
-        <button type="submit">Cadastrar</button>
-        <button type="button" onClick={onClose}>
-          Cancelar
-        </button>
+        <div className="flex items-center gap-x-3 mt-6">
+          <button
+            className="bg-green-500 rounded-md w-full h-8 font-semibold text-base hover:bg-green-700 transition duration-300"
+            type="submit"
+          >
+            Cadastrar
+          </button>
+          <button
+            className="bg-red-500 rounded-md w-full h-8 font-semibold text-base hover:bg-red-700 transition duration-300"
+            type="button"
+            onClick={handleCloseModal}
+          >
+            Cancelar
+          </button>
+        </div>
       </form>
     </div>
   );
