@@ -68,7 +68,7 @@ interface ISelect {
 const SelectForm = forwardRef<HTMLSelectElement, ISelect>(
   ({ label, options, value, onChange, error, disabled }, ref) => {
     return (
-      <div className="w-1/2">
+      <div className="w-full">
         <label
           htmlFor={label}
           className="block mb-2 text-sm font-medium text-white"

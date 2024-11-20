@@ -4,8 +4,16 @@ import handleError from '@/utilities/handle-toast';
 
 export const createUser = async (user: IUser) => {
   try {
-    const response = await api.put('user/create', user);
-    return response.data;
+    const { data, status } = await api.put('user/create', user);
+
+    if (status !== 200 || !data) {
+      handleError(status);
+      return null;
+    }
+
+    console.log('response da criação', data);
+
+    return data;
   } catch (err) {
     handleError(err);
     throw err;

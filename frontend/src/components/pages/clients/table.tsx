@@ -3,10 +3,10 @@
 import { IClient } from '@/@types/client';
 import { findClients } from '@/services/clients';
 import { EyeIcon, UserRoundPenIcon } from 'lucide-react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { Modal } from './forms/alter/modal';
+import { useEffect, useState } from 'react';
+import { ModalAlterClientForm } from './forms/alter/modal';
+import handleError from '@/utilities/handle-toast';
 
 interface ITableProps {
   clients: IClient[];
@@ -18,19 +18,12 @@ export default function Table({ clients }: ITableProps) {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
 
   const handleAlterClient = (client: IClient) => {
-    setData(client); // Define o cliente que você quer alterar
+    setData(client);
     setIsOpenModal(true);
-
-    console.log('cliente dados para atualizar', client);
   };
 
   const handleOpenInfoClient = async (client: Partial<IClient>) => {
     try {
-      console.log(
-        'informacao de cliente teste quando abro informações',
-        client
-      );
-
       const clientData = await findClients();
 
       client = clientData.find((item) => item.id === client.id) as IClient;
@@ -38,10 +31,10 @@ export default function Table({ clients }: ITableProps) {
       if (clientData) {
         router.push(`/clientes/informacoes/${client.id as string}`);
       } else {
-        console.error('Cliente não encontrado');
+        handleError('Cliente não encontrado');
       }
     } catch (err) {
-      console.error('Erro ao buscar dados do cliente:', err);
+      handleError('Erro ao buscar dados do cliente:');
     }
   };
 
@@ -49,7 +42,10 @@ export default function Table({ clients }: ITableProps) {
     <>
       {isOpenModal && (
         <div className="fixed inset-0 bg-[rgba(18,18,18,0.2)] z-10">
-          <Modal client={data} onClose={() => setIsOpenModal(false)} />
+          <ModalAlterClientForm
+            client={data}
+            onClose={() => setIsOpenModal(false)}
+          />
         </div>
       )}
 

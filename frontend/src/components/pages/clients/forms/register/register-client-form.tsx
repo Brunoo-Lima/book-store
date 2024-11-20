@@ -18,7 +18,7 @@ import { emptyAddress } from '@/validations/address-schema';
 import { IClient } from '@/@types/client';
 import { useRouter } from 'next/navigation';
 import { createClients, useCreateClient } from '@/services/clients';
-import { selectFlagCrediCard } from '@/mocks/select';
+import { selectFlagCrediCard, selectTypeResidence } from '@/mocks/select';
 import SelectForm from '@/components/ui/select';
 import handleError, { notifySuccess } from '@/utilities/handle-toast';
 import { FocusEvent } from 'react';
@@ -271,12 +271,22 @@ export default function RegisterClientForm() {
                 error={errors?.addresses?.[index]?.number}
               />
 
-              <Input
-                type="text"
-                label="Tipo de Residência"
-                placeholder="Digite o tipo de residência"
-                {...register(`addresses.${index}.typeResidence`)}
-                error={errors?.addresses?.[index]?.typeResidence}
+              <Controller
+                name={`addresses.${index}.typeResidence`}
+                control={control}
+                render={({ field }) => (
+                  <SelectForm
+                    label="Tipo de Residência"
+                    options={selectTypeResidence}
+                    value={
+                      selectTypeResidence.find(
+                        (option) => option.value === field.value
+                      ) || null
+                    }
+                    onChange={(option) => field.onChange(option?.value || null)}
+                    error={errors?.addresses?.[index]?.typeResidence}
+                  />
+                )}
               />
             </div>
 

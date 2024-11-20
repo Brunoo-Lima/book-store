@@ -2,8 +2,6 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { useAuth } from '../../../hooks/useAuth';
 import { ILoginForm, LoginSchema } from '../../../validations/login-schema';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { toast } from 'react-toastify';
-import { useState } from 'react';
 import handleError from '@/utilities/handle-toast';
 
 interface ILoginProps {

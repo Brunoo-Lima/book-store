@@ -15,6 +15,22 @@ export const selectFlagCrediCard: ISelect[] = [
   },
 ];
 
+export const selectTypeResidence: ISelect[] = [
+  {
+    value: 'APARTMENT',
+    label: 'Apartamento',
+  },
+  {
+    value: 'HOME',
+    label: 'Casa',
+  },
+
+  {
+    value: 'OTHER',
+    label: 'Outros',
+  },
+];
+
 export const selectStatus: ISelect[] = [
   {
     value: 'ACTIVATE',

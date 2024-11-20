@@ -27,9 +27,12 @@ export default function RegisterForm({ back }: IRegisterProps) {
       };
 
       const response = await createUser(user);
-      toast.success('Usuário criado com sucesso!');
-      back();
-    } catch (err: any) {
+
+      if (response) {
+        toast.success('Usuário criado com sucesso!');
+        back();
+      }
+    } catch (err) {
       toast.error('Algo deu errado!');
     }
   };

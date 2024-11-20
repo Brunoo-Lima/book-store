@@ -17,7 +17,11 @@ import {
 } from '@/validations/register-client-schema';
 import { emptyAddress } from '@/validations/address-schema';
 import { updateClients } from '@/services/clients';
-import { selectFlagCrediCard, selectProfilePurchase } from '@/mocks/select';
+import {
+  selectFlagCrediCard,
+  selectProfilePurchase,
+  selectTypeResidence,
+} from '@/mocks/select';
 import SelectForm from '@/components/ui/select';
 import handleError, { notifySuccess } from '@/utilities/handle-toast';
 import { FocusEvent, useEffect, useState } from 'react';
@@ -31,7 +35,7 @@ interface IModalProps {
 
 export type SectionType = 'dados' | 'enderecos' | 'cartoes' | null;
 
-export const Modal = ({ client, onClose }: IModalProps) => {
+export const ModalAlterClientForm = ({ client, onClose }: IModalProps) => {
   const {
     register,
     reset,
@@ -389,10 +393,9 @@ export const Modal = ({ client, onClose }: IModalProps) => {
             type="button"
             onClick={() =>
               fieldArrays.phones.append({
-                ...emptyPhones,
-                numberCombine: `${emptyPhones.ddd || ''}${
-                  emptyPhones.number || ''
-                }`,
+                ddd: '',
+                number: '',
+                typePhone: 'FIXED',
               })
             }
           >
@@ -467,13 +470,24 @@ export const Modal = ({ client, onClose }: IModalProps) => {
                   disabled={editSection !== 'enderecos'}
                 />
 
-                <Input
-                  type="text"
-                  label="Tipo de Residência"
-                  placeholder="Digite o tipo de residência"
-                  {...register(`addresses.${index}.typeResidence`)}
-                  error={errors?.addresses?.[index]?.typeResidence}
-                  disabled={editSection !== 'enderecos'}
+                <Controller
+                  name={`addresses.${index}.typeResidence`}
+                  control={control}
+                  render={({ field }) => (
+                    <SelectForm
+                      label="Tipo de Residência"
+                      options={selectTypeResidence}
+                      value={
+                        selectTypeResidence.find(
+                          (option) => option.value === field.value
+                        ) || null
+                      }
+                      onChange={(option) =>
+                        field.onChange(option?.value || null)
+                      }
+                      error={errors?.addresses?.[index]?.typeResidence}
+                    />
+                  )}
                 />
               </div>
 

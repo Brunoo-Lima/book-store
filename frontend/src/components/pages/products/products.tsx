@@ -5,17 +5,12 @@ import Header from '@/components/ui/header';
 import { listProducts } from '@/services/products';
 import { useEffect, useState } from 'react';
 import Modal from './modal';
+import { formattedPrice } from '@/utilities/formattedPrice';
 
 export default function Products() {
   const [productsList, setProductsList] = useState<IProduct[] | []>([]);
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [dataModal, setDataModal] = useState<IProductDTO | null>(null);
-
-  const formattedPrice = (price: number) =>
-    new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
-    }).format(price);
 
   useEffect(() => {
     const fetchProducts = async () => {
