@@ -117,40 +117,20 @@ export const useCreateClient = () => {
 //Atualizar clientes
 export const updateClients = async (
   client: Partial<IClient>,
-  clientId: string,
-  existingClientData: IClient
+  clientId: string
 ): Promise<IClient | null> => {
   try {
-    // Incluindo o ID do cliente no objeto a ser enviado
-    const clientDataToUpdate = { ...client, id: clientId };
+    // Filtra as chaves do objeto `client` para remover valores nulos ou indefinidos
+    const updatedData = Object.fromEntries(
+      Object.entries(client).filter(
+        ([_, value]) => value !== undefined && value !== null
+      )
+    );
 
-    // Objeto para armazenar os campos modificados
-    const modifiedFields: Partial<IClient> = {};
-
-    // Filtrando os campos com valores definidos
-    for (const [key, value] of Object.entries(clientDataToUpdate)) {
-      // Se o valor não for undefined e for diferente do valor existente ou se for 'creditCard'
-      if (
-        value !== undefined &&
-        (key === 'creditCard' || value !== existingClientData[key])
-      ) {
-        modifiedFields[key] = value;
-      }
-    }
-
-    // Se não houver campos modificados, não envia a requisição
-    if (Object.keys(modifiedFields).length === 0) {
-      return null; // Nenhuma alteração para enviar
-    }
-
-    // Se não houver campos modificados, não envia a requisição
-    if (Object.keys(modifiedFields).length === 0) {
-      return null;
-    }
-
+    // Envia os dados filtrados para a API
     const { data, status } = await api.put<IClient>('client/update', {
       id: clientId,
-      ...modifiedFields,
+      ...updatedData, // Apenas os dados válidos
     });
 
     if (status !== 200 || !data) {

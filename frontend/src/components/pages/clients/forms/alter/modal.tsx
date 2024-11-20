@@ -16,8 +16,8 @@ import {
   IClientFormSchema,
 } from '@/validations/register-client-schema';
 import { emptyAddress } from '@/validations/address-schema';
-import { findClients, updateClients } from '@/services/clients';
-import { selectFlagCrediCard } from '@/mocks/select';
+import { updateClients } from '@/services/clients';
+import { selectFlagCrediCard, selectProfilePurchase } from '@/mocks/select';
 import SelectForm from '@/components/ui/select';
 import handleError, { notifySuccess } from '@/utilities/handle-toast';
 import { FocusEvent, useEffect, useState } from 'react';
@@ -29,13 +29,14 @@ interface IModalProps {
   onClose: () => void;
 }
 
+export type SectionType = 'dados' | 'enderecos' | 'cartoes' | null;
+
 export const Modal = ({ client, onClose }: IModalProps) => {
   const {
     register,
     reset,
     handleSubmit,
     control,
-    watch,
     setValue,
     formState: { errors },
   } = useForm<IClientFormSchema>({
@@ -46,9 +47,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
     return;
   }
 
-  const [editSection, setEditSection] = useState<
-    'dados' | 'enderecos' | 'cartoes' | null
-  >(null);
+  const [editSection, setEditSection] = useState<SectionType>(null);
 
   const startEditingSection = (section: typeof editSection) => {
     setEditSection(section);
@@ -57,21 +56,11 @@ export const Modal = ({ client, onClose }: IModalProps) => {
   const stopEditingSection = () => {
     setEditSection(null);
   };
-
-  const addressesFieldArray = useFieldArray({
-    control,
-    name: 'addresses',
-  });
-
-  const phonesFieldArray = useFieldArray({
-    control,
-    name: 'phones',
-  });
-
-  const creditCardFieldArray = useFieldArray({
-    control,
-    name: 'creditCard',
-  });
+  const fieldArrays = {
+    addresses: useFieldArray({ control, name: 'addresses' }),
+    phones: useFieldArray({ control, name: 'phones' }),
+    creditCard: useFieldArray({ control, name: 'creditCard' }),
+  };
 
   useEffect(() => {
     if (client) {
@@ -101,116 +90,104 @@ export const Modal = ({ client, onClose }: IModalProps) => {
         setValue(`addresses.${index}.city`, data?.localidade);
       }
     } catch (err) {
-      console.error(err);
+      handleError(err);
     }
   };
 
-  const onSubmit: SubmitHandler<Partial<IClientFormSchema>> = async (
-    data: Partial<IClient>
-  ): Promise<void> => {
+  const handleSaveDataPessoal: SubmitHandler<
+    Partial<IClientFormSchema>
+  > = async (data) => {
     try {
-      // const updatedAddresses = data.addresses?.map((address, index) => {
-      //   const original = client.addresses[index]; // Dados originais do cliente
-      //   return {
-      //     ...address,
-      //     id: original?.id, // ID é necessário apenas para os itens existentes
-      //     // Filtra apenas os campos alterados
-      //     ...(address.cep !== original.cep && { cep: address.cep }),
-      //     ...(address.city !== original.city && { city: address.city }),
-      //     ...(address.compostName !== original.compostName && {
-      //       compostName: address.compostName,
-      //     }),
-      //     ...(address.delivery !== original.delivery && {
-      //       delivery: address.delivery,
-      //     }),
-      //     ...(address.nameAddress !== original.nameAddress && {
-      //       nameAddress: address.nameAddress,
-      //     }),
-      //     ...(address.neighborhood !== original.neighborhood && {
-      //       neighborhood: address.neighborhood,
-      //     }),
-      //     ...(address.number !== original.number && { number: address.number }),
-      //     ...(address.publicPlace !== original.publicPlace && {
-      //       publicPlace: address.publicPlace,
-      //     }),
-      //     ...(address.state !== original.state && { state: address.state }),
-      //     ...(address.streetName !== original.streetName && {
-      //       streetName: address.streetName,
-      //     }),
-      //   };
-      // });
-
-      // const updatedPhones = data.phones?.map((phone, index) => {
-      //   const original = client.phones[index];
-      //   return {
-      //     ...phone,
-      //     id: original?.id,
-      //     ...(phone.ddd !== original.ddd && { ddd: phone.ddd }),
-      //     ...(phone.number !== original.number && { number: phone.number }),
-      //   };
-      // });
-
-      // const updatedCreditCards = data.creditCard?.map((card, index) => {
-      //   const original = client.creditCard[index];
-      //   return {
-      //     ...card,
-      //     id: original?.id,
-      //     ...(card.flag !== original.flag && { flag: card.flag }),
-      //     ...(card.number !== original.number && { number: card.number }),
-      //   };
-      // });
-
-      // Verifica se há dados para atualizar
-      if (!data || Object.keys(data).length === 0) {
-        handleError('Nenhuma alteração encontrada para atualizar.');
-        return;
-      }
-
-      // Filtra os campos que têm realmente uma alteração
       const modifiedData = Object.fromEntries(
-        Object.entries(data).filter(([key, value]) => value !== undefined)
+        Object.entries(data).filter(([, value]) => value !== undefined)
       );
-
-      // const modifiedData = {
-      //   ...data,
-      //   addresses: updatedAddresses,
-      //   phones: updatedPhones,
-      //   creditCard: updatedCreditCards,
-      // };
-
-      const updatedClient = await updateClients(
-        modifiedData,
-        client.id as string,
-        client
-      );
-
-      //A resposta foi bem-sucedida?
-      if (updatedClient) {
-        console.log('Cliente atualizado:', updatedClient);
-        console.log('ID do cliente:', client);
-
-        notifySuccess('Cliente atualizado com sucesso!');
-        onClose();
+      if (Object.keys(modifiedData).length > 0) {
+        const updatedClient = await updateClients(
+          modifiedData,
+          client.id as string
+        );
+        if (updatedClient) {
+          notifySuccess('Dados Pessoais atualizados com sucesso!');
+          console.log('atualizado', modifiedData);
+          onClose();
+        } else {
+          handleError('Falha ao atualizar Dados Pessoais');
+        }
       } else {
-        handleError('Falha ao atualizar o cliente');
+        handleError(
+          'Nenhuma alteração encontrada para atualizar Dados Pessoais'
+        );
       }
     } catch (err) {
       console.error(err);
-      handleError('Erro ao atualizar o cliente');
+      handleError('Erro ao atualizar Dados Pessoais');
+    }
+  };
+
+  const handleSaveEnderecos: SubmitHandler<Partial<IClientFormSchema>> = async (
+    data
+  ) => {
+    try {
+      const modifiedData = Object.fromEntries(
+        Object.entries(data).filter(([key, value]) => value !== undefined)
+      );
+      if (Object.keys(modifiedData).length > 0) {
+        const updatedClient = await updateClients(
+          modifiedData,
+          client.id as string
+        );
+        if (updatedClient) {
+          notifySuccess('Endereços atualizados com sucesso!');
+          onClose();
+        } else {
+          handleError('Falha ao atualizar Endereços');
+        }
+      } else {
+        handleError('Nenhuma alteração encontrada para atualizar Endereços');
+      }
+    } catch (err) {
+      console.error(err);
+      handleError('Erro ao atualizar Endereços');
+    }
+  };
+
+  const handleSaveCartao: SubmitHandler<Partial<IClientFormSchema>> = async (
+    data
+  ) => {
+    try {
+      const modifiedData = Object.fromEntries(
+        Object.entries(data).filter(([key, value]) => value !== undefined)
+      );
+      if (Object.keys(modifiedData).length > 0) {
+        const updatedClient = await updateClients(
+          modifiedData,
+          client.id as string
+        );
+        if (updatedClient) {
+          notifySuccess('Cartões de Crédito atualizados com sucesso!');
+          onClose();
+        } else {
+          handleError('Falha ao atualizar Cartões de Crédito');
+        }
+      } else {
+        handleError(
+          'Nenhuma alteração encontrada para atualizar Cartões de Crédito'
+        );
+      }
+    } catch (err) {
+      console.error(err);
+      handleError('Erro ao atualizar Cartões de Crédito');
     }
   };
 
   return (
-    <div className=" w-[800px] bg-gray-900 fixed -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 z-10 py-4 overflow-hidden">
+    <div className="w-[800px] bg-[#181818] fixed -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 z-10 py-8 rounded-md border-2 border-gray-800 overflow-hidden flex flex-col ">
       <XIcon
         onClick={onClose}
         className="absolute top-4 right-4 cursor-pointer"
       />
 
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="w-[600px] max-h-[750px] overflow-y-auto flex flex-col justify-start m-auto gap-8 my-2 px-4 py-4"
-      >
+      <form className="w-[700px] max-h-[650px] h-max overflow-y-auto flex flex-col justify-start m-auto gap-8 my-2 px-8 py-4">
         {/* Dados pessoais */}
         <h2 className="text-lg font-semibold">Dados Pessoais</h2>
 
@@ -284,13 +261,13 @@ export const Modal = ({ client, onClose }: IModalProps) => {
               <p className="block text-sm font-medium text-white">Gênero</p>
               <Radio
                 label="Masculino"
-                value="MALE"
+                value="MEN"
                 {...register('gender')}
                 disabled={editSection !== 'dados'}
               />
               <Radio
                 label="Feminino"
-                value="FEMALE"
+                value="WOMAN"
                 {...register('gender')}
                 disabled={editSection !== 'dados'}
               />
@@ -301,13 +278,32 @@ export const Modal = ({ client, onClose }: IModalProps) => {
               )}
             </div>
 
-            <Input
+            {/* <Input
               type="text"
               label="Nível de compra"
               placeholder="Digite o nível de compra"
               {...register('profilePurchase')}
               error={errors?.profilePurchase}
               disabled={editSection !== 'dados'}
+            /> */}
+
+            <Controller
+              name={'profilePurchase'}
+              control={control}
+              render={({ field }) => (
+                <SelectForm
+                  label="Nível do perfil de compra"
+                  options={selectProfilePurchase}
+                  value={
+                    selectProfilePurchase.find(
+                      (option) => option.value === field.value
+                    ) || null
+                  }
+                  onChange={(option) => field.onChange(option?.value || null)}
+                  error={errors?.profilePurchase}
+                  disabled={editSection !== 'dados'}
+                />
+              )}
             />
           </div>
         </div>
@@ -341,46 +337,49 @@ export const Modal = ({ client, onClose }: IModalProps) => {
         {/* Telefones */}
         <div className="flex flex-col space-y-2 ">
           <p className="text-lg font-semibold">Telefones</p>
-          {phonesFieldArray.fields.map((item, index) => (
+          {fieldArrays.phones.fields.map((item, index) => (
             <div
               key={item.id}
-              className="grid grid-cols-[100px_1fr_1fr] items-center gap-2"
+              className="flex flex-col gap-4 border p-4 rounded-md"
             >
-              <Input
-                type="text"
-                label="DDD"
-                placeholder="(00)"
-                {...register(`phones.${index}.ddd`)}
-                error={errors?.phones?.[index]?.ddd}
-                disabled={editSection !== 'dados'}
-              />
-              <Input
-                type="text"
-                label="Número"
-                placeholder="00000-0000"
-                {...register(`phones.${index}.number`)}
-                error={errors?.phones?.[index]?.number}
-                disabled={editSection !== 'dados'}
-              />
+              <div className="grid grid-cols-[100px_1fr_1fr] items-center gap-2 ">
+                <Input
+                  type="text"
+                  label="DDD"
+                  placeholder="(00)"
+                  {...register(`phones.${index}.ddd`)}
+                  error={errors?.phones?.[index]?.ddd}
+                  disabled={editSection !== 'dados'}
+                />
+                <Input
+                  type="text"
+                  label="Número"
+                  placeholder="00000-0000"
+                  {...register(`phones.${index}.number`)}
+                  error={errors?.phones?.[index]?.number}
+                  disabled={editSection !== 'dados'}
+                />
 
-              <div className="flex gap-x-2">
-                <Radio
-                  label="Fixo"
-                  value="FIXED"
-                  {...register(`phones.${index}.typePhone`)}
-                  disabled={editSection !== 'dados'}
-                />
-                <Radio
-                  label="Celular"
-                  value="MOBILE"
-                  {...register(`phones.${index}.typePhone`)}
-                  disabled={editSection !== 'dados'}
-                />
+                <div className="flex gap-x-2">
+                  <Radio
+                    label="Fixo"
+                    value="FIXED"
+                    id={`phones-${index}-typePhone-FIXED`}
+                    {...register(`phones.${index}.typePhone`)}
+                    disabled={editSection !== 'dados'}
+                  />
+                  <Radio
+                    label="Celular"
+                    value="MOBILE"
+                    id={`phones-${index}-typePhone-MOBILE`}
+                    {...register(`phones.${index}.typePhone`)}
+                    disabled={editSection !== 'dados'}
+                  />
+                </div>
               </div>
-
               <Button
                 type="button"
-                onClick={() => phonesFieldArray.remove(index)}
+                onClick={() => fieldArrays.phones.remove(index)}
               >
                 Remover telefone
               </Button>
@@ -388,26 +387,51 @@ export const Modal = ({ client, onClose }: IModalProps) => {
           ))}
           <Button
             type="button"
-            onClick={() => phonesFieldArray.append(emptyPhones)}
+            onClick={() =>
+              fieldArrays.phones.append({
+                ...emptyPhones,
+                numberCombine: `${emptyPhones.ddd || ''}${
+                  emptyPhones.number || ''
+                }`,
+              })
+            }
           >
             Adicionar telefone
           </Button>
         </div>
 
-        {editSection === 'dados' ? (
-          <button type="button" onClick={stopEditingSection}>
+        <div className="flex gap-2">
+          {editSection === 'dados' ? (
+            <button
+              className="bg-red-500 rounded-md w-full h-8 py-4 flex items-center justify-center font-semibold"
+              type="button"
+              onClick={stopEditingSection}
+            >
+              Salvar
+            </button>
+          ) : (
+            <button
+              className="bg-red-500 rounded-md w-full h-8 py-4 flex items-center justify-center font-semibold"
+              type="button"
+              onClick={() => startEditingSection('dados')}
+            >
+              Editar
+            </button>
+          )}
+
+          <button
+            className="bg-green-500 w-full h-8 py-4 flex items-center justify-center rounded-md font-semibold"
+            type="button"
+            onClick={handleSubmit(handleSaveDataPessoal)}
+          >
             Salvar Dados Pessoais
           </button>
-        ) : (
-          <button type="button" onClick={() => startEditingSection('dados')}>
-            Editar Dados Pessoais
-          </button>
-        )}
+        </div>
 
         {/* Endereços */}
         <div className="flex flex-col space-y-2">
           <p className="text-lg font-semibold">Endereços</p>
-          {addressesFieldArray.fields.map((item, index) => (
+          {fieldArrays.addresses.fields.map((item, index) => (
             <div
               key={item.id}
               className="flex flex-col gap-4 border p-4 rounded-md"
@@ -435,7 +459,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
                 />
 
                 <Input
-                  label="Número"
+                  label="Número do telefone"
                   type="text"
                   placeholder="Digite o número"
                   {...register(`addresses.${index}.number`)}
@@ -533,7 +557,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
               </div>
               <Button
                 type="button"
-                onClick={() => addressesFieldArray.remove(index)}
+                onClick={() => fieldArrays.addresses.remove(index)}
               >
                 Remover endereço
               </Button>
@@ -541,28 +565,44 @@ export const Modal = ({ client, onClose }: IModalProps) => {
           ))}
           <Button
             type="button"
-            onClick={() => addressesFieldArray.append(emptyAddress)}
+            onClick={() => fieldArrays.addresses.append(emptyAddress)}
           >
             Adicionar endereço
           </Button>
-          {editSection === 'enderecos' ? (
-            <button type="button" onClick={stopEditingSection}>
+
+          <div className="flex gap-2">
+            {editSection === 'enderecos' ? (
+              <button
+                className="bg-red-500 rounded-md w-full h-8 py-4 flex items-center justify-center font-semibold"
+                type="button"
+                onClick={stopEditingSection}
+              >
+                Salvar
+              </button>
+            ) : (
+              <button
+                className="bg-red-500 rounded-md w-full h-8 py-4 flex items-center justify-center font-semibold"
+                type="button"
+                onClick={() => startEditingSection('enderecos')}
+              >
+                Editar
+              </button>
+            )}
+
+            <button
+              className="bg-green-500 w-full h-8 py-4 flex items-center justify-center rounded-md font-semibold"
+              type="button"
+              onClick={handleSubmit(handleSaveEnderecos)}
+            >
               Salvar Endereços
             </button>
-          ) : (
-            <button
-              type="button"
-              onClick={() => startEditingSection('enderecos')}
-            >
-              Editar Endereços
-            </button>
-          )}
+          </div>
         </div>
 
         {/* Cartões de crédito */}
         <div className="flex flex-col space-y-2">
           <p className="text-lg font-semibold">Cartões de Crédito</p>
-          {creditCardFieldArray.fields.map((item, index) => (
+          {fieldArrays.creditCard.fields.map((item, index) => (
             <div
               key={item.id}
               className="flex flex-col gap-4 border p-4 rounded-md"
@@ -607,7 +647,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
 
               <div className="grid grid-cols-2 gap-x-2 items-center">
                 <Input
-                  label="Validade"
+                  label={`Validade ${index + 1}`}
                   placeholder="MM/AA"
                   type="text"
                   {...register(`creditCard.${index}.dateValid`)}
@@ -634,7 +674,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
               </div>
               <Button
                 type="button"
-                onClick={() => creditCardFieldArray.remove(index)}
+                onClick={() => fieldArrays.creditCard.remove(index)}
               >
                 Remover cartão
               </Button>
@@ -643,7 +683,7 @@ export const Modal = ({ client, onClose }: IModalProps) => {
           <Button
             type="button"
             onClick={() =>
-              creditCardFieldArray.append({
+              fieldArrays.creditCard.append({
                 number: '',
                 dateValid: '',
                 cvv: '',
@@ -656,23 +696,35 @@ export const Modal = ({ client, onClose }: IModalProps) => {
             Adicionar cartão de crédito
           </Button>
 
-          {editSection === 'cartoes' ? (
-            <button type="button" onClick={stopEditingSection}>
-              Salvar cartões
-            </button>
-          ) : (
+          <div className="flex gap-2">
+            {editSection === 'cartoes' ? (
+              <button
+                className="bg-red-500 rounded-md w-full h-8 py-4 flex items-center justify-center font-semibold"
+                type="button"
+                onClick={stopEditingSection}
+              >
+                Salvar cartões
+              </button>
+            ) : (
+              <button
+                className="bg-red-500 rounded-md w-full h-8 py-4 flex items-center justify-center font-semibold"
+                type="button"
+                onClick={() => startEditingSection('cartoes')}
+              >
+                Editar cartões
+              </button>
+            )}
+
             <button
+              className="bg-green-500 w-full h-8 py-4 flex items-center justify-center rounded-md font-semibold"
               type="button"
-              onClick={() => startEditingSection('cartoes')}
+              onClick={handleSubmit(handleSaveCartao)}
             >
-              Editar cartões
+              Salvar Cartões de Crédito
             </button>
-          )}
+          </div>
         </div>
 
-        <button type="submit" className="bg-blue-500 rounded-lg p-2">
-          Salvar alteração
-        </button>
         <button
           type="button"
           onClick={clearFormFields}

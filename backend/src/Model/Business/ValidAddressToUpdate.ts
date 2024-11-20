@@ -70,11 +70,11 @@ export class ValidAddressToUpdate implements IStrategy {
                     };
                 }
 
-                if (billingCount > 1) {
-                    return {
-                        error: "The client have more than one billing address!",
-                    };
-                }
+                // if (billingCount > 1) {
+                //     return {
+                //         error: "The client have more than one billing address!",
+                //     };
+                // }
                 if (deliveryCount === 0) {
                     return {
                         error: "The client must have at least one delivery address after the update.",

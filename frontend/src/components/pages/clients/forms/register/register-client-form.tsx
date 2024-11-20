@@ -165,8 +165,8 @@ export default function RegisterClientForm() {
         <div className="grid grid-cols-2 gap-3 items-center">
           <div className="flex flex-col">
             <p className="block text-sm font-medium text-white">Gênero</p>
-            <Radio label="Masculino" value="MALE" {...register('gender')} />
-            <Radio label="Feminino" value="FEMALE" {...register('gender')} />
+            <Radio label="Masculino" value="MEN" {...register('gender')} />
+            <Radio label="Feminino" value="WOMAN" {...register('gender')} />
             {errors.gender && (
               <span className="text-red-600 text-sm">
                 {errors.gender.message}
@@ -210,12 +210,12 @@ export default function RegisterClientForm() {
             <div className="flex gap-x-2">
               <Radio
                 label="Fixo"
-                value="FIXO"
+                value="FIXED"
                 {...register(`phones.${index}.typePhone`)}
               />
               <Radio
                 label="Celular"
-                value="CELULAR"
+                value="MOBILE"
                 {...register(`phones.${index}.typePhone`)}
               />
             </div>
@@ -264,7 +264,7 @@ export default function RegisterClientForm() {
               />
 
               <Input
-                label="Número"
+                label="Número do Endereço"
                 type="text"
                 placeholder="Digite o número"
                 {...register(`addresses.${index}.number`)}

@@ -26,6 +26,36 @@ export const selectStatus: ISelect[] = [
   },
 ];
 
+export const selectGender: ISelect[] = [
+  {
+    value: 'WOMAN',
+    label: 'FEMININO',
+  },
+  {
+    value: 'MEN',
+    label: 'MASCULINO',
+  },
+];
+
+export const selectProfilePurchase: ISelect[] = [
+  {
+    value: 'Bronze',
+    label: 'Bronze',
+  },
+  {
+    value: 'Prata',
+    label: 'Prata',
+  },
+  {
+    value: 'Ouro',
+    label: 'Ouro',
+  },
+  {
+    value: 'Diamante',
+    label: 'Diamante',
+  },
+];
+
 export const selectStatesUf: ISelect[] = [
   { value: 'AC', label: 'AC' },
   { value: 'AL', label: 'AL' },

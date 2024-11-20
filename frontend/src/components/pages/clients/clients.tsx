@@ -20,6 +20,12 @@ export default function Clients() {
     searchName,
     selectedCity,
     setSelectedCity,
+    selectedGender,
+    setSelectedGender,
+    selectedProfilePurchase,
+    setSelectedProfilePurchase,
+    selectedDDD,
+    setSelectedDDD,
   } = useFilter();
 
   const [filteredData, setFilteredData] = useState<IClient[]>([]);
@@ -61,7 +67,7 @@ export default function Clients() {
           .includes(searchName.toLowerCase());
 
         const matchesStatus =
-          !selectedStatus || client.status === selectedStatus.value;
+          !selectedStatus || client.statusClient === selectedStatus.value;
 
         const matchesState =
           !selectedState || client.addresses[0].state === selectedState.value;
@@ -69,7 +75,24 @@ export default function Clients() {
         const matchesCity =
           !selectedCity || client.addresses[0].city === selectedCity.value;
 
-        return matchesName && matchesStatus && matchesState && matchesCity;
+        const matchesGender =
+          !selectedGender || client.gender === selectedGender.value;
+
+        const matchesProfilePurchase =
+          !selectedProfilePurchase ||
+          client.profilePurchase === selectedProfilePurchase.value;
+
+        const matchesDDD = !selectedDDD || client.phones[0].ddd === selectedDDD;
+
+        return (
+          matchesName &&
+          matchesStatus &&
+          matchesState &&
+          matchesCity &&
+          matchesGender &&
+          matchesProfilePurchase &&
+          matchesDDD
+        );
       });
 
       setFilteredData(filtered);
@@ -92,13 +115,20 @@ export default function Clients() {
     setFilteredData([]);
     await fetchClients();
     setIsSearching(false);
+    setSelectedGender(null);
+    setSelectedProfilePurchase(null);
+    setSelectedDDD('');
   };
 
   return (
     <>
       <div className="border-b-[1.5px] border-b-gray-600/75 py-6 relative">
         <div className="flex justify-between items-center">
-          <button onClick={() => setIsOpenModalFilters(!isOpenModalFilters)}>
+          <button
+            className="w-56 h-10 bg-green-500 text-white font-semibold text-lg rounded-md border-none hover:bg-green-700 transition duration-300"
+            type="button"
+            onClick={() => setIsOpenModalFilters(true)}
+          >
             Filtros
           </button>
 
@@ -107,6 +137,7 @@ export default function Clients() {
               isSearching={isSearching}
               handleSubmit={handleSubmit}
               clearFilters={clearFilters}
+              setIsOpenModalFilters={setIsOpenModalFilters}
             />
           )}
         </div>

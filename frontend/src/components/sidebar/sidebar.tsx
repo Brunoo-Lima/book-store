@@ -1,4 +1,9 @@
-import { LogOutIcon, UserRoundPlusIcon, UsersRoundIcon } from 'lucide-react';
+import {
+  ClipboardListIcon,
+  LogOutIcon,
+  UserRoundPlusIcon,
+  UsersRoundIcon,
+} from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import Link from 'next/link';
 
@@ -26,6 +31,14 @@ export default function Sidebar() {
         >
           <UsersRoundIcon size={16} />
           Lista de clientes
+        </Link>
+
+        <Link
+          href="/produtos"
+          className="flex items-center gap-2 hover:bg-blue-900 transition duration-500 w-full p-2"
+        >
+          <ClipboardListIcon size={16} />
+          Produtos
         </Link>
       </nav>
 
