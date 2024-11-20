@@ -11,8 +11,6 @@ export const createUser = async (user: IUser) => {
       return null;
     }
 
-    console.log('response da criação', data);
-
     return data;
   } catch (err) {
     handleError(err);

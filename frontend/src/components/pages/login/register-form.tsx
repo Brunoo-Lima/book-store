@@ -28,12 +28,18 @@ export default function RegisterForm({ back }: IRegisterProps) {
 
       const response = await createUser(user);
 
-      if (response) {
+      if (response && response.error) {
+        toast.error(response.error);
+      } else {
         toast.success('Usuário criado com sucesso!');
         back();
       }
-    } catch (err) {
-      toast.error('Algo deu errado!');
+    } catch (err: any) {
+      if (err.response?.status === 409) {
+        toast.error('Usuário já existe. Por favor, use outro email.');
+      } else {
+        toast.error('Algo deu errado!');
+      }
     }
   };
 
