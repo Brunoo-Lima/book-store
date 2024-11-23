@@ -1,17 +1,15 @@
 import { EntityDomain } from "./EntityDomain";
 import { TypePhone } from "./types/TypePhone";
 
-export interface PhoneProps{
-    _ddd: string,
-    _number: string,
-    _typePhone: TypePhone
+export interface PhoneProps {
+    _ddd: string;
+    _number: string;
+    _typePhone: TypePhone;
 }
 
-export class Phone extends EntityDomain{
-    constructor(
-        private phoneProps: PhoneProps
-    ){
-        super()
+export class Phone extends EntityDomain {
+    constructor(private phoneProps: PhoneProps, public isNew?: boolean) {
+        super();
     }
 
     public get ddd(): string {

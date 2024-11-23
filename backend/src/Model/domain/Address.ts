@@ -1,27 +1,23 @@
 import { EntityDomain } from "./EntityDomain";
 import { TypeResidence } from "./types/TypeResidence";
 
-
 export interface AddressProps {
-    streetName: string,
-    publicPlace: string, // Logradouro
-    number: string,
-    cep: string,
-    neighborhood: string,
-    city: string,
-    state: string,
-    compostName: string,
-    typeResidence: TypeResidence,
-    nameAddress: string,
-    change: boolean | undefined,
-    delivery: boolean | undefined,
+    streetName: string;
+    publicPlace: string; // Logradouro
+    number: string;
+    cep: string;
+    neighborhood: string;
+    city: string;
+    state: string;
+    compostName: string;
+    typeResidence: TypeResidence;
+    nameAddress: string;
+    change: boolean | undefined;
+    delivery: boolean | undefined;
 }
 
 export class Address extends EntityDomain {
-
-    constructor(
-        private addressProps: AddressProps
-    ) {
+    constructor(private addressProps: AddressProps, public isNew?: boolean) {
         super();
     }
 
@@ -46,7 +42,6 @@ export class Address extends EntityDomain {
         this.addressProps.number = number;
     }
 
-
     get cep(): string {
         return this.addressProps.cep;
     }
@@ -58,7 +53,6 @@ export class Address extends EntityDomain {
     get neighborhood(): string {
         return this.addressProps.neighborhood;
     }
-
 
     public set neighborhood(neighborhood: string) {
         this.addressProps.neighborhood = neighborhood;
@@ -92,14 +86,14 @@ export class Address extends EntityDomain {
     public set typeResidence(typeResidence: TypeResidence) {
         this.addressProps.typeResidence = typeResidence;
     }
-    get delivery(): boolean | undefined{
+    get delivery(): boolean | undefined {
         return this.addressProps.delivery;
     }
 
     public set delivery(delivery: boolean) {
         this.addressProps.delivery = delivery;
     }
-    get change(): boolean | undefined{
+    get change(): boolean | undefined {
         return this.addressProps.change;
     }
 

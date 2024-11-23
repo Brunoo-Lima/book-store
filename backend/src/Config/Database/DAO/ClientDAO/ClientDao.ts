@@ -109,7 +109,7 @@ export class ClientDao implements IDao {
                               })),
                           createMany: {
                               data: client.phones
-                                  .filter((phone) => !phone.id) // Cria novos telefones que não têm ID
+                                  .filter((phone) => phone.isNew) // Cria novos telefones que não têm ID
                                   .map((phone) => ({
                                       pho_ddd: phone.ddd,
                                       pho_number: phone.number,
@@ -177,7 +177,7 @@ export class ClientDao implements IDao {
                         })),
                     createMany: {
                         data: client.addresses
-                            .filter((address) => !address.id) // Cria novos endereços que não têm ID
+                            .filter((address) => address.isNew) // Cria novos endereços que não têm ID
                             .map((address) => ({
                                 add_name: address.nameAddress,
                                 add_streetName: address.streetName,
@@ -213,7 +213,7 @@ export class ClientDao implements IDao {
                                   })),
                               createMany: {
                                   data: client.creditCard
-                                      .filter((card) => !card.id) // Cria novos cartões que não têm ID
+                                      .filter((card) => card.isNew) // Cria novos cartões que não têm ID
                                       .map((card) => ({
                                           cre_cvv: card.cvv,
                                           cre_flag: card.flag as string,

@@ -21,10 +21,14 @@ export class Authentication {
             const facade = new Facade();
             const userExist = (await facade.find(user)) as PrismaUser;
 
+            console.log(email, password);
+
             if (!userExist)
                 return res.json({
                     error: "User not found in database !",
                 });
+
+            console.log(userExist, "userExist");
 
             const comparePassword = compareSync(
                 password,

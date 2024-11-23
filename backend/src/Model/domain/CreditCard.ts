@@ -1,28 +1,28 @@
 import { EntityDomain } from "./EntityDomain";
 
 export interface CreditCartProps {
-    _namePrinted:string,
-    _number: string,
-    _cvv:string,
-    _dateValid: string,
-    _flag: string,
-    _preference: boolean
+    _namePrinted: string;
+    _number: string;
+    _cvv: string;
+    _dateValid: string;
+    _flag: string;
+    _preference: boolean;
 }
 
-export class CreditCard extends EntityDomain{
+export class CreditCard extends EntityDomain {
     constructor(
-        private creditCartProps: CreditCartProps
-
-    ){
-        super()
+        private creditCartProps: CreditCartProps,
+        public isNew?: boolean
+    ) {
+        super();
     }
 
-    public get number() : string {
-        return this.creditCartProps._number
+    public get number(): string {
+        return this.creditCartProps._number;
     }
 
     public set number(number: string) {
-        this.creditCartProps._number = number
+        this.creditCartProps._number = number;
     }
 
     public get namePrinted(): string {
@@ -41,15 +41,15 @@ export class CreditCard extends EntityDomain{
         this.creditCartProps._cvv = cvv;
     }
 
-    public get dateValid(): string{
+    public get dateValid(): string {
         return this.creditCartProps._dateValid;
     }
 
-    public set dateValid(dateValid: string,) {
+    public set dateValid(dateValid: string) {
         this.creditCartProps._dateValid = dateValid;
     }
 
-    public get flag(): string{
+    public get flag(): string {
         return this.creditCartProps._flag;
     }
 
@@ -64,5 +64,4 @@ export class CreditCard extends EntityDomain{
     public set preference(preference: boolean) {
         this.creditCartProps._preference = preference;
     }
-
 }

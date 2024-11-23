@@ -23,10 +23,10 @@ export class UpdateClientController {
             console.log("client", client);
 
             if (client.addresses && client.addresses.length > 0) {
-                client.addresses[0].id = clientDto.addresses[0].id;
+                client.addresses[0].id = clientDto.addresses[0].id!;
             }
             if (client.creditCard && client.creditCard.length > 0) {
-                client.creditCard[0].id = clientDto.creditCard[0].id;
+                client.creditCard[0].id = clientDto.creditCard[0].id!;
             }
 
             const facade = new Facade();

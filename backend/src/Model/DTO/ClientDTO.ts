@@ -7,6 +7,7 @@ import { AddressDTO } from "./AddressDTO";
 
 export interface ClientDTO {
     phones: {
+        id?: string;
         ddd: string | "";
         number: string | "";
         typePhone: TypePhone;
@@ -23,7 +24,7 @@ export interface ClientDTO {
     confirmPassword: string | "";
     addresses: AddressDTO[] | [];
     creditCard: {
-        id: string;
+        id?: string;
         namePrinted: string;
         number: string;
         cvv: string;

@@ -151,45 +151,55 @@ export abstract class FactoryClient {
         // Mapeamento dos telefones
         const phones: Phone[] = clientDTO.phones
             ? clientDTO.phones.map((phoneDTO) => {
-                  return new Phone({
-                      _ddd: phoneDTO.ddd,
-                      _number: phoneDTO.number,
-                      _typePhone: phoneDTO.typePhone as TypePhone,
-                  });
+                  return new Phone(
+                      {
+                          _ddd: phoneDTO.ddd,
+                          _number: phoneDTO.number,
+                          _typePhone: phoneDTO.typePhone as TypePhone,
+                      },
+                      phoneDTO.id == null
+                  );
               })
             : [];
 
         // Mapeamento dos endereços
         const addresses: Address[] = clientDTO.addresses
             ? clientDTO.addresses.map((addressDTO) => {
-                  return new Address({
-                      streetName: addressDTO.streetName,
-                      nameAddress: addressDTO.nameAddress,
-                      publicPlace: addressDTO.publicPlace,
-                      number: addressDTO.number,
-                      cep: addressDTO.cep,
-                      neighborhood: addressDTO.neighborhood,
-                      city: addressDTO.city,
-                      state: addressDTO.state,
-                      compostName: addressDTO.compostName,
-                      typeResidence: addressDTO.typeResidence as TypeResidence,
-                      change: addressDTO.change,
-                      delivery: addressDTO.delivery,
-                  });
+                  return new Address(
+                      {
+                          streetName: addressDTO.streetName,
+                          nameAddress: addressDTO.nameAddress,
+                          publicPlace: addressDTO.publicPlace,
+                          number: addressDTO.number,
+                          cep: addressDTO.cep,
+                          neighborhood: addressDTO.neighborhood,
+                          city: addressDTO.city,
+                          state: addressDTO.state,
+                          compostName: addressDTO.compostName,
+                          typeResidence:
+                              addressDTO.typeResidence as TypeResidence,
+                          change: addressDTO.change,
+                          delivery: addressDTO.delivery,
+                      },
+                      addressDTO.id == null
+                  );
               })
             : [];
 
         // Mapeamento do cartão de crédito (se houver)
         const creditCard = clientDTO.creditCard
             ? clientDTO.creditCard.map((card) => {
-                  return new CreditCard({
-                      _namePrinted: card.namePrinted,
-                      _number: card.number,
-                      _cvv: card.cvv,
-                      _dateValid: card.dateValid,
-                      _flag: card.flag.toUpperCase(),
-                      _preference: card.preference,
-                  });
+                  return new CreditCard(
+                      {
+                          _namePrinted: card.namePrinted,
+                          _number: card.number,
+                          _cvv: card.cvv,
+                          _dateValid: card.dateValid,
+                          _flag: card.flag.toUpperCase(),
+                          _preference: card.preference,
+                      },
+                      card.id == null
+                  );
               })
             : [];
 
