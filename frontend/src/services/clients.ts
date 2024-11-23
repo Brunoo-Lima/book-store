@@ -1,6 +1,6 @@
 import handleError from '@/utilities/handle-toast';
 import api from './api';
-import { IClient } from '@/@types/client';
+import { Address, CreditCard, IClient, Phone } from '@/@types/client';
 import { IClientList } from '@/@types/list-table-client';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
@@ -124,22 +124,36 @@ export const useCreateClient = () => {
 
 //Atualizar clientes
 export const updateClients = async (
-  client: Partial<IClient>,
+  client: Partial<IClient> & {
+    addresses?: Array<Partial<Address>>;
+    phones?: Array<Partial<Phone>>;
+    creditCards?: Array<Partial<CreditCard>>;
+  },
   clientId: string
 ): Promise<IClient | null> => {
   try {
-    // Filtra as chaves do objeto `client` para remover valores nulos ou indefinidos
+    // Separar dados genéricos e dados de arrays
+    const { addresses, phones, creditCards, ...generalClientData } = client;
+
+    // Remove campos nulos ou indefinidos do cliente geral
     const updatedData = Object.fromEntries(
-      Object.entries(client).filter(
+      Object.entries(generalClientData).filter(
         ([_, value]) => value !== undefined && value !== null
       )
     );
 
+    // Define payload inicial
+    const payload: any = { id: clientId, ...updatedData };
+
+    // Adiciona dados de arrays ao payload, se fornecidos
+    if (addresses) payload.addresses = addresses;
+    if (phones) payload.phones = phones;
+    if (creditCards) payload.creditCards = creditCards;
+
+    console.log('Payload para atualização:', payload);
+
     // Envia os dados filtrados para a API
-    const { data, status } = await api.put<IClient>('client/update', {
-      id: clientId,
-      ...updatedData, // Apenas os dados válidos
-    });
+    const { data, status } = await api.put<IClient>('client/update', payload);
 
     if (status !== 200 || !data) {
       handleError(status);

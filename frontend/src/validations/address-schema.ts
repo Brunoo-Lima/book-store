@@ -21,7 +21,7 @@ export const AddressFormSchema = yup.object({
 });
 
 export const emptyAddress = {
-  id: Math.ceil(Math.random() * 1000).toString(),
+  id: '',
   streetName: '',
   publicPlace: '',
   nameAddress: '',

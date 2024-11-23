@@ -23,7 +23,7 @@ export interface Client {
 }
 
 export interface CliPhone {
-  pho_id?: string;
+  pho_id: string;
   pho_ddd: string;
   pho_number: string;
   pho_numberCombine?: string;

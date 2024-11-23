@@ -20,7 +20,7 @@ export interface IClient {
 }
 
 export interface Phone {
-  id?: string;
+  id?: string | null;
   ddd: string;
   number: string;
   typePhone: string;
@@ -28,7 +28,7 @@ export interface Phone {
 }
 
 export interface Address {
-  id?: string;
+  id?: string | null;
   clientID?: string;
   streetName: string;
   nameAddress: string;
@@ -45,7 +45,7 @@ export interface Address {
 }
 
 export interface CreditCard {
-  id?: string;
+  id?: string | null;
   namePrinted: string;
   number: string;
   cvv: string;

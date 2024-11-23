@@ -40,6 +40,7 @@ export const ClientSchema = yup.object({
           .matches(/^\d{8,9}$/, 'Número inválido')
           .required('Número de telefone é obrigatório'),
         typePhone: yup.string().required('Tipo de telefone é obrigatório'),
+        numberCombine: yup.string().optional(),
       })
     )
     .min(1, 'É necessário ao menos um telefone'),
@@ -53,8 +54,9 @@ export const ClientSchema = yup.object({
 });
 
 export const emptyPhones = {
-  id: Math.ceil(Math.random() * 1000).toString(),
+  id: '',
   ddd: '',
   number: '',
   typePhone: '',
+  numberCombine: '',
 };

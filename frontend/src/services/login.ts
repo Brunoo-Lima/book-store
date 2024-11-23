@@ -16,9 +16,6 @@ export const loginService = async ({
       password,
     });
 
-    console.log('api', api.defaults.baseURL);
-    console.log('Request URL:', `${api.defaults.baseURL}/login/token`);
-
     if (!data) {
       return {} as ILogin;
     }

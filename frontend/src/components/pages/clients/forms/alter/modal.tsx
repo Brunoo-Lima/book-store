@@ -12,7 +12,6 @@ import Radio from '@/components/ui/radio';
 import Input from '@/components/ui/input';
 import {
   ClientSchema,
-  emptyPhones,
   IClientFormSchema,
 } from '@/validations/register-client-schema';
 import { emptyAddress } from '@/validations/address-schema';
@@ -34,7 +33,12 @@ interface IModalProps {
   fetchClients: () => void;
 }
 
-export type SectionType = 'dados' | 'enderecos' | 'cartoes' | null;
+export type SectionType =
+  | 'dados'
+  | 'enderecos'
+  | 'cartoes'
+  | 'telefones'
+  | null;
 
 export const ModalAlterClientForm = ({
   client,
@@ -103,18 +107,35 @@ export const ModalAlterClientForm = ({
     }
   };
 
-  const handleSaveDataPessoal: SubmitHandler<
+  const handleSaveDataPersonal: SubmitHandler<
     Partial<IClientFormSchema>
   > = async (data) => {
     try {
-      const modifiedData = Object.fromEntries(
-        Object.entries(data).filter(([, value]) => value !== undefined)
+      const personalData: Partial<IClient> = {
+        name: data.name,
+        email: data.email,
+        cpf: data.cpf,
+        dateOfBirth: data.dateOfBirth,
+        statusClient: data.statusClient,
+        gender: data.gender,
+        profilePurchase: data.profilePurchase,
+        password: data.password,
+        confirmPassword: data.confirmPassword,
+      };
+
+      const filteredPersonalData = Object.fromEntries(
+        Object.entries(personalData).filter(
+          ([_, value]) => value !== null && value !== undefined
+        )
       );
-      if (Object.keys(modifiedData).length > 0) {
+
+      // Se há dados a serem atualizados
+      if (Object.keys(filteredPersonalData).length > 0) {
         const updatedClient = await updateClients(
-          modifiedData,
+          filteredPersonalData, // Enviar apenas os dados filtrados
           client.id as string
         );
+
         if (updatedClient) {
           notifySuccess('Dados Pessoais atualizados com sucesso!');
           await fetchClients();
@@ -128,7 +149,62 @@ export const ModalAlterClientForm = ({
         );
       }
     } catch (err) {
-      console.error(err);
+      handleError('Erro ao atualizar Dados Pessoais');
+    }
+  };
+
+  const handleSaveDataPhones: SubmitHandler<
+    Partial<IClientFormSchema>
+  > = async (data) => {
+    try {
+      const { phones } = data;
+
+      // Lida com os telefones
+      if (Array.isArray(phones)) {
+        // Separar novos telefones dos existentes
+        const newPhones = phones.filter((phone) => !(phone as any).id); // Sem ID = novo telefone
+        const existingPhones = phones.filter((phone) => (phone as any).id); // Com ID = telefone existente
+
+        const modifiedData: Partial<IClient> = {};
+
+        // Adiciona telefones existentes ao payload
+        if (existingPhones.length > 0) {
+          modifiedData.phones = existingPhones;
+        }
+
+        // Adiciona novos telefones ao payload
+        if (newPhones.length > 0) {
+          modifiedData.phones = [
+            ...(modifiedData.phones || []),
+            ...newPhones.map((phone) => ({
+              ...phone,
+              numberCombine: `${phone.ddd}${phone.number}`,
+              id: null,
+            })),
+          ];
+        }
+
+        if (Object.keys(modifiedData).length > 0) {
+          const updatedClient = await updateClients(
+            modifiedData,
+            client.id as string
+          );
+
+          if (updatedClient) {
+            notifySuccess('Dados Pessoais atualizados com sucesso!');
+            await fetchClients();
+            // stopEditingSection();
+            onClose();
+          } else {
+            handleError('Falha ao atualizar Dados Pessoais');
+          }
+        }
+      } else {
+        handleError(
+          'Nenhuma alteração encontrada para atualizar Dados Pessoais'
+        );
+      }
+    } catch (err) {
       handleError('Erro ao atualizar Dados Pessoais');
     }
   };
@@ -137,26 +213,55 @@ export const ModalAlterClientForm = ({
     data
   ) => {
     try {
-      const modifiedData = Object.fromEntries(
-        Object.entries(data).filter(([key, value]) => value !== undefined)
-      );
-      if (Object.keys(modifiedData).length > 0) {
-        const updatedClient = await updateClients(
-          modifiedData,
-          client.id as string
+      const { addresses } = data;
+
+      if (Array.isArray(addresses)) {
+        const newAddresses = addresses.filter(
+          (address) => !(address as any).id // Sem ID = novo endereço
         );
-        if (updatedClient) {
-          notifySuccess('Endereços atualizados com sucesso!');
-          await fetchClients();
-          onClose();
+        const existingAddresses = addresses.filter(
+          (address) => (address as any).id // Com ID = endereço existente
+        );
+
+        const modifiedData: Partial<IClient> = {};
+
+        // Adiciona endereços existentes ao payload
+        if (existingAddresses.length > 0) {
+          modifiedData.addresses = existingAddresses;
+        }
+
+        // Adiciona novos endereços ao payload
+        if (newAddresses.length > 0) {
+          modifiedData.addresses = [
+            ...(modifiedData.addresses || []),
+            ...newAddresses.map((address) => ({
+              ...address,
+              id: null,
+            })),
+          ];
+        }
+
+        if (Object.keys(modifiedData).length > 0) {
+          const updatedClient = await updateClients(
+            modifiedData,
+            client.id as string
+          );
+
+          if (updatedClient) {
+            notifySuccess('Endereços atualizados com sucesso!');
+            await fetchClients();
+            // stopEditingSection();
+            onClose();
+          } else {
+            handleError('Falha ao atualizar Endereços');
+          }
         } else {
-          handleError('Falha ao atualizar Endereços');
+          handleError('Nenhuma alteração encontrada para atualizar Endereços');
         }
       } else {
-        handleError('Nenhuma alteração encontrada para atualizar Endereços');
+        handleError('Nenhum endereço foi enviado para atualização.');
       }
     } catch (err) {
-      console.error(err);
       handleError('Erro ao atualizar Endereços');
     }
   };
@@ -165,28 +270,58 @@ export const ModalAlterClientForm = ({
     data
   ) => {
     try {
-      const modifiedData = Object.fromEntries(
-        Object.entries(data).filter(([key, value]) => value !== undefined)
-      );
-      if (Object.keys(modifiedData).length > 0) {
-        const updatedClient = await updateClients(
-          modifiedData,
-          client.id as string
+      const { creditCard } = data;
+
+      if (Array.isArray(creditCard)) {
+        // Separar novos cartões dos existentes
+        const newCards = creditCard.filter(
+          (card) => !(card as any).id // Sem ID = novo cartão
         );
-        if (updatedClient) {
-          notifySuccess('Cartões de Crédito atualizados com sucesso!');
-          await fetchClients();
-          onClose();
+        const existingCards = creditCard.filter(
+          (card) => (card as any).id // Com ID = cartão existente
+        );
+
+        const modifiedData: Partial<IClient> = {};
+
+        // Adiciona cartões existentes ao payload
+        if (existingCards.length > 0) {
+          modifiedData.creditCard = existingCards;
+        }
+
+        // Adiciona novos cartões ao payload
+        if (newCards.length > 0) {
+          modifiedData.creditCard = [
+            ...(modifiedData.creditCard || []),
+            ...newCards.map((card) => ({
+              ...card,
+              id: null,
+            })),
+          ];
+        }
+
+        if (Object.keys(modifiedData).length > 0) {
+          const updatedClient = await updateClients(
+            modifiedData,
+            client.id as string
+          );
+
+          if (updatedClient) {
+            notifySuccess('Cartões de Crédito atualizados com sucesso!');
+            await fetchClients();
+            // stopEditingSection();
+            onClose();
+          } else {
+            handleError('Falha ao atualizar Cartões de Crédito');
+          }
         } else {
-          handleError('Falha ao atualizar Cartões de Crédito');
+          handleError(
+            'Nenhuma alteração encontrada para atualizar Cartões de Crédito'
+          );
         }
       } else {
-        handleError(
-          'Nenhuma alteração encontrada para atualizar Cartões de Crédito'
-        );
+        handleError('Nenhum cartão foi enviado para atualização.');
       }
     } catch (err) {
-      console.error(err);
       handleError('Erro ao atualizar Cartões de Crédito');
     }
   };
@@ -336,6 +471,34 @@ export const ModalAlterClientForm = ({
           </div>
         </div>
 
+        <div className="flex gap-2">
+          {editSection === 'dados' ? (
+            <button
+              className="bg-red-500 rounded-md w-full h-8 py-4 flex items-center justify-center font-semibold transition duration-300 hover:opacity-70"
+              type="button"
+              onClick={stopEditingSection}
+            >
+              Salvar
+            </button>
+          ) : (
+            <button
+              className="bg-red-500 rounded-md w-full h-8 py-4 flex items-center justify-center font-semibold transition duration-300 hover:opacity-70"
+              type="button"
+              onClick={() => startEditingSection('dados')}
+            >
+              Editar
+            </button>
+          )}
+
+          <button
+            className="bg-green-500 w-full h-8 py-4 flex items-center justify-center rounded-md font-semibold transition duration-300 hover:opacity-70"
+            type="button"
+            onClick={handleSubmit(handleSaveDataPersonal)}
+          >
+            Salvar dados pessoais
+          </button>
+        </div>
+
         {/* Telefones */}
         <div className="flex flex-col space-y-2 ">
           <p className="text-lg font-semibold">Telefones</p>
@@ -344,6 +507,7 @@ export const ModalAlterClientForm = ({
               key={item.id}
               className="flex flex-col gap-4 border p-4 rounded-md"
             >
+              <h3 className="text-lg font-medium">Telefone {index + 1}</h3>
               <div className="grid grid-cols-[100px_1fr_1fr] items-center gap-2 ">
                 <Input
                   type="text"
@@ -351,7 +515,7 @@ export const ModalAlterClientForm = ({
                   placeholder="(00)"
                   {...register(`phones.${index}.ddd`)}
                   error={errors?.phones?.[index]?.ddd}
-                  disabled={editSection !== 'dados'}
+                  disabled={editSection !== 'telefones'}
                 />
                 <Input
                   type="text"
@@ -359,7 +523,7 @@ export const ModalAlterClientForm = ({
                   placeholder="00000-0000"
                   {...register(`phones.${index}.number`)}
                   error={errors?.phones?.[index]?.number}
-                  disabled={editSection !== 'dados'}
+                  disabled={editSection !== 'telefones'}
                 />
 
                 <div className="flex gap-x-2">
@@ -368,19 +532,20 @@ export const ModalAlterClientForm = ({
                     value="FIXED"
                     id={`phones-${index}-typePhone-FIXED`}
                     {...register(`phones.${index}.typePhone`)}
-                    disabled={editSection !== 'dados'}
+                    disabled={editSection !== 'telefones'}
                   />
                   <Radio
                     label="Celular"
                     value="MOBILE"
                     id={`phones-${index}-typePhone-MOBILE`}
                     {...register(`phones.${index}.typePhone`)}
-                    disabled={editSection !== 'dados'}
+                    disabled={editSection !== 'telefones'}
                   />
                 </div>
               </div>
               <Button
                 type="button"
+                className="hover:opacity-70"
                 onClick={() => fieldArrays.phones.remove(index)}
               >
                 Remover telefone
@@ -389,6 +554,10 @@ export const ModalAlterClientForm = ({
           ))}
           <Button
             type="button"
+            disabled={editSection !== 'telefones'}
+            className={`${
+              editSection !== 'telefones' ? 'opacity-70' : 'hover:opacity-70'
+            }`}
             onClick={() =>
               fieldArrays.phones.append({
                 ddd: '',
@@ -402,9 +571,9 @@ export const ModalAlterClientForm = ({
         </div>
 
         <div className="flex gap-2">
-          {editSection === 'dados' ? (
+          {editSection === 'telefones' ? (
             <button
-              className="bg-red-500 rounded-md w-full h-8 py-4 flex items-center justify-center font-semibold"
+              className="bg-red-500 rounded-md w-full h-8 py-4 flex items-center justify-center font-semibold transition duration-300 hover:opacity-70"
               type="button"
               onClick={stopEditingSection}
             >
@@ -412,20 +581,20 @@ export const ModalAlterClientForm = ({
             </button>
           ) : (
             <button
-              className="bg-red-500 rounded-md w-full h-8 py-4 flex items-center justify-center font-semibold"
+              className="bg-red-500 rounded-md w-full h-8 py-4 flex items-center justify-center font-semibold transition duration-300 hover:opacity-70"
               type="button"
-              onClick={() => startEditingSection('dados')}
+              onClick={() => startEditingSection('telefones')}
             >
               Editar
             </button>
           )}
 
           <button
-            className="bg-green-500 w-full h-8 py-4 flex items-center justify-center rounded-md font-semibold"
+            className="bg-green-500 w-full h-8 py-4 flex items-center justify-center rounded-md font-semibold transition duration-300 hover:opacity-70"
             type="button"
-            onClick={handleSubmit(handleSaveDataPessoal)}
+            onClick={handleSubmit(handleSaveDataPhones)}
           >
-            Salvar Dados Pessoais
+            Salvar telefone
           </button>
         </div>
 
@@ -460,7 +629,7 @@ export const ModalAlterClientForm = ({
                 />
 
                 <Input
-                  label="Número do telefone"
+                  label="Número"
                   type="text"
                   placeholder="Digite o número"
                   {...register(`addresses.${index}.number`)}
@@ -569,6 +738,7 @@ export const ModalAlterClientForm = ({
               </div>
               <Button
                 type="button"
+                className="hover:opacity-70"
                 onClick={() => fieldArrays.addresses.remove(index)}
               >
                 Remover endereço
@@ -577,6 +747,10 @@ export const ModalAlterClientForm = ({
           ))}
           <Button
             type="button"
+            disabled={editSection !== 'enderecos'}
+            className={`${
+              editSection !== 'enderecos' ? 'opacity-70' : 'hover:opacity-70'
+            }`}
             onClick={() => fieldArrays.addresses.append(emptyAddress)}
           >
             Adicionar endereço
@@ -585,7 +759,7 @@ export const ModalAlterClientForm = ({
           <div className="flex gap-2">
             {editSection === 'enderecos' ? (
               <button
-                className="bg-red-500 rounded-md w-full h-8 py-4 flex items-center justify-center font-semibold"
+                className="bg-red-500 rounded-md w-full h-8 py-4 flex items-center justify-center font-semibold transition duration-300 hover:opacity-70"
                 type="button"
                 onClick={stopEditingSection}
               >
@@ -593,7 +767,7 @@ export const ModalAlterClientForm = ({
               </button>
             ) : (
               <button
-                className="bg-red-500 rounded-md w-full h-8 py-4 flex items-center justify-center font-semibold"
+                className="bg-red-500 rounded-md w-full h-8 py-4 flex items-center justify-center font-semibold transition duration-300 hover:opacity-70"
                 type="button"
                 onClick={() => startEditingSection('enderecos')}
               >
@@ -602,7 +776,7 @@ export const ModalAlterClientForm = ({
             )}
 
             <button
-              className="bg-green-500 w-full h-8 py-4 flex items-center justify-center rounded-md font-semibold"
+              className="bg-green-500 w-full h-8 py-4 flex items-center justify-center rounded-md font-semibold transition duration-300 hover:opacity-70"
               type="button"
               onClick={handleSubmit(handleSaveEnderecos)}
             >
@@ -686,6 +860,10 @@ export const ModalAlterClientForm = ({
               </div>
               <Button
                 type="button"
+                disabled={editSection !== 'cartoes'}
+                className={`${
+                  editSection !== 'cartoes' ? 'opacity-70' : 'hover:opacity-70'
+                }`}
                 onClick={() => fieldArrays.creditCard.remove(index)}
               >
                 Remover cartão
@@ -694,6 +872,7 @@ export const ModalAlterClientForm = ({
           ))}
           <Button
             type="button"
+            className="hover:opacity-70"
             onClick={() =>
               fieldArrays.creditCard.append({
                 number: '',
@@ -711,7 +890,7 @@ export const ModalAlterClientForm = ({
           <div className="flex gap-2">
             {editSection === 'cartoes' ? (
               <button
-                className="bg-red-500 rounded-md w-full h-8 py-4 flex items-center justify-center font-semibold"
+                className="bg-red-500 rounded-md w-full h-8 py-4 flex items-center justify-center font-semibold transition duration-300 hover:opacity-70"
                 type="button"
                 onClick={stopEditingSection}
               >
@@ -719,7 +898,7 @@ export const ModalAlterClientForm = ({
               </button>
             ) : (
               <button
-                className="bg-red-500 rounded-md w-full h-8 py-4 flex items-center justify-center font-semibold"
+                className="bg-red-500 rounded-md w-full h-8 py-4 flex items-center justify-center font-semibold transition duration-300 hover:opacity-70"
                 type="button"
                 onClick={() => startEditingSection('cartoes')}
               >
@@ -728,7 +907,7 @@ export const ModalAlterClientForm = ({
             )}
 
             <button
-              className="bg-green-500 w-full h-8 py-4 flex items-center justify-center rounded-md font-semibold"
+              className="bg-green-500 w-full h-8 py-4 flex items-center justify-center rounded-md font-semibold transition duration-300 hover:opacity-70"
               type="button"
               onClick={handleSubmit(handleSaveCartao)}
             >
