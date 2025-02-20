@@ -1,4 +1,4 @@
-import Clients from '@/components/pages/clients/clients';
+import ListClients from '@/components/pages/clients/list_clients';
 import Header from '@/components/ui/header';
 
 export default function ClientsPage() {
@@ -6,7 +6,7 @@ export default function ClientsPage() {
     <>
       <Header title="Lista de Clientes" />
 
-      <Clients />
+      <ListClients />
     </>
   );
 }

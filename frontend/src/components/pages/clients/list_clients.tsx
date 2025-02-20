@@ -8,7 +8,7 @@ import { findClients } from '@/services/clients';
 import handleError from '@/utilities/handle-toast';
 import ModalFilter from './modal-filter';
 
-export default function Clients() {
+export default function ListClient() {
   const {
     selectedState,
     setSelectedState,

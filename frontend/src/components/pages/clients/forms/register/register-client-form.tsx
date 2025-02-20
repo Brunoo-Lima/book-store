@@ -30,24 +30,26 @@ import { getCep } from '@/services/cep';
 
 export default function RegisterClientForm() {
   const {
-    register,
-    reset,
+    register, // Value e onchange
+    reset, //Reseta os dados do formulário
     handleSubmit,
-    control,
+    control, // É para realizar o controle de inputs que criamos 
     setValue,
     formState: { errors },
   } = useForm<IClientFormSchema>({
-    resolver: yupResolver(ClientSchema),
+    resolver: yupResolver(ClientSchema), // Envia o objeto para que o yup facilite a tipagem do useForm
   });
+
   const router = useRouter();
 
+  // O control é as validações que eu criei dentro de IClientFormSchema, então como é um array, eu passo esse control com o nome correto do campo e ele identifica qual validação usar
   const fieldArrays = {
-    addresses: useFieldArray({ control, name: 'addresses' }),
+    addresses: useFieldArray({ control, name: 'addresses' }), //name tem que ser o mesmo nome do objeto que criamos no schema de client
     phones: useFieldArray({ control, name: 'phones' }),
     creditCard: useFieldArray({ control, name: 'creditCard' }),
   };
 
-  const clearFormFields = () => {
+  const clearFormFields = () => { // Realiza a limpeza dos campos
     reset();
   };
 
@@ -77,7 +79,7 @@ export default function RegisterClientForm() {
     data: IClientFormSchema
   ) => {
     try {
-      const clientData: Omit<IClient, 'id'> = {
+      const clientData: Omit<IClient, 'id'> = { // Mantem o objeto sem uma das chaves.
         ...data,
         phones: data.phones || [],
         addresses: data.addresses,

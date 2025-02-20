@@ -24,7 +24,7 @@ export default function Modal({ onClose, data, onUpdateList }: IModalProps) {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
-    }));
+    })); // Sempre pega o valor do input anterior e adiciona o valor do novo input ex: Adicionei o nome, quando for adicionar a quantidade, vou ter o nome setado e a quantidade vai estar sendo setada.
   };
 
   const handleCloseModal = () => {
@@ -37,7 +37,7 @@ export default function Modal({ onClose, data, onUpdateList }: IModalProps) {
     onClose();
   };
 
-  const isFormValid = () => {
+  const isFormValid = () => { // Validações para envio dos produtos (Alterar para useForm)
     if (!formData.name.trim()) {
       handleError('O nome do produto é obrigatório.');
       return false;
@@ -56,14 +56,14 @@ export default function Modal({ onClose, data, onUpdateList }: IModalProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!isFormValid()) return;
+    if (!isFormValid()) return; 
 
     try {
       const product = await createProduct(formData);
 
       if (product) {
         notifySuccess('Produto criado com sucesso!');
-        await onUpdateList();
+        await onUpdateList(); // Atualiza a lista de produtos depois de criado
         onClose();
       } else {
         handleError('Falha ao criar o Produto');

@@ -86,7 +86,7 @@ export default function Products() {
         <div className="fixed inset-0 bg-[rgba(18,18,18,0.2)] z-10 w-full h-screen ">
           <Modal
             onClose={handleCloseModal}
-            data={dataModal}
+            data={dataModal} // Envia para o modal as informações do produto que o usuário clicou
             onUpdateList={handleUpdateList}
           />
         </div>

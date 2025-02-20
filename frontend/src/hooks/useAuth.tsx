@@ -34,7 +34,7 @@ const AuthProvider = ({ children }: ChildrenProps) => {
   const [authToken, setAuthToken] = useState<AuthToken>({} as AuthToken);
   const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
-  const pathname = usePathname();
+  const pathname = usePathname(); // Pega o endpoint do site
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -53,7 +53,7 @@ const AuthProvider = ({ children }: ChildrenProps) => {
   }, []);
 
   useEffect(() => {
-    if (authToken.token && pathname === '/') {
+    if (authToken.token && pathname === '/') { //Se o token for validado e o pathname for igual a rota de login ele redireciona para a rota de clientes
       router.replace('/clientes');
     }
   }, [authToken.token, pathname, router]);
@@ -90,12 +90,12 @@ const AuthProvider = ({ children }: ChildrenProps) => {
     router.push('/');
   };
 
-  const authValues = useMemo(
+  const authValues = useMemo( // Para ganho de performance, memoriza as funções para poder utilizar depois, nesse caso, só deve memorizar aquilo que não muda
     () => ({
       login,
       logout,
       loading,
-      isAuthenticated: !!authToken.token,
+      isAuthenticated: !!authToken.token, 
     }),
     [loading, authToken.token]
   );
