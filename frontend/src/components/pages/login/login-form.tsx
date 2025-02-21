@@ -27,55 +27,62 @@ export default function LoginForm({ create }: ILoginProps) {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col w-[300px] space-y-5"
+    <div
+      className="flex items-center justify-center min-h-screen bg-gray-900 relative overflow-hidden"
+      style={{
+        backgroundImage: "url('/background.webp')",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
     >
-      <div className="flex flex-col">
-        <label htmlFor="email">Email</label>
-        <input
-          className="text-black text-base rounded-md h-8 ps-2 pe-2 outline-none border-[1.5px] border-transparent focus-visible:border-blue-500"
-          type="text"
-          placeholder="Digite seu email"
-          {...register('email')}
-        />
-        {errors.email && (
-          <span className="text-xs text-red-400">{errors.email.message}</span>
-        )}
-      </div>
+      {/* Efeito de iluminação */}
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-md"></div>
 
-      <div className="flex flex-col">
-        <label htmlFor="password">Senha</label>
-        <input
-          className="text-black text-base rounded-md h-8 ps-2 pe-2 outline-none border-[1.5px] border-transparent focus-visible:border-blue-500"
-          type="password"
-          placeholder="Digite sua senha"
-          {...register('password')}
-        />
-        {errors.password && (
-          <span className="text-xs text-red-400">
-            {errors.password.message}
-          </span>
-        )}
-      </div>
-
-      <div>
-        <p className="text-sm">
-          Não tem acesso?
-          <span onClick={create} className="text-indigo-400 cursor-pointer">
-            {' '}
-            Crie uma conta!
-          </span>
-        </p>
-      </div>
-
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="bg-blue-500 text-white font-semibold h-10 rounded-md hover:bg-blue-700/80 transition duration-300"
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="relative z-10 w-[350px] bg-black/80 border border-gray-700 shadow-2xl rounded-xl flex flex-col items-center p-6"
       >
-        {isSubmitting ? 'Carregando...' : 'Entrar'}
-      </button>
-    </form>
+        <h2 className="text-2xl text-white font-semibold mb-4">LOGIN</h2>
+
+        <div className="w-full mb-4">
+          <label htmlFor="email" className="block text-gray-300">Usuário</label>
+          <input
+            className="w-full text-white text-base rounded-md h-10 px-3 outline-none bg-gray-800 border border-gray-600 focus:border-blue-500"
+            type="text"
+            placeholder="Digite seu usuário"
+            {...register('email')}
+          />
+          {errors.email && (
+            <span className="text-xs text-red-400">{errors.email.message}</span>
+          )}
+        </div>
+
+        <div className="w-full mb-4">
+          <label htmlFor="password" className="block text-gray-300">Senha</label>
+          <input
+            className="w-full text-white text-base rounded-md h-10 px-3 outline-none bg-gray-800 border border-gray-600 focus:border-blue-500"
+            type="password"
+            placeholder="Digite sua senha"
+            {...register('password')}
+          />
+          {errors.password && (
+            <span className="text-xs text-red-400">{errors.password.message}</span>
+          )}
+        </div>
+        <div className="w-full mb-4 text-center">
+          <p className="text-sm text-white">
+            Não tem acesso?
+            <span onClick={create} className="text-indigo-400 cursor-pointer"> Crie uma conta!</span>
+          </p>
+        </div>
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full bg-blue-600 text-white font-semibold h-10 rounded-md hover:bg-blue-700 transition duration-300 shadow-md"
+        >
+          {isSubmitting ? 'Carregando...' : 'Entrar'}
+        </button>
+      </form>
+    </div>
   );
 }

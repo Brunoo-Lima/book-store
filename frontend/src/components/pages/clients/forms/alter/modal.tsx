@@ -327,7 +327,7 @@ export const ModalAlterClientForm = ({
   };
 
   return (
-    <div className="w-[800px] bg-[#181818] fixed -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 z-10 py-8 rounded-md border-2 border-gray-800 overflow-hidden flex flex-col ">
+    <div className="w-[800px] bg-[#4e3a3a] fixed -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 z-10 py-8 rounded-md border-2 border-gray-800 overflow-hidden flex flex-col ">
       <XIcon
         onClick={onClose}
         className="absolute top-4 right-4 cursor-pointer"

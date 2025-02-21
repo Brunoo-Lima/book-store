@@ -8,7 +8,7 @@ export default function Login() {
   const [steps, setSteps] = useState<'Login' | 'Register'>('Login');
 
   return (
-    <section className="flex h-screen items-center justify-center bg-[#252525]">
+    <section className="items-center justify-center bg-[#252525]">
       {steps === 'Login' && <LoginForm create={() => setSteps('Register')} />}
       {steps === 'Register' && <RegisterForm back={() => setSteps('Login')} />}
     </section>
