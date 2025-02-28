@@ -14,10 +14,11 @@ datasource db {
 }
 
 model User {
-    use_id       String @id @default(uuid())
-    use_email    String @unique
+    use_id       String      @id @default(uuid())
+    use_email    String      @unique
+    use_is_admin Boolean
     use_password String
-    use_log      Log[]
+    use_log      ChangeLog[]
 }
 
 model Client {
@@ -35,7 +36,6 @@ model Client {
     cli_address         Address[] // Relação 1:N com endereços
     cli_ranking         Int
     cli_creditCards     CreditCard[] // Relação 1:N com cartões de crédito
-    cli_log             Log[]
     cli_sales           Sale[]
     created_at          DateTime     @default(now())
     updated_at          DateTime     @updatedAt
@@ -91,22 +91,76 @@ model CreditCard {
     @@unique([cre_number_cart, cre_cvv, cre_name])
 }
 
-model Log {
+model ChangeLog {
     log_id        String   @id @default(uuid())
-    log_client    Client   @relation(fields: [fk_log_cli_id], references: [cli_id])
     log_action    String // Descrição da ação (inserção, atualização, etc.)
     log_user      User     @relation(fields: [fk_log_use_id], references: [use_id])
+    log_table     String
     created_at    DateTime @default(now())
     updated_at    DateTime @updatedAt
-    fk_log_cli_id String
     fk_log_use_id String
+}
+
+model Book {
+    boo_id            String       @id @default(uuid())
+    boo_title         String
+    boo_year          String
+    boo_edition       String
+    boo_isbn          String
+    boo_page_numbers  Int
+    boo_synopses      String
+    boo_height        Float
+    boo_width         Float
+    boo_weight        Float
+    boo_depth         Float
+    boo_author        Author[]
+    boo_categories    Categories[]
+    boo_publisher     Publisher[]
+    boo_pricing_Group PricingGroup @relation(fields: [fk_boo_pre_id], references: [pre_id])
+    boo_product       Product      @relation(fields: [fk_boo_pro_id], references: [pro_id])
+    fk_boo_pro_id     String       @unique
+    fk_boo_pre_id     String       @unique
+    created_at        DateTime     @default(now())
+    updated_at        DateTime     @updatedAt
+}
+
+model PricingGroup {
+    pre_id     String   @id @default(uuid())
+    pre_type   String
+    Book       Book[]
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+}
+
+model Publisher {
+    pub_id     String   @id @default(uuid())
+    pub_name   String
+    pub_book   Book[]
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+}
+
+model Categories {
+    cte_id     String   @id @default(uuid())
+    cte_name   String
+    cte_book   Book[]
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+}
+
+model Author {
+    aut_id     String   @id @default(uuid())
+    aut_name   String
+    aut_book   Book[]
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
 }
 
 model Product {
     pro_id       String   @id @default(uuid())
-    pro_name     String
     pro_price    String
     pro_quantity Int
+    pro_book     Book[]
     pro_item     Item[]
     created_at   DateTime @default(now())
     updated_at   DateTime @updatedAt
@@ -117,29 +171,80 @@ model Item {
     ite_quantity      Int // Quantidade de itens
     ite_product_price Float
     ite_product       Product  @relation(fields: [fk_ite_pro_id], references: [pro_id])
-    ite_sale          Sale     @relation(fields: [fk_ite_sal_id], references: [sal_id])
+    ite_cart          Cart     @relation(fields: [fk_ite_crt_id], references: [crt_id])
+    ite_coupon        Coupons?
+    ite_exchange      Exchange?
+    fk_ite_crt_id     String
     fk_ite_pro_id     String
     fk_ite_sal_id     String
     created_at        DateTime @default(now())
     updated_at        DateTime @updatedAt
 }
+
+model Cart {
+    crt_id        String   @id @default(uuid())
+    crt_items     Item[]
+    crt_sale      Sale?
+    fk_crt_sal_id String   @unique
+    created_at    DateTime @default(now())
+    updated_at    DateTime @updatedAt
+}
+
+model Payment {
+    pay_id     String   @id @default(uuid())
+    pay_method String
+    pay_sal    Sale[]
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+}
+
+model Coupons {
+    cou_id          String   @id @default(uuid())
+    cou_code        String   @unique // Código do cupom
+    cou_type        String // "PROMOCIONAL" ou "TROCA"
+    cou_discount    Float // Valor do desconto (pode ser fixo ou percentual)
+    cou_is_percent  Boolean // Indica se o desconto é percentual (%)
+    cou_valid_until DateTime // Data de expiração do cupom
+    cou_min_value   Float? // Valor mínimo para o cupom ser aplicado
+    cou_status      String // "ATIVO", "USADO", "EXPIRADO"
+    cou_item        Item @relation(fields: [fk_cou_ite_id], references: [ite_id])
+    fk_cou_ite_id   String  @unique
+    created_at      DateTime @default(now())
+    updated_at      DateTime @updatedAt
+}
+model Exchange {
+    exc_id          String   @id @default(uuid())
+    exc_date        DateTime @default(now())
+    exc_status      String   // "PENDENTE", "APROVADA", "RECUSADA"
+    exc_value       Float    // Valor do crédito gerado
+    exc_item        Item     @relation(fields: [fk_exc_ite_id], references: [ite_id])
+    fk_exc_ite_id   String @unique
+    fk_exc_sal_id   String
+    fk_exc_cou_id   String?
+}
+
 model Sale {
-    sal_id          String   @id @default(uuid())
+    sal_id          String    @id @default(uuid())
     sal_date_sale   DateTime
     sal_date_update DateTime
     sal_status      String // Vai validar o status do processamento do cartão de crédito, caso aprovado o status muda de: EM PROCESSAMENTO para APROVADO
-    sal_client      Client   @relation(fields: [fk_sal_cli_id], references: [cli_id])
-    sal_item        Item[]
+    sal_client      Client    @relation(fields: [fk_sal_cli_id], references: [cli_id])
+    sal_cart        Cart      @relation(fields: [fk_sal_crt_id], references: [crt_id])
     sal_delivery    Delivery? // Alterado para opcional
+    sal_payment     Payment[]
+    fk_sal_cou_id   String
+    fk_sal_pay_id   String    @unique
     fk_sal_cli_id   String
+    fk_sal_crt_id   String    @unique
+    created_at      DateTime  @default(now())
+    updated_at      DateTime  @updatedAt
 }
-
 
 model Delivery {
     del_id           String   @id @default(uuid())
     del_status       String
     del_sale         Sale     @relation(fields: [fk_del_sal_id], references: [sal_id]) // Alterado para ter uma relação direta com Sale
-    fk_del_sal_id    String   @unique// Chave estrangeira que referencia a tabela Sale
+    fk_del_sal_id    String   @unique // Chave estrangeira que referencia a tabela Sale
     del_date_initial DateTime
     del_date_final   DateTime
 }
