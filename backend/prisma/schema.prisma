@@ -9,7 +9,7 @@ generator client {
 }
 
 datasource db {
-    provider = "mysql"
+    provider = "postgres"
     url      = env("DATABASE_URL")
 }
 
@@ -92,13 +92,14 @@ model CreditCard {
 }
 
 model ChangeLog {
-    log_id        String   @id @default(uuid())
-    log_action    String // Descrição da ação (inserção, atualização, etc.)
-    log_user      User     @relation(fields: [fk_log_use_id], references: [use_id])
-    log_table     String
-    created_at    DateTime @default(now())
-    updated_at    DateTime @updatedAt
-    fk_log_use_id String
+    log_id          String   @id @default(uuid())
+    log_action      String // Descrição da ação (inserção, atualização, etc.)
+    log_user        User     @relation(fields: [fk_log_use_id], references: [use_id])
+    log_table       String
+    log_description String
+    created_at      DateTime @default(now())
+    updated_at      DateTime @updatedAt
+    fk_log_use_id   String
 }
 
 model Book {
@@ -121,7 +122,6 @@ model Book {
     fk_boo_pre_id     String       @unique
     created_at        DateTime     @default(now())
     updated_at        DateTime     @updatedAt
-    itemOrderIte_id   String?
 }
 
 model PricingGroup {
@@ -155,29 +155,28 @@ model Author {
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
 }
-model ItemStock {
-    ito_id        String @id @default(uuid())
-    ito_book      Book   @relation(fields: [fk_ito_boo_id], references: [boo_id])
-    ito_quantity  Int
-    fk_ito_boo_id String @unique
 
-    ItemOrder ItemOrder[]
+model ItemStock {
+    ito_id         String      @id @default(uuid())
+    ito_book       Book        @relation(fields: [fk_ito_boo_id], references: [boo_id])
+    ito_quantity   Int
+    fk_ito_boo_id  String      @unique
+    ito_item_order ItemOrder[]
 }
 
-
 model ItemOrder {
-    ite_id            String    @id @default(uuid())
+    ite_id            String      @id @default(uuid())
     ite_quantity      Int // Quantidade de itens
     ite_product_price Float
     ite_book          ItemStock[]
-    ite_cart          Cart      @relation(fields: [fk_ite_crt_id], references: [crt_id])
+    ite_cart          Cart        @relation(fields: [fk_ite_crt_id], references: [crt_id])
     ite_coupon        Coupons?
     ite_exchange      Exchange?
     fk_ite_boo_id     String
     fk_ite_sal_id     String
     fk_ite_crt_id     String
-    created_at        DateTime  @default(now())
-    updated_at        DateTime  @updatedAt
+    created_at        DateTime    @default(now())
+    updated_at        DateTime    @updatedAt
 }
 
 model Cart {

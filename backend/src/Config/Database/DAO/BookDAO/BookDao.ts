@@ -15,16 +15,16 @@ export class BookDao implements IDao{
 
             const book_created = await prisma.book.create({
                 data: {
-                    boo_title: "Nome do Livro",
-                    boo_year: "2024",
-                    boo_edition: "1ª Edição",
-                    boo_isbn: "123-4567891234",
-                    boo_page_numbers: 320,
-                    boo_synopses: "Sinopse do livro...",
-                    boo_height: 20.5,
-                    boo_width: 15.2,
-                    boo_weight: 0.8,
-                    boo_depth: 3.0,
+                    boo_title:book.title,
+                    boo_year: `${book.year}`,
+                    boo_edition: book.edition,
+                    boo_isbn: book.ISBN,
+                    boo_page_numbers: book.pageNumber,
+                    boo_synopses: book.synopses,
+                    boo_height: book.dimensions.height,
+                    boo_width: book.dimensions.width,
+                    boo_weight: book.dimensions.weight,
+                    boo_depth: book.dimensions.depth,
                     // Conectar ou criar autores
                     boo_author: {
                         connectOrCreate: book.authors.map((author) => {
@@ -63,8 +63,7 @@ export class BookDao implements IDao{
                         connect: {
                             pre_id: pricingGroup.pre_id
                         }
-                    },
-
+                    }
                 }
             });
             return book_created
