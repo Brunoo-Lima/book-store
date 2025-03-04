@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { Facade } from "../Facade/Facade";
-import { User } from "../../Model/domain/User"; // Importa o User do domínio
+import { User } from "../../Model/entities/User"; // Importa o User do domínio
 import { User as PrismaUser } from "@prisma/client"; // Importa o User do Prisma
 import jwt from "jsonwebtoken";
 export class UserController {

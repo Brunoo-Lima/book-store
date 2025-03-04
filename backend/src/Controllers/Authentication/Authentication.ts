@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { User } from "../../Model/domain/User";
+import { User } from "../../Model/entities/User";
 import { Facade } from "../Facade/Facade";
 import { User as PrismaUser } from "@prisma/client";
 import { compareSync } from "bcrypt";

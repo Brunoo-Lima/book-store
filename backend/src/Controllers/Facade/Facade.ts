@@ -1,16 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { EntityDomain } from "../../Model/domain/EntityDomain";
+import { EntityDomain } from "../../Model/entities/EntityDomain";
 import { IDao } from "../../interfaces/IDao";
 import { IFacade } from "../../interfaces/IFacade";
 import { IStrategy } from "../../interfaces/IStrategy";
 import { FactoryDao } from "../../Config/Database/DAO/FactoryDao";
-import { EntityExistInDB } from "../../Model/Business/EntityExistInDB";
-import { ValidPassword } from "../../Model/Business/ValidPassword";
-import { ValidAddressesToCreate } from "../../Model/Business/ValidAddressesToCreate";
-import { ValidDataClient } from "../../Model/Business/ValidDataClient";
-import { ValidDataToUpdate } from "../../Model/Business/ValidDataToUpdate";
-import { ValidCreditCard } from "../../Model/Business/ValidCreditCard";
-import { ValidProductsInStock } from "../../Model/Business/ValidProductsInStock";
+import { EntityExistInDB } from "../../Model/Validators/EntityExistInDB";
+import { ValidPassword } from "../../Model/Validators/ValidPassword";
+import { ValidAddressesToCreate } from "../../Model/Validators/ValidAddressesToCreate";
+import { ValidDataClient } from "../../Model/Validators/ValidDataClient";
+import { ValidDataToUpdate } from "../../Model/Validators/ValidDataToUpdate";
+import { ValidCreditCard } from "../../Model/Validators/ValidCreditCard";
+import { ValidProductsInStock } from "../../Model/Validators/ValidProductsInStock";
+import { ValidDataBook } from "../../Model/Validators/ValidDataBook";
 // import { ValidCPF } from "../../Model/Business/ValidCPF";
 
 export class Facade implements IFacade {
@@ -126,7 +127,11 @@ export class Facade implements IFacade {
             new EntityExistInDB(),
             new ValidProductsInStock(),
         ]);
-        this.businessRoles.set("PRODUCT", [new EntityExistInDB()]);
+
+        this.businessRoles.set("BOOK", [
+            new EntityExistInDB(),
+            new ValidDataBook()
+        ]);
         this.businessRoles.set("ADDRESS", [new EntityExistInDB()]);
     }
     private async getStrategies(key: string) {

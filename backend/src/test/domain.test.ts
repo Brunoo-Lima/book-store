@@ -1,5 +1,5 @@
 import { expect, it } from "vitest";
-import { CPF } from "../Model/domain/CPF";
+import { CPF } from "../Model/entities/Client/CPF";
 // import { ValidCPF } from "../Model/Business/ValidCPF";
 // import { ValidDataClient } from "../Model/Business/ValidDataClient";
 

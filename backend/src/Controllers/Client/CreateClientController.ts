@@ -1,9 +1,9 @@
 
 import { NextFunction, Request, Response } from "express";
-import { ClientDTO } from "../../Model/DTO/ClientDTO"
-import { FactoryClient } from "../../Model/domain/Client";
+import { ClientDTO } from "../../Model/entities/Client/DTO/ClientDTO"
+import { FactoryClient } from "../../Model/entities/Client/Client";
 import { Facade } from "../Facade/Facade";
-import { StatusClient } from "../../Model/domain/types/StatusClient";
+import { StatusClient } from "../../Model/entities/types/StatusClient";
 import { Client } from "@prisma/client";
 
 export class CreateClientController {

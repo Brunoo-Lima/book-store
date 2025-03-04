@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { IDao } from "../../../../interfaces/IDao";
-import { EntityDomain } from "../../../../Model/domain/EntityDomain";
-import { User } from "../../../../Model/domain/User";
+import { EntityDomain } from "../../../../Model/entities/EntityDomain";
+import { User } from "../../../../Model/entities/User";
 import { prisma } from "../../prisma/prismaClient";
 export class UserDao implements IDao{
     public async create(user: User): Promise<unknown> {
@@ -9,7 +9,8 @@ export class UserDao implements IDao{
             data: {
                 use_id: user.id,
                 use_email: user.getEmail(),
-                use_password: user.getPassword()
+                use_password: user.getPassword(),
+                use_is_admin: true
             },
             select: {
                 use_email: true,

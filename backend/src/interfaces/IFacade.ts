@@ -1,4 +1,4 @@
-import { EntityDomain } from "../Model/domain/EntityDomain"
+import { EntityDomain } from "../Model/entities/EntityDomain"
 
 export interface IFacade {
     create(entity: EntityDomain): Promise<unknown>

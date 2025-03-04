@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { ClientDTO } from "../../Model/DTO/ClientDTO";
-import { FactoryClient } from "../../Model/domain/Client";
+import { ClientDTO } from "../../Model/entities/Client/DTO/ClientDTO";
+import { FactoryClient } from "../../Model/entities/Client/Client";
 import { Facade } from "../Facade/Facade";
 
 export class ListClientController {

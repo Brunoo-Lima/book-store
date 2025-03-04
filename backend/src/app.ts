@@ -1,12 +1,12 @@
 import express from "express";
 import "express-async-errors";
-import errorHandler from "./error/errorHandler";
+import errorHandler from "./helpers/errorHandler";
 import routeClient from "./routes/client";
 import routeUser from './routes/user'
 import routeLogin from './routes/login'
-import routeSale from './routes/sales'
+import routeBook from './routes/book'
 import cors from 'cors';
-import routesProduct from "./routes/product";
+
 
 class App {
     readonly app;
@@ -26,8 +26,7 @@ class App {
         this.app.use('/client', routeClient)
         this.app.use('/user', routeUser)
         this.app.use('/login', routeLogin)
-        this.app.use('/sale', routeSale)
-        this.app.use('/product', routesProduct)
+        this.app.use('/book', routeBook)
     }
 }
 

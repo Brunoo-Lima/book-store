@@ -1,4 +1,4 @@
-import { ProfilePurchase } from "../Model/domain/types/ProfilePurchase";
+import { ProfilePurchase } from "../Model/entities/types/ProfilePurchase";
 
 export function getProfilePurchase(oldRanking: number, frequency: number, totalSpent: number){
     let score = 0;

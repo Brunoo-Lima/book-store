@@ -1,8 +1,8 @@
 import { Client } from "@prisma/client";
 import { Response, Request} from "express";
 import { prisma } from "../Config/Database/prisma/prismaClient";
-import { LogChange } from "../Model/domain/LogChange";
-import { User } from "../Model/domain/User";
+import { LogChange } from "../Model/entities/LogChange";
+import { User } from "../Model/entities/User";
 
 export async function log(req: Request, res: Response){
     try{
@@ -18,13 +18,13 @@ export async function log(req: Request, res: Response){
         userDomain.id = user.user_id
         const logChange = new LogChange(userDomain, action)
 
-        const log = await prisma.log.create({
+        const log = await prisma.changeLog.create({
             data: {
               log_action: logChange.get_action(),
               created_at:new Date(client.created_at),
               updated_at: new Date(client.updated_at),
               fk_log_use_id: logChange.get_user().id,
-              fk_log_cli_id: client.cli_id
+              log_table: "teste"
             },
           })
 

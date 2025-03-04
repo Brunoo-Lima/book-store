@@ -117,11 +117,11 @@ model Book {
     boo_categories    Categories[]
     boo_publisher     Publisher[]
     boo_pricing_Group PricingGroup @relation(fields: [fk_boo_pre_id], references: [pre_id])
-    boo_product       Product      @relation(fields: [fk_boo_pro_id], references: [pro_id])
-    fk_boo_pro_id     String       @unique
+    boo_item_stock    ItemStock?
     fk_boo_pre_id     String       @unique
     created_at        DateTime     @default(now())
     updated_at        DateTime     @updatedAt
+    itemOrderIte_id   String?
 }
 
 model PricingGroup {
@@ -134,7 +134,7 @@ model PricingGroup {
 
 model Publisher {
     pub_id     String   @id @default(uuid())
-    pub_name   String
+    pub_name   String   @unique
     pub_book   Book[]
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
@@ -142,7 +142,7 @@ model Publisher {
 
 model Categories {
     cte_id     String   @id @default(uuid())
-    cte_name   String
+    cte_name   String   @unique
     cte_book   Book[]
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
@@ -150,44 +150,43 @@ model Categories {
 
 model Author {
     aut_id     String   @id @default(uuid())
-    aut_name   String
+    aut_name   String   @unique
     aut_book   Book[]
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
 }
+model ItemStock {
+    ito_id        String @id @default(uuid())
+    ito_book      Book   @relation(fields: [fk_ito_boo_id], references: [boo_id])
+    ito_quantity  Int
+    fk_ito_boo_id String @unique
 
-model Product {
-    pro_id       String   @id @default(uuid())
-    pro_price    String
-    pro_quantity Int
-    pro_book     Book[]
-    pro_item     Item[]
-    created_at   DateTime @default(now())
-    updated_at   DateTime @updatedAt
+    ItemOrder ItemOrder[]
 }
 
-model Item {
-    ite_id            String   @id @default(uuid())
+
+model ItemOrder {
+    ite_id            String    @id @default(uuid())
     ite_quantity      Int // Quantidade de itens
     ite_product_price Float
-    ite_product       Product  @relation(fields: [fk_ite_pro_id], references: [pro_id])
-    ite_cart          Cart     @relation(fields: [fk_ite_crt_id], references: [crt_id])
+    ite_book          ItemStock[]
+    ite_cart          Cart      @relation(fields: [fk_ite_crt_id], references: [crt_id])
     ite_coupon        Coupons?
     ite_exchange      Exchange?
-    fk_ite_crt_id     String
-    fk_ite_pro_id     String
+    fk_ite_boo_id     String
     fk_ite_sal_id     String
-    created_at        DateTime @default(now())
-    updated_at        DateTime @updatedAt
+    fk_ite_crt_id     String
+    created_at        DateTime  @default(now())
+    updated_at        DateTime  @updatedAt
 }
 
 model Cart {
-    crt_id        String   @id @default(uuid())
-    crt_items     Item[]
+    crt_id        String      @id @default(uuid())
+    crt_items     ItemOrder[]
     crt_sale      Sale?
-    fk_crt_sal_id String   @unique
-    created_at    DateTime @default(now())
-    updated_at    DateTime @updatedAt
+    fk_crt_sal_id String      @unique
+    created_at    DateTime    @default(now())
+    updated_at    DateTime    @updatedAt
 }
 
 model Payment {
@@ -199,28 +198,29 @@ model Payment {
 }
 
 model Coupons {
-    cou_id          String   @id @default(uuid())
-    cou_code        String   @unique // Código do cupom
+    cou_id          String    @id @default(uuid())
+    cou_code        String    @unique // Código do cupom
     cou_type        String // "PROMOCIONAL" ou "TROCA"
     cou_discount    Float // Valor do desconto (pode ser fixo ou percentual)
     cou_is_percent  Boolean // Indica se o desconto é percentual (%)
     cou_valid_until DateTime // Data de expiração do cupom
     cou_min_value   Float? // Valor mínimo para o cupom ser aplicado
     cou_status      String // "ATIVO", "USADO", "EXPIRADO"
-    cou_item        Item @relation(fields: [fk_cou_ite_id], references: [ite_id])
-    fk_cou_ite_id   String  @unique
-    created_at      DateTime @default(now())
-    updated_at      DateTime @updatedAt
+    cou_item        ItemOrder @relation(fields: [fk_cou_ite_id], references: [ite_id])
+    fk_cou_ite_id   String    @unique
+    created_at      DateTime  @default(now())
+    updated_at      DateTime  @updatedAt
 }
+
 model Exchange {
-    exc_id          String   @id @default(uuid())
-    exc_date        DateTime @default(now())
-    exc_status      String   // "PENDENTE", "APROVADA", "RECUSADA"
-    exc_value       Float    // Valor do crédito gerado
-    exc_item        Item     @relation(fields: [fk_exc_ite_id], references: [ite_id])
-    fk_exc_ite_id   String @unique
-    fk_exc_sal_id   String
-    fk_exc_cou_id   String?
+    exc_id        String    @id @default(uuid())
+    exc_date      DateTime  @default(now())
+    exc_status    String // "PENDENTE", "APROVADA", "RECUSADA"
+    exc_value     Float // Valor do crédito gerado
+    exc_item      ItemOrder @relation(fields: [fk_exc_ite_id], references: [ite_id])
+    fk_exc_ite_id String    @unique
+    fk_exc_sal_id String
+    fk_exc_cou_id String?
 }
 
 model Sale {

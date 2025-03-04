@@ -1,6 +1,6 @@
-import { FactoryClient } from "../../Model/domain/Client";
+import { FactoryClient } from "../../Model/entities/Client/Client";
 import { NextFunction, Request, Response } from "express";
-import { ClientDTO } from "../../Model/DTO/ClientDTO";
+import { ClientDTO } from "../../Model/entities/Client/DTO/ClientDTO";
 import { Facade } from "../Facade/Facade";
 import { Client } from "@prisma/client";
 

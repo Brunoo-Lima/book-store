@@ -2,11 +2,11 @@
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { Client } from "../../../../Model/domain/Client";
-import { EntityDomain } from "../../../../Model/domain/EntityDomain";
+import { Client } from "../../../../Model/entities/Client/Client";
+import { EntityDomain } from "../../../../Model/entities/EntityDomain";
 import { prisma } from "../../prisma/prismaClient";
-import { Gender } from "../../../../Model/domain/types/Gender";
-import { StatusClient } from "../../../../Model/domain/types/StatusClient";
+import { Gender } from "../../../../Model/entities/types/Gender";
+import { StatusClient } from "../../../../Model/entities/types/StatusClient";
 import { IDao } from "../../../../interfaces/IDao";
 
 export class ClientDao implements IDao {
@@ -250,7 +250,6 @@ export class ClientDao implements IDao {
                 cli_name: true,
                 cli_score: true,
                 cli_status: true,
-                cli_log: true,
                 cli_address: true,
                 cli_password: true,
                 created_at: true,
@@ -359,7 +358,6 @@ export class ClientDao implements IDao {
                 cli_name: true,
                 cli_score: true,
                 cli_status: true,
-                cli_log: true,
                 cli_address: true,
                 cli_password: true,
                 created_at: true,
